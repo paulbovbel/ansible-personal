@@ -1,0 +1,28 @@
+---
+- name: setup .gitignore
+  copy:
+    src: git_ignore
+    dest: ~/.gitignore
+
+- name: setup .gitconfig
+  copy:
+    src: git_config
+    dest: ~/.gitconfig
+
+- set_fact:
+    hub_version: 2.2.9
+
+- name: download hub
+  unarchive:
+    src: "https://github.com/github/hub/releases/download/v{{ hub_version }}/hub-linux-amd64-{{ hub_version }}.tgz"
+    dest: /tmp
+    remote_src: True
+
+- name: install hub
+  command: "/tmp/hub-linux-amd64-{{ hub_version }}/install"
+  become: true
+
+- name: alias hub to git
+  lineinfile:
+    dest: ~/.bashrc
+    line: alias git=hub

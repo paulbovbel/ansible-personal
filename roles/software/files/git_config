@@ -1,0 +1,26 @@
+[push]
+	default = simple
+	followTags = true
+[user]
+	name = Paul Bovbel
+	email = paul@bovbel.com
+	signingkey = 47E4FA0223A28FD1
+[credential]
+	helper = cache
+[core]
+	editor = nano
+	excludesfile = ~/.gitignore
+[merge]
+	tool = meld
+[alias]
+	co = checkout
+	up = pull --rebase --prune
+	cob = checkout -b
+	cm = !git add -u && git commit -S -m
+	cmnew = !git add -A && git commit -S -m
+	pushb = push -u origin
+	bclean = "!f() { git branch --merged ${1-master} | grep -v \" ${1-master}$\" | xargs -r git branch -d; }; f"
+	bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
+	fixup = !git commit -a --fixup HEAD && git rebase --autosquash HEAD~2 -i
+[gpg]
+	program = gpg2
