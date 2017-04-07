@@ -25,7 +25,7 @@
         repo: "deb http://download.mono-project.com/repo/debian wheezy main"
         keyid: 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
 
-      - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace',]
+      - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip',]
 
 - name: define packages for desktop only
   set_fact:
