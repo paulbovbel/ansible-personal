@@ -21,7 +21,28 @@
   tags:
     - desktop
 
-- name:
+- name: Install atom apt packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  with_items:
+    - python-pip
+    - cppcheck
+
+- name: Install atom pip packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+  become: true
+  with_items:
+    - cpplint
+    - flake8
+    - pep8
+
+- name: Configure atom modules
   command: /usr/bin/apm install {{ item }} --production
   with_items:
     - atom-beautify
