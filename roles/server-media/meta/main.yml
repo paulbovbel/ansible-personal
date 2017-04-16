@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - server-common
   - nfs-mount
+  - server-common

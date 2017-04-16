@@ -1,0 +1,154 @@
+---
+version: '2'
+services:
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    volumes:
+      - /mnt/nfs/applications/plex:/config
+      - /mnt/nfs/media:/data
+    network_mode: host
+    restart: always
+    environment:
+      - VERSION=latest
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  plexpy:
+    image: linuxserver/plexpy
+    container_name: plexpy
+    depends_on:
+      - plex
+    volumes:
+      - /mnt/nfs/applications/plexpy:/config
+      - /mnt/nfs/applications/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
+    ports:
+      - 27029:8181
+    links:
+      - plex
+    restart: always
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  # plexrequests:
+  #   image: linuxserver/plexrequests
+  #   container_name: plexrequests
+  #   depends_on:
+  #     - plex
+  #   volumes:
+  #     - /opt/appdata/plexrequests:/config
+  #     - /mnt/storage/tv:/tv
+  #   ports:
+  #     - 27026:3000
+  #   links:
+  #     - plex
+  #   restart: always
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    depends_on:
+      - jackett
+    volumes:
+      - /mnt/nfs/applications/sonarr:/config
+      - /mnt/nfs/media/tv:/tv
+      - /mnt/nfs/downloads/complete/tv:/downloads
+    ports:
+      - 27021:8989
+    links:
+      - jackett
+      - deluge
+      - plex
+    restart: always
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    depends_on:
+      - jackett
+    volumes:
+      - /mnt/nfs/applications/radarr:/config
+      - /mnt/nfs/media/movies:/movies
+      - /mnt/nfs/downloads/complete/movies:/downloads
+    ports:
+      - 27022:7878
+    links:
+      - jackett
+      - deluge
+      - plex
+    restart: always
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  jackett:
+    image: linuxserver/jackett
+    container_name: jackett
+    volumes:
+      - /mnt/nfs/applications/radarr:/config
+      - /mnt/nfs/media/movies:/movies
+      - /mnt/nfs/downloads/complete/movies:/downloads
+    ports:
+      - 27023:9117
+    restart: always
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  unifi:
+    image: linuxserver/unifi
+    container_name: unifi
+    network_mode: host
+    volumes:
+      - /mnt/nfs/applications/unifi:/config
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  deluge:
+    image: linuxserver/deluge
+    container_name: deluge
+    network_mode: host
+    volumes:
+      - /mnt/nfs/applications/deluge:/config
+      - /mnt/nfs/downloads:/downloads
+      - /mnt/storage:/mnt/storage
+    restart: always
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  # sync:
+  #   image: linuxserver/resilio-sync
+  #   container_name: sync
+  #   volumes:
+  #     - /opt/appdata/sync:/config
+  #     - /mnt/storage:/sync
+  #   ports:
+  #     - 27028:8888
+  #     - 55555:55555
+  #   environment:
+  #     - PUID=${PUID}
+  #     - PGID=${PGID}
+  #   restart: always
+  smokeping:
+    image: linuxserver/smokeping
+    container_name: smokeping
+    volumes:
+      - /mnt/nfs/applications/smokeping/config:/config
+      - /mnt/nfs/applications/smokeping/data:/data
+    ports:
+      - 27025:80
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+    restart: always
+  # web:
+  #   image: nginx
+  #   volumes:
+  #    - ./mysite.template:/etc/nginx/conf.d/mysite.template
+  #   ports:
+  #    - "8080:80"
+  #   environment:
+  #    - NGINX_HOST=foobar.com
+  #    - NGINX_PORT=80
+  #   command: /bin/bash -c "envsubst < /etc/nginx/conf.d/mysite.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"

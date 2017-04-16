@@ -4,3 +4,5 @@ nfs_mounts:
     url: x3r-freenas:/mnt/storage/media
   - mount: /mnt/nfs/backup
     url: x3r-freenas:/mnt/storage/backup
+  - mount: /mnt/nfs/downloads
+    url: x3r-freenas:/mnt/storage/downloads
