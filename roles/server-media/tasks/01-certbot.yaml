@@ -1,0 +1,50 @@
+---
+- name: add certbot repo
+  apt_repository:
+    repo: ppa:certbot/certbot
+    state: present
+    update_cache: true
+  become: true
+
+- name: install cerbot package
+  apt:
+    name: certbot
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- stat:
+    path: /etc/letsencrypt/live/home.bovbel.com/fullchain.pem
+  become: true
+  register: cert
+
+- name: make sure nginx is stopped
+  service:
+    name: nginx
+    state: stopped
+    enabled: true
+  become: true
+  when: not cert.stat.exists
+
+- name: get ssl certificate for home.bovbel.com
+  command: |
+    /usr/bin/certbot certonly --standalone -m {{ certbot_email }} -d home.bovbel.com,router.bovbel.com --agree-tos
+  become: true
+  when: not cert.stat.exists
+
+- name: install certbot auto renewal
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+  become: true
+  with_items:
+    - certbot.service
+    - certbot.timer
+
+- name: make sure certbot timer is running
+  systemd:
+    name: certbot.timer
+    state: started
+    enabled: true
+  become: true

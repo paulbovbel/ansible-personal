@@ -39,6 +39,13 @@
   become: true
   notify: restart nginx
 
+- name: disable default site
+  file:
+    dest: /etc/nginx/sites-enabled/default
+    state: absent
+  become: true
+  notify: restart nginx
+
 - name: enable home.bovbel.com
   file:
     src: /etc/nginx/sites-available/home.bovbel.com
