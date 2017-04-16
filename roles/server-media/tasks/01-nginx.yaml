@@ -28,6 +28,7 @@
   copy:
     src: vault/htpasswd
     dest: /etc/nginx/.htpasswd
+    mode: 0600
   become: true
   notify: restart nginx
 
