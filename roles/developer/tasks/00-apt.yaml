@@ -1,7 +1,6 @@
 ---
 - name: set distro data
   set_fact:
-    ubuntu_distro: "{{ ansible_distribution_release }}"
     ros_distro: "{{ {'trusty':'indigo', 'xenial':'kinetic'}[ansible_distribution_release] }}"
 
 - name: define base packages
@@ -10,7 +9,7 @@
       - packages: ['unity-webapps-common','thunderbird*','pidgin*','rhythmbox*','usb-creator*','ubuntuone*','empathy*',]
     apt_install:
       - packages: []
-        repo: "deb http://archive.canonical.com/ubuntu/ {{ ubuntu_distro }} partner"
+        repo: "deb http://archive.canonical.com/ubuntu/ {{ ansible_distribution_release }} partner"
 
       - packages: ['oracle-java9-installer',]
         repo: ppa:webupd8team/java
@@ -27,15 +26,12 @@
 
       - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip',]
 
-- name: define packages for desktop only
-  set_fact:
-    apt_install_desktop:
       - packages: ['ros-{{ ros_distro }}-ros-base', 'python-catkin-tools', 'python-wstool', 'python-bloom']
-        repo: "deb http://packages.ros.org/ros/ubuntu {{ ubuntu_distro }} main"
+        repo: "deb http://packages.ros.org/ros/ubuntu {{ ansible_distribution_release }} main"
         keyurl: https://raw.githubusercontent.com/ros/rosdistro/master/ros.key
 
       - packages: []
-        repo: "deb http://packages.osrfoundation.org/gazebo/ubuntu {{ ubuntu_distro }}  main"
+        repo: "deb http://packages.osrfoundation.org/gazebo/ubuntu {{ ansible_distribution_release }}  main"
         keyurl: http://packages.osrfoundation.org/gazebo.key
 
       - packages: ['vlc',]
@@ -51,11 +47,11 @@
         repo: ppa:gezakovacs/ppa
 
       - packages: ['calibre',]
-        repo: "deb http://archive.getdeb.net/ubuntu {{ ubuntu_distro }}-getdeb apps"
+        repo: "deb http://archive.getdeb.net/ubuntu {{ ansible_distribution_release }}-getdeb apps"
         keyurl: http://archive.getdeb.net/getdeb-archive.key
 
       - packages: ['dropbox',]
-        repo: "deb http://linux.dropbox.com/ubuntu {{ ubuntu_distro }} main"
+        repo: "deb http://linux.dropbox.com/ubuntu {{ ansible_distribution_release }} main"
         keyid: 5044912E
 
       - packages: ['numix-gtk-theme', 'numix-icon-theme-circle', 'numix-wallpaper-*',]
@@ -78,7 +74,7 @@
         repo: ppa:remmina-ppa-team/remmina-next
 
       - packages: ['virtualbox-5.1',]
-        repo: "deb http://download.virtualbox.org/virtualbox/debian {{ ubuntu_distro }} contrib"
+        repo: "deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
         keyurl: http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc
 
       - packages: ['google-chrome-stable',]
@@ -92,14 +88,7 @@
 
       # - packages: ['openscad',]
       #   repo: ppa:chrysn/openscad
-  tags:
-    - desktop
 
-- name: combine base and desktop packages
-  set_fact:
-    apt_install: "{{ apt_install }} + {{ apt_install_desktop }}"
-  tags:
-    - desktop
 
 - name: install repo keys from url
   apt_key:
