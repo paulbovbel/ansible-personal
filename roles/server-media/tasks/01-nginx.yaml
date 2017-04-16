@@ -1,0 +1,54 @@
+---
+- name: add nginx repo
+  apt_repository:
+    repo: ppa:nginx/stable
+    state: present
+    update_cache: true
+  become: true
+
+- name: install nginx packages
+  apt:
+    name: nginx
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: setup common configurations
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/nginx/{{ item }}"
+  become: true
+  with_items:
+    - private-control.conf
+    - proxy-control.conf
+  notify: restart nginx
+
+- name: setup .htpasswd
+  copy:
+    src: vault/htpasswd
+    dest: /etc/nginx/.htpasswd
+  become: true
+  notify: restart nginx
+
+- name: setup home.bovbel.com
+  copy:
+    src: home.bovbel.com.conf
+    dest: /etc/nginx/sites-available/home.bovbel.com
+  become: true
+  notify: restart nginx
+
+- name: enable home.bovbel.com
+  file:
+    src: /etc/nginx/sites-available/home.bovbel.com
+    dest: /etc/nginx/sites-enabled/home.bovbel.com
+    state: link
+  become: true
+  notify: restart nginx
+
+- name: make sure nginx is running
+  service:
+    name: nginx
+    state: started
+    enabled: true
+  become: true

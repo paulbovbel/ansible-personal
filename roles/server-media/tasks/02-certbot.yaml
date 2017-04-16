@@ -1,0 +1,15 @@
+---
+- name: add certbot repo
+  apt_repository:
+    repo: ppa:certbot/certbot
+    state: present
+    update_cache: true
+  become: true
+
+- name: install cerbot package
+  apt:
+    name: certbot
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true

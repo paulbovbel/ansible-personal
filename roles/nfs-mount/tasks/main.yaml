@@ -7,7 +7,7 @@
     cache_valid_time: 3600
   become: true
 
-- name: Ensure rpcbind is running (Ubuntu Trusty Tahr or newer)
+- name: Ensure rpcbind is running
   service:
     name: rpcbind
     state: started
@@ -26,9 +26,6 @@
   file:
     path: "{{ item.mount }}"
     state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    recurse: true
   become: true
   with_items:
     - "{{ nfs_mounts }}"
