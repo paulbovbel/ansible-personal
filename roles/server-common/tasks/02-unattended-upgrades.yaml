@@ -1,0 +1,37 @@
+- name: install unattended-upgrades
+  apt:
+    pkg: unattended-upgrades
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: create APT auto-upgrades configuration
+  copy:
+    src: auto-upgrades
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+  become: true
+
+- name: create unattended-upgrades configuration
+  copy:
+    src: unattended-upgrades
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+  become: true
+
+- file:
+    path: /etc/systemd/system/apt-daily.timer.d
+    state: directory
+  become: true
+
+- name: configure systemd apt activities timer
+  copy:
+    src: apt-timer-override.conf
+    dest: /etc/systemd/system/apt-daily.timer.d/override.conf
+  become: true
+
+- name: restart apt-daily timer
+  systemd:
+    name: apt-daily.timer
+    state: restarted
+    enabled: true
+  become: true

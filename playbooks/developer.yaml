@@ -1,5 +1,5 @@
 ---
 - hosts: localhost
   roles:
-    - secrets
+    - nfs-mount
     - developer

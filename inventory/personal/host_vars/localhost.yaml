@@ -1,0 +1,6 @@
+ansible_user: pbovbel
+nfs_mounts:
+  - mount: /mnt/nfs/media
+    url: x3r-freenas:/mnt/storage/media
+  - mount: /mnt/nfs/backup
+    url: x3r-freenas:/mnt/storage/backup

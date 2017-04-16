@@ -1,0 +1,4 @@
+---
+- hosts: x3r-media
+  roles:
+    - server-media

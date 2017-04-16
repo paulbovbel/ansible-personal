@@ -1,0 +1,34 @@
+---
+- name: add cockpit repo
+  apt_repository:
+    repo: ppa:cockpit-project/cockpit
+    state: present
+    update_cache: true
+  become: true
+
+- name: install cockpit packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  with_items:
+    - cockpit-bridge
+    - cockpit-dashboard
+    - cockpit-docker
+    - cockpit-system
+
+- name: configure cockpit
+  copy:
+    src: cockpit.conf
+    dest: /etc/cockpit/cockpit.conf
+  become: true
+  notify: restart cockpit
+
+- name: make sure cockpit is running
+  service:
+    name: cockpit
+    state: started
+    enabled: true
+  become: true

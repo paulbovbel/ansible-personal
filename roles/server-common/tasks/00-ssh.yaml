@@ -1,0 +1,14 @@
+---
+- name: install openssh-server
+  apt:
+    name: openssh-server
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Set authorized key took from file
+  authorized_key:
+    user: "{{ ansible_user }}"
+    state: present
+    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"

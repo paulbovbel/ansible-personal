@@ -1,0 +1,4 @@
+---
+- include: 00-ssh.yaml
+- include: 01-cockpit.yaml
+- include: 02-unattended-upgrades.yaml
