@@ -1,0 +1,43 @@
+---
+- name: install mailutils
+  apt:
+    pkg: mailutils
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: install postfix config
+  copy:
+    src: main.cf
+    dest: /etc/postfix/main.cf
+  become: true
+  notify: restart postfix
+
+- name: install postfix credentials
+  copy:
+    src: vault/sasl_passwd
+    dest: /etc/postfix/sasl_passwd
+    mode: 0600
+  become: true
+  notify: build postfix database
+
+- name: start postfix
+  service:
+    name: postfix
+    state: started
+    enabled: true
+  become: true
+
+- name: setup systemd-email
+  copy:
+    src: systemd-email
+    dest: /usr/local/bin/systemd-email
+    mode: 0755
+  become: true
+
+- name: create system email status email service
+  template:
+    src: status-email-user@.service
+    dest: "/etc/systemd/system/status-email-{{ ansible_user }}@.service"
+  become: true
