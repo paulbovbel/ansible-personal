@@ -21,3 +21,7 @@
   command: /usr/sbin/postmap /etc/postfix/sasl_passwd
   become: true
   notify: restart postfix
+
+- name: update apt cache
+  apt:
+    update_cache: true

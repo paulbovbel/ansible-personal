@@ -20,7 +20,7 @@
     - cockpit-system
 
 - name: configure cockpit
-  copy:
+  template:
     src: cockpit.conf
     dest: /etc/cockpit/cockpit.conf
   become: true

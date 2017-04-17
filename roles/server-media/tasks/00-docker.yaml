@@ -1,4 +1,26 @@
 ---
+- name: install docker repo key
+  apt_key:
+    keyserver: hkp://p80.pool.sks-keyservers.net:80
+    id: 58118E89F3A912897C070ADBF76221572C52609D
+    state: present
+  become: true
+
+- name: add docker apt repo
+  apt_repository:
+    repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main
+    state: present
+    update_cache: true
+  become: true
+
+- name: install new packages
+  apt:
+    name: docker-engine
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
 - name: determine uid
   command: "id -u {{ ansible_user }}"
   register: uid
@@ -20,6 +42,21 @@
     cache_valid_time: 3600
   become: true
 
+- name: configure docker group
+  group:
+    name: docker
+    state: present
+  become: true
+  notify: reconnect ssh
+
+- name: add user to docker group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
+  become: true
+  notify: restart docker
+
 - name: install docker_service dependencies
   pip:
     name: "{{ item }}"
@@ -29,13 +66,17 @@
     - docker-compose
   become: true
 
+- file:
+    dest: ~/.docker
+    state: directory
+
 - name: build media-server docker-compose template
   template:
     src: docker_compose.yaml.j2
-    dest: /tmp/docker-compose.yaml
+    dest: ~/.docker/docker-compose.yaml
 
-- name: deploy media-server docker project
-  docker_service:
-    project_name: media-server
-    project_src: /tmp
-  become: true
+# - name: deploy media-server docker project
+#   docker_service:
+#     project_name: media-server
+#     project_src: ~/.docker
+#     pull: true

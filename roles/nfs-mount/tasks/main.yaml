@@ -14,14 +14,6 @@
     enabled: true
   become: true
 
-- name: unmount
-  mount:
-    name: "{{ item.mount }}"
-    state: unmounted
-  become: true
-  with_items:
-    - "{{ nfs_mounts }}"
-
 - name: Ensure directory exists
   file:
     path: "{{ item.mount }}"
@@ -35,7 +27,7 @@
     name: "{{ item.mount }}"
     src: "{{ item.url }}"
     fstype: nfs
-    opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,x-systemd.idle-timeout=1min,rsize=32768,wsize=32768,timeo=14,hard,intr,tcp
+    opts: noauto,x-systemd.automount,x-systemd.device-timeout=10,x-systemd.idle-timeout=1min,rsize=131072,wsize=131072,timeo=14,soft,udp,noatime,nodiratime
     state: mounted
   become: true
   with_items:

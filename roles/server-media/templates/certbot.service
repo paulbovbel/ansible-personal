@@ -1,7 +1,7 @@
 [Unit]
 Description=Let's Encrypt renewal
+OnFailure=status-email-{{ ansible_user }}@%n.service
 
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/certbot renew --quiet --agree-tos
-OnFailure=status-email-{{ ansible_user }}@%n.service

@@ -4,3 +4,13 @@
     name: nginx
     state: restarted
   become: true
+
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
+  become: true
+
+- name: reconnect ssh
+  shell: "ps -ef | grep sshd | grep `whoami` | awk '{print \"kill -9\", $2}' | sh"
+  failed_when: false
