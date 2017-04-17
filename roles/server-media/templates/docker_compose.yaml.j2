@@ -127,16 +127,17 @@ services:
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
-  openvpn-as:
-    image: linuxserver/openvpn-as
-    container_name: openvpn-as
-    network_mode: host
-    volumes:
-      - {{ appdata }}//openvpn-as:/config
-    ports:
-      - 943:943
-    restart: always
-    environment:
-      - PUID={{ uid }}
-      - PGID={{ gid }}
-      - INTERFACE=ens160
+  # openvpn-as:
+  #   image: linuxserver/openvpn-as
+  #   container_name: openvpn-as
+  #   network_mode: host
+  #   volumes:
+  #     - {{ appdata }}//openvpn-as:/config
+  #   ports:
+  #     - 943:943
+  #   restart: always
+  #   privileged: true
+  #   environment:
+  #     - PUID={{ uid }}
+  #     - PGID={{ gid }}
+  #     - INTERFACE=ens160
