@@ -1,0 +1,20 @@
+---
+# See https://calvin.me/reset-esxi-evaluation-license/
+
+- name: copy reset license script
+  copy:
+    src: reset-eval.sh
+    dest: /vmfs/volumes/storage/reset-eval.sh
+    mode: 0700
+
+- name: define license reset job on boot
+  blockinfile:
+    path: /etc/rc.local.d/local.sh
+    insertbefore: "exit 0"
+    block: |
+      /bin/kill $(cat /var/run/crond.pid)
+      /bin/echo "@monthly root /vmfs/volumes/storage/reset-eval.sh" >> /var/spool/cron/crontabs/root
+      crond
+
+- name: regenerate job
+  command: /etc/rc.local.d/local.sh

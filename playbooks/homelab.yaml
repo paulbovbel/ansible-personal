@@ -2,3 +2,7 @@
 - hosts: x3r-media
   roles:
     - server-media
+
+- hosts: x3r-esxi
+  roles:
+    - esxi-license
