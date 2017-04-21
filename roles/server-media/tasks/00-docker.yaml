@@ -1,4 +1,15 @@
 ---
+# TODO iscsi
+
+- name: Mount appdata
+  mount:
+    name: "{{ appdata }}"
+    src: /dev/sda1
+    fstype: ext4
+    opts: defaults,auto,_netdev,noatime,nodiratime
+    state: mounted
+  become: true
+
 - name: install docker repo key
   apt_key:
     keyserver: hkp://p80.pool.sks-keyservers.net:80
@@ -13,7 +24,7 @@
     update_cache: true
   become: true
 
-- name: install new packages
+- name: install docker packages
   apt:
     name: docker-engine
     state: latest
@@ -75,8 +86,8 @@
     src: docker_compose.yaml.j2
     dest: ~/.docker/docker-compose.yaml
 
-# - name: deploy media-server docker project
-#   docker_service:
-#     project_name: media-server
-#     project_src: ~/.docker
-#     pull: true
+- name: deploy media-server docker project
+  docker_service:
+    project_name: media-server
+    project_src: ~/.docker
+    pull: true

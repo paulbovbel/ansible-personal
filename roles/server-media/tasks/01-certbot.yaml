@@ -14,7 +14,8 @@
     cache_valid_time: 3600
   become: true
 
-- stat:
+- name: check if cert exists
+  stat:
     path: /etc/letsencrypt/live/home.bovbel.com/fullchain.pem
   become: true
   register: cert
@@ -26,6 +27,7 @@
     enabled: true
   become: true
   when: not cert.stat.exists
+  ignore_errors: true
 
 - name: get ssl certificate for home.bovbel.com
   command: |
