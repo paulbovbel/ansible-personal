@@ -58,7 +58,6 @@
     name: docker
     state: present
   become: true
-  notify: reconnect ssh
 
 - name: add user to docker group
   user:
@@ -86,8 +85,9 @@
     src: docker_compose.yaml.j2
     dest: ~/.docker/docker-compose.yaml
 
-- name: deploy media-server docker project
-  docker_service:
-    project_name: media-server
-    project_src: ~/.docker
-    pull: true
+# - name: deploy media-server docker project
+#   docker_service:
+#     project_name: media-server
+#     project_src: "/home/{{ ansible_user }}/.docker"
+#     pull: true
+#   become: true
