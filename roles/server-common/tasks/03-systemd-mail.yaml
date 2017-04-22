@@ -38,6 +38,6 @@
 
 - name: create system email status email service
   template:
-    src: status-email-user@.service
+    src: status-email-user@.service.j2
     dest: "/etc/systemd/system/status-email-{{ ansible_user }}@.service"
   become: true

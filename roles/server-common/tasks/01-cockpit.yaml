@@ -21,7 +21,7 @@
 
 - name: configure cockpit
   template:
-    src: cockpit.conf
+    src: cockpit.conf.j2
     dest: /etc/cockpit/cockpit.conf
   become: true
   notify: restart cockpit
