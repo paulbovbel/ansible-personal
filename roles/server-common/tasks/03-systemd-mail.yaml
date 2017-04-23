@@ -18,9 +18,15 @@
   copy:
     src: vault/sasl_passwd
     dest: /etc/postfix/sasl_passwd
-    mode: 0600
+    mode: 0644
   become: true
   notify: build postfix database
+
+- name: generate postfix db
+  command: |
+    /usr/sbin/postmap hash:/etc/postfix/sasl_passwd
+  creates: /etc/postfix/sasl_passwd.db
+  become: true
 
 - name: start postfix
   service:

@@ -57,6 +57,7 @@ services:
       - 8989:8989
     links:
       - jackett
+      - cardigann
       - deluge
       - plex
     restart: always
@@ -70,12 +71,14 @@ services:
       - jackett
     volumes:
       - {{ appdata }}/radarr:/config
+      - {{ media }}/movies:/movies
       - {{ downloads }}:/downloads
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 7878:7878
     links:
       - jackett
+      - cardigann
       - deluge
       - plex
     restart: always
@@ -87,10 +90,33 @@ services:
     container_name: jackett
     volumes:
       - {{ appdata }}/jackett:/config
-      - {{ media }}/movies:/movies
-      - {{ downloads }}:/downloads
     ports:
       - 9117:9117
+    restart: always
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  cardigann:
+    image: linuxserver/cardigann
+    container_name: cardigann
+    volumes:
+      - {{ appdata }}/cardigann:/config
+    ports:
+      - 5060:5060
+    restart: always
+    environment:
+      - PUID={{ uid }}
+      - PGID={{ gid }}
+  ubooquity:
+    image: linuxserver/ubooquity
+    container_name: ubooquity
+    volumes:
+      - {{ appdata }}/ubooquity:/config
+      - {{ media }}/books:/books
+      - {{ media }}/comics:/comics
+      - {{ media }}/files:/files
+    ports:
+      - 2202:2202
     restart: always
     environment:
       - PUID={{ uid }}
