@@ -30,11 +30,14 @@
 
 - name: setup .htpasswd
   copy:
-    src: vault/htpasswd
-    dest: /etc/nginx/.htpasswd
+    src: "vault/{{ item }}"
+    dest: "/etc/nginx/.{{ item }}"
     mode: 0644
   become: true
   notify: restart nginx
+  with_items:
+    - htpasswd_admin
+    - htpasswd_media
 
 - name: setup home.bovbel.com
   copy:

@@ -25,7 +25,8 @@
 - name: generate postfix db
   command: |
     /usr/sbin/postmap hash:/etc/postfix/sasl_passwd
-  creates: /etc/postfix/sasl_passwd.db
+  args:
+    creates: /etc/postfix/sasl_passwd.db
   become: true
 
 - name: start postfix
