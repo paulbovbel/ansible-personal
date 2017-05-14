@@ -9,7 +9,8 @@
     src: git_config
     dest: ~/.gitconfig
 
-- set_fact:
+- name: set hub version
+  set_fact:
     hub_version: 2.2.9
 
 - name: download hub
