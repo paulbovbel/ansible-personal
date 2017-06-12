@@ -27,7 +27,7 @@
     name: "{{ item.mount }}"
     src: "{{ item.url }}"
     fstype: nfs
-    opts: noauto,nofail,x-systemd.automount,x-systemd.requires=network-online.target,x-systemd.device-timeout=10,rsize=131072,wsize=131072,noatime,nodiratime
+    opts: _netdev,rsize=131072,wsize=131072,noatime,nodiratime
     state: mounted
   become: true
   with_items:
