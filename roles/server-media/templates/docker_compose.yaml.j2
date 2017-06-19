@@ -1,18 +1,4 @@
 ---
-# TODO(pbovbel):
-#   - sync:
-#     - https://hub.docker.com/r/linuxserver/syncthing/
-#     - https://hub.docker.com/r/linuxserver/resilio-sync/
-#   - books:
-#     - https://hub.docker.com/r/linuxserver/lazylibrarian/
-#     - https://hub.docker.com/r/linuxserver/ubooquity/
-#   - plexrequests:
-#     - https://hub.docker.com/r/linuxserver/ombi/
-#     - https://hub.docker.com/r/linuxserver/plexrequests/
-#   - indexes:
-#     - https://github.com/cardigann/cardigann
-#   - photos:
-#     - https://hub.docker.com/r/kdelfour/lychee-docker/
 version: '2'
 services:
   plex:
@@ -96,31 +82,6 @@ services:
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
-  cardigann:
-    image: linuxserver/cardigann
-    container_name: cardigann
-    volumes:
-      - {{ appdata }}/cardigann:/config
-    ports:
-      - 5060:5060
-    restart: always
-    environment:
-      - PUID={{ uid }}
-      - PGID={{ gid }}
-  ubooquity:
-    image: linuxserver/ubooquity
-    container_name: ubooquity
-    volumes:
-      - {{ appdata }}/ubooquity:/config
-      - {{ media }}/books:/books
-      - {{ media }}/comics:/comics
-      - {{ media }}/files:/files
-    ports:
-      - 2202:2202
-    restart: always
-    environment:
-      - PUID={{ uid }}
-      - PGID={{ gid }}
   unifi:
     image: linuxserver/unifi
     container_name: unifi
@@ -152,17 +113,17 @@ services:
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
-  # openvpn-as:
-  #   image: linuxserver/openvpn-as
-  #   container_name: openvpn-as
-  #   network_mode: host
-  #   volumes:
-  #     - {{ appdata }}/openvpn-as:/config
-  #   ports:
-  #     - 943:943
-  #   restart: always
-  #   privileged: true
-  #   environment:
-  #     - PUID={{ uid }}
-  #     - PGID={{ gid }}
-  #     - INTERFACE=ens160
+  resilio:
+    image: linuxserver/resilio-sync
+    container_name: resilio
+    network_mode: host
+    ports:
+      - 8888:8888
+      - 55555:55555
+    volumes:
+      - /mnt/appdata/resilio:/config
+      - /mnt/nfs:/sync
+    restart: always
+    environment:
+      - PUID=1000
+      - GUID=1000
