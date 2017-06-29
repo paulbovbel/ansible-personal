@@ -11,3 +11,9 @@ To deploy homelab:
 To encrypt all vault files:
 
 `ansible-vault encrypt $(find . -path *vault/*)`
+
+
+TODO outstanding components:
+  - xenserver + VMs setup
+  - nas4free VM
+  - pfsense VM

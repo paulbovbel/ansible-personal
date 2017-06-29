@@ -1,4 +1,4 @@
 ansible_user: pbovbel
 nfs_mounts:
   - mount: /mnt/nfs/media
-    url: x3r-freenas:/mnt/storage/media
+    url: x3r-nas:/mnt/storage/media

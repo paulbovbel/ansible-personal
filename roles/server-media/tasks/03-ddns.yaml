@@ -16,6 +16,7 @@
     url: https://raw.githubusercontent.com/paulbovbel/ddns-route53/patch-1/ddns-route53
     dest: /usr/local/bin/ddns-route53
     mode: 0755
+  become: true
 
 - name: configure aws credentials
   copy:
@@ -27,7 +28,7 @@
 - name: install aws ddns service
   template:
     src: aws-ddns@.service.j2
-    dest: /etc/systemd/system/aws-ddns@.service.service
+    dest: /etc/systemd/system/aws-ddns@.service
   become: true
 
 - name: install aws ddns timer
@@ -41,5 +42,6 @@
     name: "aws-ddns@{{ item }}.timer"
     state: started
     enabled: true
+    daemon_reload: true
   become: true
   with_items: "{{ aws_ddns_hosted_records }}"
