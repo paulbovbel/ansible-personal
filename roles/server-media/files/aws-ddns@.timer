@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh DDNS entry every 15 minutes
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=15min
+Unit=ddns@%i.service
+
+[Install]
+WantedBy=network-online.target

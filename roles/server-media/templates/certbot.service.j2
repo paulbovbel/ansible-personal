@@ -4,4 +4,4 @@ OnFailure=status-email-{{ ansible_user }}@%n.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/certbot renew --quiet --agree-tos
+ExecStart=/usr/bin/certbot renew -n --agree-tos

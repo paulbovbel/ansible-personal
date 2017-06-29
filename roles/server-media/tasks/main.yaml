@@ -2,3 +2,4 @@
 - include: 00-docker.yaml
 - include: 01-certbot.yaml
 - include: 02-nginx.yaml
+- include: 03-ddns.yaml

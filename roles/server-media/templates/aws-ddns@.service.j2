@@ -1,0 +1,7 @@
+[Unit]
+Description=Refresh Route53 DNS entry
+OnFailure=status-email-{{ ansible_user }}@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/ddns-route53 -z ZJMZZCLW5S6T9 -r %i
