@@ -4,4 +4,4 @@ OnFailure=status-email-{{ ansible_user }}@%n.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/sbin/ddns-route53 -z {{ aws_ddns_hosted_zone }} -r %i
+ExecStart=/usr/local/bin/ddns-route53 -z {{ aws_ddns_hosted_zone }} -r %i
