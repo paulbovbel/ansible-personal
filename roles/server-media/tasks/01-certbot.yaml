@@ -52,4 +52,5 @@
     name: certbot.timer
     state: started
     enabled: true
+    daemon_reload: true
   become: true

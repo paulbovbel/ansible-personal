@@ -2,9 +2,10 @@
 Description=Refresh DDNS entry for %i every 15 minutes
 
 [Timer]
-OnBootSec=10min
-OnUnitActiveSec=15min
+OnBootSec=10m
+OnUnitActiveSec=1h
 Unit=aws-ddns@%i.service
+RandomizedDelaySec=1h
 
 [Install]
 WantedBy=network-online.target

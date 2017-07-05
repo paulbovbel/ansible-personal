@@ -83,10 +83,33 @@
 - name: create docker-compose template
   template:
     src: docker_compose.yaml.j2
-    dest: ~/.docker/docker-compose.yaml
+    dest: /etc/docker/docker-compose.yaml
+  become: true
 
-- name: build docker compose project
-  docker_service:
-    project_name: media-server
-    project_src: "/home/{{ ansible_user }}/.docker"
-    pull: true
+- name: install docker-compose service
+  template:
+    src: docker-compose.service.j2
+    dest: /etc/systemd/system/docker-compose.service
+  become: true
+
+- name: run docker-compose service once
+  systemd:
+    name: docker-compose.service
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true
+
+- name: install docker-compose timer
+  copy:
+    src: docker-compose.timer
+    dest: /etc/systemd/system/docker-compose.timer
+  become: true
+
+- name: make sure docker-compose timer is running
+  systemd:
+    name: docker-compose.timer
+    state: started
+    enabled: true
+    daemon_reload: true
+  become: true
