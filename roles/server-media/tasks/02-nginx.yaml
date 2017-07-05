@@ -17,7 +17,6 @@
     - nginx
     - apache2-utils
 
-
 - name: setup common configurations
   copy:
     src: "{{ item }}"

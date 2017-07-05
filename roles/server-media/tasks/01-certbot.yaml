@@ -31,7 +31,7 @@
 
 - name: get ssl certificate for home.bovbel.com
   command: |
-    /usr/bin/certbot certonly --standalone -m {{ ansible_user_email }} -d home.bovbel.com,router.bovbel.com --agree-tos
+    /usr/bin/certbot certonly --standalone -m {{ ansible_user_email }} -d {{ aws_ddns_hosted_records|join(',') }} --agree-tos
   become: true
   when: not cert.stat.exists
 

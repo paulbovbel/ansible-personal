@@ -22,7 +22,7 @@ services:
       - {{ appdata }}/plexpy:/config
       - {{ appdata }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro
     ports:
-      - 27029:8181
+      - 8181:8181
     links:
       - plex
     restart: always
@@ -43,7 +43,6 @@ services:
       - 8989:8989
     links:
       - jackett
-      - cardigann
       - deluge
       - plex
     restart: always
@@ -64,7 +63,6 @@ services:
       - 7878:7878
     links:
       - jackett
-      - cardigann
       - deluge
       - plex
     restart: always
@@ -127,3 +125,20 @@ services:
     environment:
       - PUID=1000
       - GUID=1000
+  xen-orchestra:
+    image: yobasystems/alpine-xen-orchestra:latest
+    container_name: xoa
+    ports:
+      - 27030:8080
+    depends_on:
+      - redis
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - /mnt/appdata/xoa/server:/app/data
+  redis:
+    container_name: xoa-redis
+    image: redis:alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - /mnt/appdata/xoa/redis:/data
