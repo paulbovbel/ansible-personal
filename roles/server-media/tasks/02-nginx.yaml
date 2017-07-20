@@ -16,6 +16,7 @@
   with_items:
     - nginx
     - apache2-utils
+    - fail2ban
 
 - name: setup common configurations
   copy:
@@ -38,12 +39,19 @@
     - htpasswd_admin
     - htpasswd_media
 
-- name: setup home.bovbel.com
+- name: setup home.bovbel.com nginx
   copy:
-    src: home.bovbel.com.conf
+    src: nginx.conf
     dest: /etc/nginx/sites-available/home.bovbel.com
   become: true
   notify: restart nginx
+
+- name: setup home.bovbel.com jail
+  copy:
+    src: jail.conf
+    dest: /etc/fail2ban/jail.d/x3r-media.conf
+  become: true
+  notify: restart fail2ban
 
 - name: disable default site
   file:
