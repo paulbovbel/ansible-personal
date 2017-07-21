@@ -1,5 +1,6 @@
 ---
-# TODO iscsi
+
+# TODO(pbovbel) setup up iscsi
 
 - name: Mount appdata
   mount:
@@ -99,6 +100,8 @@
     enabled: true
     daemon_reload: true
   become: true
+  async: 1000
+  poll: 0
 
 - name: install docker-compose timer
   copy:

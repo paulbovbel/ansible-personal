@@ -119,8 +119,9 @@ services:
       - 8888:8888
       - 55555:55555
     volumes:
-      - /mnt/appdata/resilio:/config
-      - /mnt/nfs:/sync
+      - {{ appdata }}/resilio:/config
+      - {{ media }}:/media
+      - {{ backup }}:/backup
     restart: always
     environment:
       - PUID=1000
@@ -135,10 +136,10 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      - /mnt/appdata/xoa/server:/app/data
+      - {{ appdata }}/xoa/server:/app/data
   redis:
     container_name: xoa-redis
     image: redis:alpine
     command: redis-server --appendonly yes
     volumes:
-      - /mnt/appdata/xoa/redis:/data
+      - {{ appdata }}/xoa/redis:/data
