@@ -77,10 +77,6 @@
     - docker-compose
   become: true
 
-- file:
-    dest: ~/.docker
-    state: directory
-
 - name: create docker-compose template
   template:
     src: docker_compose.yaml.j2
@@ -99,9 +95,8 @@
     state: started
     enabled: true
     daemon_reload: true
+    no_block: true
   become: true
-  async: 1000
-  poll: 0
 
 - name: install docker-compose timer
   copy:
@@ -110,7 +105,7 @@
   become: true
 
 - name: make sure docker-compose timer is running
-  systemd:
+    systemd:
     name: docker-compose.timer
     state: started
     enabled: true
