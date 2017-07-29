@@ -4,7 +4,7 @@
 [user]
 	name = Paul Bovbel
 	email = paul@bovbel.com
-	signingkey = 47E4FA0223A28FD1
+	signingkey = C909503D45A2E375
 [credential]
 	helper = cache
 [core]

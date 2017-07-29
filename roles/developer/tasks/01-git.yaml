@@ -1,12 +1,12 @@
 ---
 - name: setup .gitignore
   copy:
-    src: git_ignore
+    src: gitignore
     dest: ~/.gitignore
 
 - name: setup .gitconfig
   copy:
-    src: git_config
+    src: gitconfig
     dest: ~/.gitconfig
 
 - name: set hub version

@@ -17,4 +17,3 @@ TODO outstanding components:
   - xenserver + VMs setup
   - nas4free VM
   - pfsense VM
-  - fail2ban
