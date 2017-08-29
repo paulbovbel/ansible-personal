@@ -37,7 +37,7 @@
   command: "id -u {{ ansible_user }}"
   register: uid
 
-- name: deterine gid
+- name: determine gid
   command: "id -g {{ ansible_user }}"
   register: gid
 
@@ -105,7 +105,7 @@
   become: true
 
 - name: make sure docker-compose timer is running
-    systemd:
+  systemd:
     name: docker-compose.timer
     state: started
     enabled: true

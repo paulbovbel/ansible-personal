@@ -17,7 +17,9 @@
     - cockpit-bridge
     - cockpit-dashboard
     - cockpit-docker
+    - cockpit-storaged
     - cockpit-system
+    - cockpit-ws
 
 - name: configure cockpit
   template:

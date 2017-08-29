@@ -120,26 +120,25 @@ services:
       - 55555:55555
     volumes:
       - {{ appdata }}/resilio:/config
-      - {{ media }}:/media
-      - {{ backup }}:/backup
+      - {{ nfs_root }}:/sync
     restart: always
     environment:
       - PUID=1000
-      - GUID=1000
-  xen-orchestra:
-    image: yobasystems/alpine-xen-orchestra:latest
-    container_name: xoa
-    ports:
-      - 27030:8080
-    depends_on:
-      - redis
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - {{ appdata }}/xoa/server:/app/data
-  redis:
-    container_name: xoa-redis
-    image: redis:alpine
-    command: redis-server --appendonly yes
-    volumes:
-      - {{ appdata }}/xoa/redis:/data
+      - PGID=1000
+  # xen-orchestra:
+  #   image: yobasystems/alpine-xen-orchestra:latest
+  #   container_name: xoa
+  #   ports:
+  #     - 27030:8080
+  #   depends_on:
+  #     - redis
+  #   environment:
+  #     - NODE_ENV=production
+  #   volumes:
+  #     - {{ appdata }}/xoa/server:/app/data
+  # redis:
+  #   container_name: xoa-redis
+  #   image: redis:alpine
+  #   command: redis-server --appendonly yes
+  #   volumes:
+  #     - {{ appdata }}/xoa/redis:/data
