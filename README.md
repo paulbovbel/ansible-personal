@@ -2,7 +2,7 @@
 
 To deploy on the current machine:
 
-`ansible-playbook -i inventory/localhost playbooks/deploy.yaml`
+`ansible-playbook -i inventory/personal playbooks/developer.yaml`
 
 To deploy homelab:
 

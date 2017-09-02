@@ -14,17 +14,25 @@
 	tool = meld
 [alias]
 	co = checkout
-	pull = pull --rebase --prune
-	up = pull --rebase --prune
-	rebase = rebase --gpg-sign=paul@bovbel.com
 	rb = rebase
+	st = status
 	cob = checkout -b
-	commit = commit -S
-	cm = !git add -u && git commit -S -m
-	cmnew = !git add -A && git commit -S -m
+	cm = !git add -u && git commit -m
+	cmnew = !git add -A && git commit -m
 	pushb = push -u origin
 	bclean = "!f() { git branch --merged ${1-master} | grep -v \" ${1-master}$\" | xargs -r git branch -d; }; f"
 	bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
-	fixup = !git add -u && git commit -S --amend
+	fixup = !git add -u && git commit --amend
 [gpg]
 	program = gpg2
+[pull]
+	rebase = True
+[fetch]
+	prune = True
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge --skip -- %f
+	process = git-lfs filter-process --skip
+	required = true
+[commit]
+	gpgsign = true

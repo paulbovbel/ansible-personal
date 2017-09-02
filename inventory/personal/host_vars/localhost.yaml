@@ -3,4 +3,4 @@ nfs_mounts:
   - mount: /mnt/nfs/media
     url: x3r-nas:/mnt/storage/media
 
-pgp_key_id: 0x8D2867DB5A4AA6E6
+pgp_key_id: "0x8D2867DB5A4AA6E6"

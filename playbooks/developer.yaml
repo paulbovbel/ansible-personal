@@ -1,5 +1,5 @@
 ---
 - hosts: localhost
   roles:
-    - nfs-mount
+    # - nfs-mount
     - developer

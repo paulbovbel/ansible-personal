@@ -1,0 +1,99 @@
+ros_distro: "{{ {'trusty':'indigo', 'xenial':'kinetic'}[ansible_distribution_release] }}"
+
+apt_remove:
+  - packages: ['unity-webapps-common','thunderbird*','pidgin*','rhythmbox*','usb-creator*','ubuntuone*','empathy*']
+apt_install:
+  - packages: []
+    repo: "deb http://archive.canonical.com/ubuntu/ {{ ansible_distribution_release }} partner"
+
+  - packages: ['oracle-java9-installer']
+    repo: ppa:webupd8team/java
+
+  - packages: ['ansible']
+    repo: ppa:ansible/ansible
+
+  - packages: ['git']
+    repo: ppa:git-core/ppa
+
+  - packages: ['mono-complete']
+    repo: "deb http://download.mono-project.com/repo/debian wheezy main"
+    keyid: 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+
+  - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip']
+
+  - packages: ['ros-{{ ros_distro }}-ros-base', 'python-catkin-tools', 'python-wstool', 'python-bloom']
+    repo: "deb http://packages.ros.org/ros/ubuntu {{ ansible_distribution_release }} main"
+    keyurl: https://raw.githubusercontent.com/ros/rosdistro/master/ros.key
+
+  - packages: []
+    repo: "deb http://packages.osrfoundation.org/gazebo/ubuntu {{ ansible_distribution_release }} main"
+    keyurl: http://packages.osrfoundation.org/gazebo.key
+
+  # - packages: ['vlc']
+  #   repo: ppa:videolan/stable-daily
+
+  - packages: ['tlp', 'smartmontools', 'ethtool']
+    repo: ppa:linrunner/tlp
+
+  - packages: ['atom']
+    repo: ppa:webupd8team/atom
+
+  - packages: ['unetbootin']
+    repo: ppa:gezakovacs/ppa
+
+  - packages: ['calibre']
+    repo: "deb http://archive.getdeb.net/ubuntu {{ ansible_distribution_release }}-getdeb apps"
+    keyurl: http://archive.getdeb.net/getdeb-archive.key
+
+  # - packages: ['dropbox']
+  #   repo: "deb http://linux.dropbox.com/ubuntu {{ ansible_distribution_release }} main"
+  #   keyid: 5044912E
+
+  - packages: ['numix-gtk-theme', 'numix-icon-theme-circle', 'numix-wallpaper-*']
+    repo: ppa:numix/ppa
+
+  - packages: ['ubuntu-make']
+    repo: ppa:ubuntu-desktop/ubuntu-make
+
+  - packages: ['wireshark']
+    repo: ppa:wireshark-dev/stable
+
+  - packages: ['deluge']
+    repo: ppa:deluge-team/ppa
+
+  - packages: ['spotify-client']
+    repo: "deb http://repository.spotify.com stable non-free"
+    keyid: BBEBDCB318AD50EC6865090613B00F1FD2C19886
+
+  - packages: ['remmina']
+    repo: ppa:remmina-ppa-team/remmina-next
+
+  - packages: ['virtualbox-5.1']
+    repo: "deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+    keyurl: http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc
+
+  - packages: ['google-chrome-stable']
+    repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+    keyurl: https://dl-ssl.google.com/linux/linux_signing_key.pub
+
+  - packages: ['resilio-sync']
+    repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
+    keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
+
+  - packages: ['guake','terminator','redshift-gtk']
+
+  - packages: ['git-lfs']
+    repo: "deb https://packagecloud.io/github/git-lfs/ubuntu/ {{ ansible_distribution_release }} main"
+    keyurl: https://packagecloud.io/github/git-lfs/gpgkey
+    filename: git-lfs
+
+  - packages: ['docker-ce']
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    keyurl: https://download.docker.com/linux/ubuntu/gpg
+    filename: docker-project
+
+  # - packages: ['libreoffice']
+  #   repo: ppa:libreoffice/ppa
+
+  # - packages: ['openscad']
+  #   repo: ppa:chrysn/openscad
