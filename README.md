@@ -1,5 +1,16 @@
 # README
 
+Boostrap:
+
+```
+sudo apt update
+sudo apt install git python-pip
+sudo -H pip install pip --upgrade
+sudo -H pip install ansible
+git clone https://github.com/paulbovbel/ansible-home.git
+cd ansible-home
+```
+
 To deploy on the current machine:
 
 `ansible-playbook -i inventory/personal playbooks/developer.yaml`
