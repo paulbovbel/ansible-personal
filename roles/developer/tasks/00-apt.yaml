@@ -19,6 +19,7 @@
 - name: add package repos
   apt_repository:
     repo: "{{ item.repo }}"
+    filename: "{{ item.filename }}"
     state: present
     update_cache: false
   become: true
