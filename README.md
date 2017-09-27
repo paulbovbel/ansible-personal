@@ -4,9 +4,9 @@ Boostrap:
 
 ```
 sudo apt update
-sudo apt install git python-pip
+sudo apt install -y git python-pip
 sudo -H pip install pip --upgrade
-sudo -H pip install ansible
+sudo -H pip install ansible pyOpenSSL
 git clone https://github.com/paulbovbel/ansible-home.git
 cd ansible-home
 ```
