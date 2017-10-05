@@ -1,0 +1,42 @@
+---
+- name: install jupyter dependencies
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  with_items:
+    - ipython
+    - ipython-notebook
+
+- name: Install/upgrade pip
+  pip:
+    name: pip
+    state: latest
+  become: true
+
+- name: Install/upgrade jupyter
+  pip:
+    name: jupyter
+    state: latest
+  become: true
+
+- name: Ensure ~/jupyter directory exists.
+  file:
+    dest: ~/jupyter
+    state: directory
+
+- name: install jupyter service
+  template:
+    src: jupyter.service.j2
+    dest: ~/.config/systemd/user/jupyter.service
+  become: true
+
+- name: enable jupyter service
+  systemd:
+    name: jupyter.service
+    state: started
+    enabled: true
+    daemon_reload: true
+    user: true

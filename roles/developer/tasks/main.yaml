@@ -1,7 +1,6 @@
 ---
 - include: 00-apt.yaml
 - include: 01-git.yaml
-  tags: nogui
 - include: 02-atom.yaml
 - include: 03-secrets.yaml
-  tags: nogui
+- include: 04-jupyter.yaml
