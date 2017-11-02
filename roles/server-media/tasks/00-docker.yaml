@@ -111,3 +111,9 @@
     enabled: true
     daemon_reload: true
   become: true
+
+- sysctl:
+    name: fs.inotify.max_user_watches
+    value: 32768
+    state: present
+  become: true
