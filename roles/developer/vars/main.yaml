@@ -31,6 +31,8 @@ apt_install:
 
   - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip','vlc','unity-tweak-tool','solaar-gnome3']
 
+  - packages: ['pcscd','scdaemon','gnupg2','pcsc-tools']
+
   - packages: ['ros-{{ ros_distro }}-ros-base', 'python-catkin-tools', 'python-wstool', 'python-bloom']
     repo: "deb http://packages.ros.org/ros/ubuntu {{ ansible_distribution_release }} main"
     keyurl: https://raw.githubusercontent.com/ros/rosdistro/master/ros.key
