@@ -1,5 +1,6 @@
 ---
-- include: 00-docker.yaml
-- include: 01-certbot.yaml
-- include: 02-nginx.yaml
-- include: 03-ddns.yaml
+- import_tasks: 00-docker.yaml
+- import_tasks: 01-certbot.yaml
+- import_tasks: 02-nginx.yaml
+- import_tasks: 03-ddns.yaml
+- import_tasks: 04-samba.yaml

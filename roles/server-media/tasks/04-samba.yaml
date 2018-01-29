@@ -1,0 +1,41 @@
+---
+- name: install samba
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  with_items:
+    - samba
+
+- name: configure samba
+  template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+  become: true
+  notify: restart samba
+#   blockinfile:
+#     marker: "# {mark} include shared folder config"
+#     dest: /etc/samba/smb.conf
+#     block: |
+#       [{{ item | basename }}]
+#       path = {{ item }}
+#       available = yes
+#       valid users = {{ ansible_user }}
+#       read only = no
+#       browseable = yes
+#       public = yes
+#       writable = yes
+#   become: true
+#   with_items:
+#     - {{ media }}
+#     - {{ backup }}
+
+- name: creating samba user passwords
+  shell: |
+    (echo {{ samba_password }}; echo {{ samba_password }}) | smbpasswd -s -a {{ ansible_user }}
+  args:
+    executable: /bin/bash
+  become: true
+  notify: restart samba

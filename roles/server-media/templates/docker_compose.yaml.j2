@@ -8,7 +8,7 @@ services:
       - {{ appdata }}/plex:/config
       - {{ media }}:/mnt/storage/share
     network_mode: host
-    restart: always
+    restart: unless-stopped
     environment:
       - VERSION=latest
       - PUID={{ uid }}
@@ -25,7 +25,7 @@ services:
       - 8181:8181
     links:
       - plex
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
@@ -45,7 +45,7 @@ services:
       - jackett
       - deluge
       - plex
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
@@ -65,7 +65,7 @@ services:
       - jackett
       - deluge
       - plex
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
@@ -76,7 +76,7 @@ services:
       - {{ appdata }}/jackett:/config
     ports:
       - 9117:9117
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
@@ -92,7 +92,7 @@ services:
       - 8443:8443
       - 8843:8843
       - 8880:8880
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
@@ -107,7 +107,7 @@ services:
     volumes:
       - {{ appdata }}/deluge:/config
       - {{ downloads }}:/downloads
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID={{ uid }}
       - PGID={{ gid }}
@@ -121,24 +121,24 @@ services:
     volumes:
       - {{ appdata }}/resilio:/config
       - {{ nfs_root }}:/sync
-    restart: always
+    restart: unless-stopped
     environment:
       - PUID=1000
       - PGID=1000
-  # xen-orchestra:
-  #   image: yobasystems/alpine-xen-orchestra:latest
-  #   container_name: xoa
-  #   ports:
-  #     - 27030:8080
-  #   depends_on:
-  #     - redis
-  #   environment:
-  #     - NODE_ENV=production
-  #   volumes:
-  #     - {{ appdata }}/xoa/server:/app/data
-  # redis:
-  #   container_name: xoa-redis
-  #   image: redis:alpine
-  #   command: redis-server --appendonly yes
-  #   volumes:
-  #     - {{ appdata }}/xoa/redis:/data
+  xen-orchestra:
+    image: yobasystems/alpine-xen-orchestra:latest
+    container_name: xoa
+    ports:
+      - 27030:8080
+    depends_on:
+      - redis
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - {{ appdata }}/xoa/server:/app/data
+  redis:
+    container_name: xoa-redis
+    image: redis:alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - {{ appdata }}/xoa/redis:/data

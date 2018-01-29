@@ -1,7 +1,7 @@
 ---
-- include: 00-apt.yaml
-- include: 01-git.yaml
-- include: 02-atom.yaml
-- include: 03-secrets.yaml
-- include: 04-jupyter.yaml
+- import_tasks: 00-apt.yaml
+- import_tasks: 01-git.yaml
+- import_tasks: 02-atom.yaml
+- import_tasks: 03-secrets.yaml
+- import_tasks: 04-jupyter.yaml
   tags: jupyter

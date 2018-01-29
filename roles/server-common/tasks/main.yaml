@@ -1,5 +1,5 @@
 ---
-- include: 00-ssh.yaml
-- include: 01-cockpit.yaml
-- include: 02-unattended-upgrades.yaml
-- include: 03-systemd-mail.yaml
+- import_tasks: 00-ssh.yaml
+- import_tasks: 01-cockpit.yaml
+- import_tasks: 02-unattended-upgrades.yaml
+- import_tasks: 03-systemd-mail.yaml
