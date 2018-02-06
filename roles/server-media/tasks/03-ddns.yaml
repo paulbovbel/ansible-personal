@@ -12,15 +12,15 @@
 
 - name: install aws ddns script
   get_url:
-    # url: https://github.com/mthssdrbrg/ddns-route53/raw/master/ddns-route53
+    # original: https://github.com/mthssdrbrg/ddns-route53/raw/master/ddns-route53
     url: https://raw.githubusercontent.com/paulbovbel/ddns-route53/patch-1/ddns-route53
     dest: /usr/local/bin/ddns-route53
     mode: 0755
   become: true
 
 - name: configure aws credentials
-  copy:
-    src: vault/aws_credentials
+  template:
+    src: aws_credentials.j2
     dest: /root/.aws/credentials
     mode: 0600
   become: true
@@ -44,4 +44,4 @@
     enabled: true
     daemon_reload: true
   become: true
-  with_items: "{{ aws_ddns_hosted_records }}"
+  with_items: "{{ public_hosts }}"

@@ -14,26 +14,27 @@
     cache_valid_time: 3600
   become: true
 
-- name: check if cert exists
-  stat:
-    path: /etc/letsencrypt/live/home.bovbel.com/fullchain.pem
-  become: true
-  register: cert
+- name: initialize ssl certificates
+  block:
+    - name: stop nginx
+      service:
+        name: nginx
+        state: stopped
+      become: true
+      register: nginx_stopped
 
-- name: make sure nginx is stopped
-  service:
-    name: nginx
-    state: stopped
-    enabled: true
-  become: true
-  when: not cert.stat.exists
-  ignore_errors: true
-
-- name: get ssl certificate for home.bovbel.com
-  command: |
-    /usr/bin/certbot certonly --standalone -m {{ ansible_user_email }} -d {{ aws_ddns_hosted_records|join(',') }} --agree-tos
-  become: true
-  when: not cert.stat.exists
+    - name: get certificates
+      command: "/usr/bin/certbot certonly --standalone -m {{ ansible_user_email }} -d {{ public_hosts|join(',') }} --agree-tos"
+      become: true
+      args:
+        creates: "{{ ssl_certificate }}"
+  always:
+    - name: start nginx
+      service:
+        name: nginx
+        state: started
+      become: true
+      when: nginx_stopped.changed
 
 - name: install certbot auto renewal service
   template:

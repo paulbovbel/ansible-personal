@@ -1,16 +1,4 @@
 ---
-
-# TODO(pbovbel) setup up iscsi
-
-- name: Mount appdata
-  mount:
-    name: "{{ appdata }}"
-    src: /dev/sda1
-    fstype: ext4
-    opts: defaults,auto,_netdev,noatime,nodiratime
-    state: mounted
-  become: true
-
 - name: install docker repo key
   apt_key:
     keyserver: hkp://p80.pool.sks-keyservers.net:80
@@ -27,10 +15,30 @@
 
 - name: install docker packages
   apt:
-    name: docker-engine
+    name: "{{ item }}"
     state: latest
     update_cache: true
     cache_valid_time: 3600
+  become: true
+  with_items:
+    - docker-engine
+    - open-iscsi
+    - python-dnspython
+
+- name: discover iscsi
+  open_iscsi:
+    portal: "{{ lookup('dig', nas_host) }}"
+    discover: true
+    login: true
+  become: true
+
+- name: mount appdata
+  mount:
+    name: "{{ appdata }}"
+    src: /dev/sda1
+    fstype: ext4
+    opts: defaults,auto,_netdev,noatime,nodiratime
+    state: mounted
   become: true
 
 - name: determine uid
@@ -107,7 +115,7 @@
 - name: make sure docker-compose timer is running
   systemd:
     name: docker-compose.timer
-    state: started
+    state: stopped
     enabled: true
     daemon_reload: true
   become: true

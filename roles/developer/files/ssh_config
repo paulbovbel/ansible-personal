@@ -1,0 +1,15 @@
+Host *.bovbel.com
+  ForwardAgent yes
+  IdentityFile ~/.ssh/id_rsa
+
+Host media.bovbel.com
+  ProxyJump router.bovbel.com
+
+Host nas.bovbel.com octopi.bovbel.com metal.bovbel.com
+  User root
+  ProxyJump router.bovbel.com
+
+Host router.bovbel.com
+  User root
+  ForwardAgent yes
+  Port 1122

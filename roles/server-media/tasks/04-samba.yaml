@@ -15,22 +15,6 @@
     dest: /etc/samba/smb.conf
   become: true
   notify: restart samba
-#   blockinfile:
-#     marker: "# {mark} include shared folder config"
-#     dest: /etc/samba/smb.conf
-#     block: |
-#       [{{ item | basename }}]
-#       path = {{ item }}
-#       available = yes
-#       valid users = {{ ansible_user }}
-#       read only = no
-#       browseable = yes
-#       public = yes
-#       writable = yes
-#   become: true
-#   with_items:
-#     - {{ media }}
-#     - {{ backup }}
 
 - name: creating samba user passwords
   shell: |

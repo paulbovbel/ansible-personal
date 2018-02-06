@@ -1,5 +1,5 @@
-myhostname = home.bovbel.com
-relayhost = [smtp.gmail.com]:587
+myhostname = {{ inventory_hostname }}
+relayhost = [{{ smtp_server }}]:{{ smtp_port }}
 smtp_sasl_auth_enable = yes
 smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
 smtp_sasl_security_options = noanonymous

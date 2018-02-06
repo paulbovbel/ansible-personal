@@ -6,7 +6,7 @@ Boostrap:
 sudo apt update
 sudo apt install -y git python-pip
 sudo -H pip install pip --upgrade
-sudo -H pip install ansible
+sudo -H pip install ansible dnspython
 git clone https://github.com/paulbovbel/ansible-home.git
 cd ansible-home
 ```
@@ -18,10 +18,6 @@ To deploy on the current machine:
 To deploy homelab:
 
 `ansible-playbook -Kvvi inventory/homelab playbooks/homelab.yaml`
-
-To encrypt all vault files:
-
-`ansible-vault encrypt $(find . -path *vault/*)`
 
 
 TODO outstanding components:

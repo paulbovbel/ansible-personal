@@ -3,24 +3,29 @@
   service:
     name: cockpit
     state: restarted
+    enabled: true
   become: true
 
 - name: restart sshd
   service:
     name: sshd
     state: restarted
+    enabled: true
   become: true
 
 - name: restart postfix
   service:
     name: postfix
     state: restarted
+    enabled: true
   become: true
 
-- name: build postfix database
-  command: /usr/sbin/postmap /etc/postfix/sasl_passwd
+- name: generate postfix db
+  command: |
+    /usr/sbin/postmap hash:/etc/postfix/sasl_passwd
+  args:
+    creates: /etc/postfix/sasl_passwd.db
   become: true
-  notify: restart postfix
 
 - name: update apt cache
   apt:

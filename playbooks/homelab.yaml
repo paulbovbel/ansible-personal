@@ -1,8 +1,4 @@
 ---
-- hosts: x3r-media
+- hosts: media-server
   roles:
     - server-media
-
-- hosts: x3r-esxi
-  roles:
-    - esxi-license

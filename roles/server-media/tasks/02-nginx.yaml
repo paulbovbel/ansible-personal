@@ -17,6 +17,7 @@
     - nginx
     - apache2-utils
     - fail2ban
+    - python-passlib
 
 - name: setup common configurations
   copy:
@@ -28,28 +29,26 @@
     - proxy-control.conf
   notify: restart nginx
 
-- name: setup .htpasswd
-  copy:
-    src: "vault/{{ item }}"
-    dest: "/etc/nginx/.{{ item }}"
+- htpasswd:
+    path: /etc/nginx/.htpasswd
+    name: "{{ ansible_user }}"
+    password: "{{ web_password }}"
+    owner: root
     mode: 0644
   become: true
   notify: restart nginx
-  with_items:
-    - htpasswd_admin
-    - htpasswd_media
 
-- name: setup home.bovbel.com nginx
-  copy:
-    src: nginx.conf
-    dest: /etc/nginx/sites-available/home.bovbel.com
+- name: setup nginx site
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/sites-available/{{ inventory_hostname }}
   become: true
   notify: restart nginx
 
-- name: setup home.bovbel.com jail
+- name: setup site jail
   copy:
     src: jail.conf
-    dest: /etc/fail2ban/jail.d/x3r-media.conf
+    dest: "/etc/fail2ban/jail.d/{{ inventory_hostname }}.conf"
   become: true
   notify: restart fail2ban
 
@@ -60,17 +59,10 @@
   become: true
   notify: restart nginx
 
-- name: enable home.bovbel.com
+- name: enable site
   file:
-    src: /etc/nginx/sites-available/home.bovbel.com
-    dest: /etc/nginx/sites-enabled/home.bovbel.com
+    src: "/etc/nginx/sites-available/{{ inventory_hostname }}"
+    dest: "/etc/nginx/sites-enabled/{{ inventory_hostname }}"
     state: link
   become: true
   notify: restart nginx
-
-- name: make sure nginx is running
-  service:
-    name: nginx
-    state: started
-    enabled: true
-  become: true

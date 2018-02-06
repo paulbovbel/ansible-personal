@@ -8,33 +8,20 @@
   become: true
 
 - name: install postfix config
-  copy:
-    src: main.cf
+  template:
+    src: main.cf.j2
     dest: /etc/postfix/main.cf
   become: true
   notify: restart postfix
 
 - name: install postfix credentials
   copy:
-    src: vault/sasl_passwd
+    content: |
+      [{{ smtp_server }}]:{{ smtp_port }}    {{ ansible_email}}:{{ gmail_access_key }}
     dest: /etc/postfix/sasl_passwd
     mode: 0644
   become: true
-  notify: build postfix database
-
-- name: generate postfix db
-  command: |
-    /usr/sbin/postmap hash:/etc/postfix/sasl_passwd
-  args:
-    creates: /etc/postfix/sasl_passwd.db
-  become: true
-
-- name: start postfix
-  service:
-    name: postfix
-    state: started
-    enabled: true
-  become: true
+  notify: generate postfix db
 
 - name: setup systemd-email
   copy:
