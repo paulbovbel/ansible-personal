@@ -17,6 +17,8 @@
     - cockpit-bridge
     - cockpit-dashboard
     - cockpit-docker
+    - cockpit-packagekit
+    - cockpit-pcp
     - cockpit-storaged
     - cockpit-system
     - cockpit-ws
