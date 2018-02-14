@@ -5,5 +5,5 @@ OnFailure=status-email-{{ ansible_user }}@%n.service
 [Service]
 Type=oneshot
 ExecStartPre=/bin/systemctl stop nginx.service
-ExecStart=/usr/bin/certbot renew -n --agree-tos
+ExecStart=/usr/bin/certbot renew -n --agree-tos || true
 ExecStartPost=/bin/systemctl start nginx.service
