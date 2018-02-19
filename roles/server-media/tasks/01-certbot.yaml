@@ -24,7 +24,7 @@
       register: nginx_stopped
 
     - name: get certificates
-      command: "/usr/bin/certbot certonly --standalone -m {{ ansible_user_email }} -d {{ public_hosts|join(',') }} --agree-tos"
+      command: "/usr/bin/certbot certonly --standalone -m {{ ansible_email }} -d {{ public_hosts|join(',') }} --agree-tos"
       become: true
       args:
         creates: "{{ ssl_certificate }}"

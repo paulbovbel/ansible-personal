@@ -27,14 +27,14 @@
 
 - name: discover iscsi
   open_iscsi:
-    portal: "{{ lookup('dig', nas_host) }}"
+    portal: "{{ lookup('dig', nfs_host) }}"
     discover: true
     login: true
   become: true
 
 - name: mount appdata
   mount:
-    name: "{{ appdata }}"
+    name: "{{ appdata_folder }}"
     src: /dev/sda1
     fstype: ext4
     opts: defaults,auto,_netdev,noatime,nodiratime

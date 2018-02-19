@@ -82,7 +82,7 @@ server {
 
   # Web share
   location /media {
-    root {{ nfs_root }};
+    root {{ data_folder }};
     autoindex on;
 
     include private-control.conf;
