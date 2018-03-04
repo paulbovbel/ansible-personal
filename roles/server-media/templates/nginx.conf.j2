@@ -11,7 +11,7 @@ server {
   server_name _;
   listen 80 default_server;
   listen [::]:80 default_server;
-  return 301 https://$host$request_uri;
+  return 307 https://$host$request_uri;
 }
 
 # host redirects
