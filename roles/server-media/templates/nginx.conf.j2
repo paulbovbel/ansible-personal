@@ -80,6 +80,20 @@ server {
     include private-control.conf;
   }
 
+  ## tautulli
+  location /tautulli {
+    proxy_pass http://{{ inventory_hostname }}:8181/tautulli;
+    include proxy-control.conf;
+    include private-control.conf;
+  }
+
+  ## jackett
+  location /jackett {
+    proxy_pass http://{{ inventory_hostname }}:9117/jackett;
+    include proxy-control.conf;
+    include private-control.conf;
+  }
+
   # Web share
   location /media {
     root {{ data_folder }};

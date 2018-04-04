@@ -1,9 +1,0 @@
-[Unit]
-Description=Pull and rebuild docker containers every week
-
-[Timer]
-OnCalendar=weekly
-Persistent=true
-
-[Install]
-WantedBy=timers.target

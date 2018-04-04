@@ -1,0 +1,145 @@
+---
+docker_compose:
+  version: '3'
+  services:
+    plex:
+      image: plexinc/pms-docker:plexpass
+      container_name: plex
+      volumes:
+        - "{{ appdata_folder }}/plex:/config"
+        - "{{ media_folder }}:/mnt/storage/share"
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+      network_mode: host
+      restart: unless-stopped
+    ombi:
+      image: linuxserver/ombi
+      container_name: ombi
+      volumes:
+        - "{{ appdata_folder }}/ombi:/config"
+        - "{{ media_folder }}:/mnt/storage/share"
+      ports:
+        - 3759:3759
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    tautulli:
+      image: linuxserver/tautulli
+      container_name: tautulli
+      depends_on:
+        - plex
+      volumes:
+        - "{{ appdata_folder }}/tautulli:/config"
+        - "{{ appdata_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
+      ports:
+        - 8181:8181
+      links:
+        - plex
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    sonarr:
+      image: linuxserver/sonarr
+      container_name: sonarr
+      depends_on:
+        - jackett
+      volumes:
+        - "{{ appdata_folder }}/sonarr:/config"
+        - "{{ media_folder }}/tv:/tv"
+        - "{{ download_folder }}:/downloads"
+        - "/etc/localtime:/etc/localtime:ro"
+      ports:
+        - 8989:8989
+      links:
+        - jackett
+        - deluge
+        - plex
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    radarr:
+      image: linuxserver/radarr
+      container_name: radarr
+      depends_on:
+        - jackett
+      volumes:
+        - "{{ appdata_folder }}/radarr:/config"
+        - "{{ media_folder }}/movies:/movies"
+        - "{{ download_folder }}:/downloads"
+        - /etc/localtime:/etc/localtime:ro
+      ports:
+        - 7878:7878
+      links:
+        - jackett
+        - deluge
+        - plex
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    jackett:
+      image: linuxserver/jackett
+      container_name: jackett
+      volumes:
+        - "{{ appdata_folder }}/jackett:/config"
+      ports:
+        - 9117:9117
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    unifi:
+      image: linuxserver/unifi
+      container_name: unifi
+      network_mode: host
+      volumes:
+        - "{{ appdata_folder }}/unifi:/config"
+      ports:
+        - 8080:8080
+        - 8081:8081
+        - 8443:8443
+        - 8843:8843
+        - 8880:8880
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    deluge:
+      image: linuxserver/deluge
+      container_name: deluge
+      network_mode: host
+      ports:
+        - 8112:8112
+        - 58846:58846
+        - 58946:58946
+      volumes:
+        - "{{ appdata_folder }}/deluge:/config"
+        - "{{ download_folder }}:/downloads"
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    resilio:
+      image: linuxserver/resilio-sync
+      container_name: resilio
+      network_mode: host
+      ports:
+        - 8888:8888
+        - 55555:55555
+      volumes:
+        - "{{ appdata_folder }}/resilio:/config"
+        - "{{ data_folder }}:/sync"
+      restart: unless-stopped
+      environment:
+        - PUID=1000
+        - PGID=1000
+    watchtower:
+      image: v2tec/watchtower
+      container_name: watchtower
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      restart: unless-stopped

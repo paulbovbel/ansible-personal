@@ -1,9 +1,0 @@
-[Unit]
-Description=Pull and rebuild docker containers
-OnFailure=status-email-{{ ansible_user }}@%n.service
-
-[Service]
-Type=oneshot
-WorkingDirectory=/etc/docker
-ExecStart=/usr/local/bin/docker-compose pull
-ExecStart=/usr/local/bin/docker-compose up -d --no-deps --remove-orphans --build
