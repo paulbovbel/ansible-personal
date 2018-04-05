@@ -20,7 +20,7 @@ docker_compose:
         - "{{ appdata_folder }}/ombi:/config"
         - "{{ media_folder }}:/mnt/storage/share"
       ports:
-        - 3759:3759
+        - 3579:3579
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
