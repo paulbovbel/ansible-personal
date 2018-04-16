@@ -72,6 +72,12 @@
     - docker-compose
   become: true
 
+- name: create caddyfile file
+  template:
+    src: Caddyfile
+    dest: /etc/docker/Caddyfile
+  become: true
+
 - name: determine uid
   command: "id -u {{ ansible_user }}"
   register: uid
@@ -96,7 +102,8 @@
     cd /etc/docker &&
     docker-compose pull && docker-compose up -d --no-deps --remove-orphans --build
 
-- sysctl:
+- name: increase number of watches
+  sysctl:
     name: fs.inotify.max_user_watches
     value: 32768
     state: present

@@ -19,8 +19,6 @@ To deploy homelab:
 
 `ansible-playbook -Kvvi inventory/homelab playbooks/homelab.yaml`
 
-
-TODO outstanding components:
-  - xenserver + VMs setup
-  - nas4free VM
-  - pfsense VM
+TODO:
+  - dockerize remaining media services (cockpit, SMTP, AWS DDNS, samba)
+  - make a fancy login template for caddy (https://github.com/tarent/loginsrv/blob/master/README.md#templating)

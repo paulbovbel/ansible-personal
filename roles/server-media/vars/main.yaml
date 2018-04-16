@@ -2,6 +2,19 @@
 docker_compose:
   version: '3'
   services:
+    caddy:
+      build:
+        args:
+          plugins: login,jwt
+        context: github.com/abiosoft/caddy-docker.git
+      container_name: caddy
+      network_mode: host
+      restart: unless-stopped
+      volumes:
+        - /etc/docker/Caddyfile:/etc/Caddyfile
+        - "{{ appdata_folder }}/caddy:/root/.caddy"
+        - "{{ media_folder }}:/srv/media"
+        - "{{ appdata_folder }}/caddy/log:/log"
     plex:
       image: plexinc/pms-docker:plexpass
       container_name: plex

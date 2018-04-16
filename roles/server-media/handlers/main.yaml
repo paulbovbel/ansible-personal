@@ -1,22 +1,4 @@
 ---
-- name: restart nginx
-  service:
-    name: nginx
-    state: restarted
-  become: true
-
-- name: restart docker
-  service:
-    name: docker
-    state: restarted
-  become: true
-
-- name: restart fail2ban
-  service:
-    name: fail2ban
-    state: restarted
-  become: true
-
 - name: restart samba
   service:
     name: smbd

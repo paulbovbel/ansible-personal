@@ -1,0 +1,100 @@
+(common)
+  {
+  log /log/requests.log {
+    rotate_size 50
+    rotate_age  90
+    rotate_keep 20
+    rotate_compress
+  }
+
+  errors /log/error.log {
+  	rotate_size 50
+  	rotate_age  90
+  	rotate_keep 20
+  	rotate_compress
+  }
+
+  jwt {
+    path /
+    allow sub pbovbel
+    redirect /login?backTo={rewrite_uri}
+  }
+  login {
+    simple pbovbel={{ web_password }}
+    redirect_check_referer false
+  }
+}
+
+media.bovbel.com {
+  import common
+
+  proxy /radarr media:7878 {
+    transparent
+  }
+
+  proxy /deluge media:8112 {
+    transparent
+  }
+
+  proxy /sonarr media:8989 {
+    transparent
+  }
+
+  proxy /tautulli media:8181 {
+    transparent
+  }
+
+  proxy /jackett media:9117 {
+    transparent
+  }
+
+  proxy /ombi media:3579 {
+    transparent
+  }
+
+  # cockpit
+  proxy / media:9090 {
+    transparent
+    websocket
+    except /media  # proxy takes priority over browse
+  }
+
+  browse /media
+
+}
+
+router.bovbel.com {
+  import common
+
+  proxy / router:80 {
+    transparent
+    websocket
+  }
+}
+
+nas.bovbel.com {
+  import common
+
+  proxy / nas:80 {
+    transparent
+    websocket
+  }
+}
+
+metal.bovbel.com {
+  import common
+
+  proxy / metal:80 {
+    transparent
+    websocket
+  }
+}
+
+octopi.bovbel.com {
+  import common
+
+  proxy / octopi:80 {
+    transparent
+    websocket
+  }
+}

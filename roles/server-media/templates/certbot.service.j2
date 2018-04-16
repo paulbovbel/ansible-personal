@@ -1,9 +1,0 @@
-[Unit]
-Description=Let's Encrypt renewal
-OnFailure=status-email-{{ ansible_user }}@%n.service
-
-[Service]
-Type=oneshot
-ExecStartPre=/bin/systemctl stop nginx.service
-ExecStart=/usr/bin/certbot renew -n --agree-tos
-ExecStartPost=/bin/systemctl start nginx.service

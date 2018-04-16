@@ -1,4 +1,4 @@
 [WebService]
-Origins = http://{{ inventory_hostname }} http://{{ ansible_host }}:9090 https://{{ ansible_host }}:9090
+Origins = http://{{ inventory_hostname }} https://{{ inventory_hostname }} http://{{ ansible_host }}:9090 https://{{ ansible_host }}:9090
 AllowUnencrypted = true
 ProtocolHeader = X-Forwarded-Proto
