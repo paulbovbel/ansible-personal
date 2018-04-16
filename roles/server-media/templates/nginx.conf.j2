@@ -94,6 +94,13 @@ server {
     include private-control.conf;
   }
 
+  ## ombi
+  location /ombi {
+    proxy_pass http://{{ inventory_hostname }}:3579/ombi;
+    include proxy-control.conf;
+    include private-control.conf;
+  }
+
   # Web share
   location /media {
     root {{ data_folder }};
