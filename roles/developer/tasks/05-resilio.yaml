@@ -1,0 +1,21 @@
+---
+- name: install resilio service
+  template:
+    src: /usr/lib/systemd/user/resilio-sync.service
+    dest: ~/.config/systemd/user/resilio-sync.service
+    remote_src: true
+
+- name: fix dependency in resilio service
+  lineinfile:
+    dest: ~/.config/systemd/user/resilio-sync.service
+    regexp: "^WantedBy=.*"
+    line: "WantedBy=default.target"
+    insertafter: "[Install]"
+
+- name: enable resilio service
+  systemd:
+    name: resilio-sync.service
+    state: started
+    enabled: true
+    daemon_reload: true
+    user: true

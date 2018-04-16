@@ -100,7 +100,7 @@ docker_compose:
         - "{{ appdata_folder }}/unifi:/config"
       ports:
         - 8080:8080
-        - 8081:8081
+        - 8012:8081
         - 8443:8443
         - 8843:8843
         - 8880:8880

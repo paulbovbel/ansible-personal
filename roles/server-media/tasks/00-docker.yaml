@@ -41,19 +41,6 @@
     state: mounted
   become: true
 
-- name: determine uid
-  command: "id -u {{ ansible_user }}"
-  register: uid
-
-- name: determine gid
-  command: "id -g {{ ansible_user }}"
-  register: gid
-
-- name: bind uid and gid to variables
-  set_fact:
-    uid: "{{ uid.stdout }}"
-    gid: "{{ gid.stdout }}"
-
 - name: apt install pip
   apt:
     pkg: python-pip
@@ -84,6 +71,19 @@
     - docker
     - docker-compose
   become: true
+
+- name: determine uid
+  command: "id -u {{ ansible_user }}"
+  register: uid
+
+- name: determine gid
+  command: "id -g {{ ansible_user }}"
+  register: gid
+
+- name: bind uid and gid to variables
+  set_fact:
+    uid: "{{ uid.stdout }}"
+    gid: "{{ gid.stdout }}"
 
 - name: create docker-compose file
   copy:

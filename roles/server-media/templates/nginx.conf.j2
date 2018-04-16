@@ -54,6 +54,8 @@ server {
     # Pass ETag header from cockpit to clients.
     # See: https://github.com/cockpit-project/cockpit/issues/5239
     gzip off;
+
+    proxy_set_header        Connection              "upgrade";
   }
 
   ## deluge
