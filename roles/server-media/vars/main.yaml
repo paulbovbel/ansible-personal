@@ -11,9 +11,9 @@ docker_compose:
       network_mode: host
       restart: unless-stopped
       volumes:
-        - /etc/docker/Caddyfile:/etc/Caddyfile
+        - /etc/docker/Caddyfile:/etc/Caddyfile:ro
         - "{{ appdata_folder }}/caddy:/root/.caddy"
-        - "{{ media_folder }}:/srv/media"
+        - "{{ media_folder }}:/srv/media:ro"
         - "{{ appdata_folder }}/caddy/log:/log"
     plex:
       image: plexinc/pms-docker:plexpass

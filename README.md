@@ -21,4 +21,5 @@ To deploy homelab:
 
 TODO:
   - dockerize remaining media services (cockpit, SMTP, AWS DDNS, samba)
+  - use an internal docker network to avoid exposing ports from internal services (caddy proxy bridges to external)
   - make a fancy login template for caddy (https://github.com/tarent/loginsrv/blob/master/README.md#templating)
