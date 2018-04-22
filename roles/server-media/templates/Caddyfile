@@ -17,9 +17,10 @@
   jwt {
     path /
     allow sub pbovbel
-    redirect /login?backTo={rewrite_uri}
+    redirect /auth?backTo={rewrite_uri}
   }
   login {
+    login_path /auth
     simple pbovbel={{ web_password }}
     redirect_check_referer false
   }
