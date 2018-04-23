@@ -3,12 +3,14 @@ docker_compose:
   version: '3'
   services:
     smtp:
-      image: docker pull namshi/smtp
+      container_name: smtp
+      image: namshi/smtp
       ports:
-       - 25:25
+        - "25:25"
       environment:
-        GMAIL_USER: "{{ ansible_email }}"
-        GMAIL_PASSWORD: "{{ gmail_access_key }}"
+        - "RELAY_NETWORKS=:10.0.0.0/8:172.16.0.0/12:192.168.0.0/16"
+        - "GMAIL_USER={{ ansible_email }}"
+        - "GMAIL_PASSWORD={{ gmail_access_key }}"
     caddy:
       build:
         args:

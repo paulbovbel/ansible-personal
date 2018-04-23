@@ -1,7 +1,0 @@
-myhostname = {{ inventory_hostname }}
-relayhost = [{{ smtp_server }}]:{{ smtp_port }}
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CApath = /etc/ssl/certs
-smtp_use_tls = yes

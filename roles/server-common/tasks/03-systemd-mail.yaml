@@ -1,27 +1,11 @@
 ---
 - name: install mailutils
   apt:
-    pkg: mailutils
+    pkg: sendmail-bin
     state: latest
     update_cache: true
     cache_valid_time: 3600
   become: true
-
-- name: install postfix config
-  template:
-    src: main.cf.j2
-    dest: /etc/postfix/main.cf
-  become: true
-  notify: restart postfix
-
-- name: install postfix credentials
-  copy:
-    content: |
-      [{{ smtp_server }}]:{{ smtp_port }}    {{ ansible_email}}:{{ gmail_access_key }}
-    dest: /etc/postfix/sasl_passwd
-    mode: 0644
-  become: true
-  notify: generate postfix db
 
 - name: setup systemd-email
   copy:
