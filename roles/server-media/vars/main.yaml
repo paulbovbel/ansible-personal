@@ -61,6 +61,7 @@ docker_compose:
         - jackett
       volumes:
         - "{{ appdata_folder }}/sonarr:/config"
+        - "{{ backup_folder }}/apps/sonarr:/config/Backups"
         - "{{ media_folder }}/tv:/tv"
         - "{{ download_folder }}:/downloads"
         - "/etc/localtime:/etc/localtime:ro"
@@ -81,6 +82,7 @@ docker_compose:
         - jackett
       volumes:
         - "{{ appdata_folder }}/radarr:/config"
+        - "{{ backup_folder }}/apps/radarr:/config/Backups"
         - "{{ media_folder }}/movies:/movies"
         - "{{ download_folder }}:/downloads"
         - /etc/localtime:/etc/localtime:ro
