@@ -17,7 +17,7 @@
   jwt {
     path /
     allow sub pbovbel
-    redirect /auth?backTo={rewrite_uri}
+    redirect /auth?backTo=https://{hostonly}{rewrite_uri}
   }
   login {
     login_path /auth
@@ -35,6 +35,8 @@ media.bovbel.com {
 
   proxy /deluge media:8112 {
     transparent
+    without /deluge
+    header_upstream X-Deluge-Base "/deluge"
   }
 
   proxy /sonarr media:8989 {
