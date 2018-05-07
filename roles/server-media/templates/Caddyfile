@@ -1,5 +1,5 @@
-(common)
-  {
+(logging)
+{
   log /log/requests.log {
     rotate_size 50
     rotate_age  90
@@ -13,9 +13,13 @@
   	rotate_keep 20
   	rotate_compress
   }
+}
 
+(fancy_auth)
+{
   jwt {
     path /
+    except /deluge  # TODO(pbovbel) remove deluge hack, use jinja templating
     allow sub pbovbel
     redirect /auth?backTo=https://{hostonly}{rewrite_uri}
   }
@@ -27,11 +31,14 @@
 }
 
 media.bovbel.com {
-  import common
+  import logging
+  import fancy_auth
 
   proxy /radarr media:7878 {
     transparent
   }
+
+  basicauth /deluge pbovbel {{ web_password }}
 
   proxy /deluge media:8112 {
     transparent
@@ -67,7 +74,8 @@ media.bovbel.com {
 }
 
 router.bovbel.com {
-  import common
+  import logging
+  import fancy_auth
 
   proxy / router:80 {
     transparent
@@ -76,7 +84,8 @@ router.bovbel.com {
 }
 
 nas.bovbel.com {
-  import common
+  import logging
+  import fancy_auth
 
   proxy / nas:80 {
     transparent
@@ -85,7 +94,8 @@ nas.bovbel.com {
 }
 
 metal.bovbel.com {
-  import common
+  import logging
+  import fancy_auth
 
   proxy / metal:80 {
     transparent
@@ -94,7 +104,9 @@ metal.bovbel.com {
 }
 
 octopi.bovbel.com {
-  import common
+  import logging
+
+  basicauth / pbovbel {{ web_password }}
 
   proxy / octopi:80 {
     transparent
