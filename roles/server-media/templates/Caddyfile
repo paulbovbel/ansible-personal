@@ -62,6 +62,10 @@ media.bovbel.com {
     transparent
   }
 
+  proxy /emby media:8096 {
+    transparent
+  }
+
   # cockpit
   proxy / media:9090 {
     transparent
