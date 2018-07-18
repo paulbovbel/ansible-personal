@@ -38,6 +38,7 @@ docker_compose:
     emby:
       image: emby/embyserver:latest
       container_name: emby
+      hostname: bovbel
       volumes:
         - "{{ appdata_folder }}/emby:/config"
         - "{{ media_folder }}:/media:ro"

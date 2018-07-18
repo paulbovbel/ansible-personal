@@ -20,6 +20,8 @@
   jwt {
     path /
     except /deluge  # TODO(pbovbel) remove deluge hack, use jinja templating
+    except /web  # TODO(pbovbel) remove emby hack, use jinja templating
+    except /emby  # TODO(pbovbel) remove emby hack, use jinja templating
     allow sub pbovbel
     redirect /auth?backTo=https://{hostonly}{rewrite_uri}
   }
@@ -63,6 +65,10 @@ media.bovbel.com {
   }
 
   proxy /emby media:8096 {
+    transparent
+  }
+
+  proxy /web media:8096 {
     transparent
   }
 
