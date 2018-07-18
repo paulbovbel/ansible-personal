@@ -29,11 +29,23 @@ docker_compose:
       container_name: plex
       volumes:
         - "{{ appdata_folder }}/plex:/config"
-        - "{{ media_folder }}:/mnt/storage/share"
+        - "{{ media_folder }}:/mnt/storage/share:ro"
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
       network_mode: host
+      restart: unless-stopped
+    emby:
+      image: emby/embyserver:latest
+      container_name: emby
+      volumes:
+        - "{{ appdata_folder }}/emby:/config"
+        - "{{ media_folder }}:/media:ro"
+      ports:
+        - 8096:8096
+      environment:
+        - "UID={{ uid }}"
+        - "GID={{ gid }}"
       restart: unless-stopped
     ombi:
       image: linuxserver/ombi
@@ -135,7 +147,6 @@ docker_compose:
     deluge:
       image: linuxserver/deluge
       container_name: deluge
-      network_mode: host
       ports:
         - 8112:8112
         - 58846:58846
@@ -150,7 +161,6 @@ docker_compose:
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
-      network_mode: host
       ports:
         - 8888:8888
         - 55555:55555
