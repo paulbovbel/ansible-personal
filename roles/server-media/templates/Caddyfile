@@ -19,15 +19,16 @@
 {
   jwt {
     path /
+    except /favicon.ico
     except /deluge  # TODO(pbovbel) remove deluge hack, use jinja templating
-    except /web  # TODO(pbovbel) remove emby hack, use jinja templating
     except /emby  # TODO(pbovbel) remove emby hack, use jinja templating
-    allow sub pbovbel
+    allow domain bovbel.com
+    allow email sean.vedell@gmail.com
     redirect /auth?backTo=https://{hostonly}{rewrite_uri}
   }
   login {
     login_path /auth
-    simple pbovbel={{ web_password }}
+    google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
     redirect_check_referer false
   }
 }
@@ -68,18 +69,14 @@ media.bovbel.com {
     transparent
   }
 
-  proxy /web media:8096 {
-    transparent
-  }
-
   # cockpit
   proxy / media:9090 {
     transparent
     websocket
-    except /media  # proxy takes priority over browse
+    except /share  # proxy takes priority over browse
   }
 
-  browse /media
+  browse /share
 
 }
 
