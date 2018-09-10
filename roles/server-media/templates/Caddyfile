@@ -39,36 +39,42 @@ media.bovbel.com {
   import logging
   import fancy_auth
 
-  proxy /radarr media:7878 {
-    transparent
-  }
-
   basicauth /deluge pbovbel {{ web_password }}
 
-  proxy /deluge media:8112 {
+  proxy /deluge deluge:8112 {
     transparent
     without /deluge
     header_upstream X-Deluge-Base "/deluge"
   }
 
-  proxy /sonarr media:8989 {
+  proxy /radarr radarr:7878 {
     transparent
   }
 
-  proxy /tautulli media:8181 {
+  proxy /sonarr sonarr:8989 {
     transparent
   }
 
-  proxy /jackett media:9117 {
+  proxy /tautulli tautulli:8181 {
     transparent
   }
 
-  proxy /ombi media:3579 {
+  proxy /jackett jackett:9117 {
     transparent
   }
 
-  proxy /emby media:8096 {
+  proxy /ombi ombi:3579 {
     transparent
+  }
+
+  proxy /emby emby:8096 {
+    transparent
+  }
+
+  proxy /unifi unifi:8443 {
+    transparent
+    without /unifi
+    websocket
   }
 
   # cockpit

@@ -1,12 +1,15 @@
 ---
 docker_compose:
-  version: '3'
+  version: '3.5'
+  networks:
+    media:
+      name: media
   services:
     smtp:
       container_name: smtp
       image: namshi/smtp
-      ports:
-        - 25:25
+      networks:
+        - media
       environment:
         - "RELAY_NETWORKS=:10.0.0.0/8:172.16.0.0/12:192.168.0.0/16"
         - "GMAIL_USER={{ ansible_email }}"
@@ -17,7 +20,11 @@ docker_compose:
           plugins: login,jwt
         context: github.com/abiosoft/caddy-docker.git
       container_name: caddy
-      network_mode: host
+      networks:
+        - media
+      ports:
+        - 80:80
+        - 443:443
       restart: unless-stopped
       volumes:
         - /etc/docker/Caddyfile:/etc/Caddyfile:ro
@@ -27,6 +34,8 @@ docker_compose:
     plex:
       image: plexinc/pms-docker:plexpass
       container_name: plex
+      # networks:
+      #   - media
       volumes:
         - "{{ appdata_folder }}/plex:/config"
         - "{{ media_folder }}:/mnt/storage/share:ro"
@@ -34,15 +43,24 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
       network_mode: host
+      # ports:
+      #   - 3005:3005/tcp
+      #   - 8324:8324/tcp
+      #   - 32400:32400/tcp
+      #   - 32469:32469/tcp
+      #   - 32410:32410/udp
+      #   - 32412:32412/udp
+      #   - 32413:32413/udp
+      #   - 32414:32414/udp
       restart: unless-stopped
     emby:
       image: emby/embyserver:latest
       container_name: emby
+      networks:
+        - media
       volumes:
         - "{{ appdata_folder }}/emby:/config"
         - "{{ media_folder }}:/media:ro"
-      ports:
-        - 8096:8096
       environment:
         - "UID={{ uid }}"
         - "GID={{ gid }}"
@@ -53,8 +71,6 @@ docker_compose:
       volumes:
         - "{{ appdata_folder }}/ombi:/config"
         - "{{ media_folder }}:/mnt/storage/share"
-      ports:
-        - 3579:3579
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -62,13 +78,13 @@ docker_compose:
     tautulli:
       image: linuxserver/tautulli
       container_name: tautulli
+      networks:
+        - media
       depends_on:
         - plex
       volumes:
         - "{{ appdata_folder }}/tautulli:/config"
         - "{{ appdata_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
-      ports:
-        - 8181:8181
       links:
         - plex
       restart: unless-stopped
@@ -78,6 +94,8 @@ docker_compose:
     sonarr:
       image: linuxserver/sonarr
       container_name: sonarr
+      networks:
+        - media
       depends_on:
         - jackett
       volumes:
@@ -86,8 +104,6 @@ docker_compose:
         - "{{ media_folder }}/tv:/tv"
         - "{{ download_folder }}:/downloads"
         - "/etc/localtime:/etc/localtime:ro"
-      ports:
-        - 8989:8989
       links:
         - jackett
         - deluge
@@ -99,6 +115,8 @@ docker_compose:
     radarr:
       image: linuxserver/radarr
       container_name: radarr
+      networks:
+        - media
       depends_on:
         - jackett
       volumes:
@@ -107,8 +125,6 @@ docker_compose:
         - "{{ media_folder }}/movies:/movies"
         - "{{ download_folder }}:/downloads"
         - /etc/localtime:/etc/localtime:ro
-      ports:
-        - 7878:7878
       links:
         - jackett
         - deluge
@@ -120,10 +136,10 @@ docker_compose:
     jackett:
       image: linuxserver/jackett
       container_name: jackett
+      networks:
+        - media
       volumes:
         - "{{ appdata_folder }}/jackett:/config"
-      ports:
-        - 9117:9117
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -131,15 +147,19 @@ docker_compose:
     unifi:
       image: linuxserver/unifi
       container_name: unifi
-      network_mode: host
+      networks:
+        - media
       volumes:
         - "{{ appdata_folder }}/unifi:/config"
-      # ports:
-      #   - 8080:8080
-      #   - 8012:8081
-      #   - 8443:8443
-      #   - 8843:8843
-      #   - 8880:8880
+      ports:
+        - 3478:3478/udp
+        - 10001:10001/udp
+        - 8080:8080
+        - 8081:8081
+        - 8443:8443
+        - 8843:8843
+        - 8880:8880
+        - 6789:6789
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -147,11 +167,12 @@ docker_compose:
     deluge:
       image: linuxserver/deluge
       container_name: deluge
-      # ports:
-      #   - 8112:8112
-      #   - 58846:58846
-      #   - 58946:58946
-      network_mode: host
+      networks:
+        - media
+      ports:
+        - 58846:58846
+        - 58946:58946
+        - 15000:15000
       volumes:
         - "{{ appdata_folder }}/deluge:/config"
         - "{{ download_folder }}:/downloads"
@@ -162,8 +183,9 @@ docker_compose:
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
+      networks:
+        - media
       ports:
-        - 8888:8888
         - 55555:55555
       volumes:
         - "{{ appdata_folder }}/resilio:/config"
@@ -175,6 +197,8 @@ docker_compose:
     watchtower:
       image: v2tec/watchtower
       container_name: watchtower
+      networks:
+        - media
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
       restart: unless-stopped
