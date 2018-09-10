@@ -6,7 +6,7 @@ docker_compose:
       container_name: smtp
       image: namshi/smtp
       ports:
-        - "25:25"
+        - 25:25
       environment:
         - "RELAY_NETWORKS=:10.0.0.0/8:172.16.0.0/12:192.168.0.0/16"
         - "GMAIL_USER={{ ansible_email }}"
@@ -134,12 +134,12 @@ docker_compose:
       network_mode: host
       volumes:
         - "{{ appdata_folder }}/unifi:/config"
-      ports:
-        - 8080:8080
-        - 8012:8081
-        - 8443:8443
-        - 8843:8843
-        - 8880:8880
+      # ports:
+      #   - 8080:8080
+      #   - 8012:8081
+      #   - 8443:8443
+      #   - 8843:8843
+      #   - 8880:8880
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -147,10 +147,11 @@ docker_compose:
     deluge:
       image: linuxserver/deluge
       container_name: deluge
-      ports:
-        - 8112:8112
-        - 58846:58846
-        - 58946:58946
+      # ports:
+      #   - 8112:8112
+      #   - 58846:58846
+      #   - 58946:58946
+      network_mode: host
       volumes:
         - "{{ appdata_folder }}/deluge:/config"
         - "{{ download_folder }}:/downloads"

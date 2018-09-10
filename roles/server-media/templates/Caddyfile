@@ -22,13 +22,15 @@
     except /favicon.ico
     except /deluge  # TODO(pbovbel) remove deluge hack, use jinja templating
     except /emby  # TODO(pbovbel) remove emby hack, use jinja templating
+    allow sub pbovbel
     allow domain bovbel.com
     allow email sean.vedell@gmail.com
     redirect /auth?backTo=https://{hostonly}{rewrite_uri}
   }
   login {
     login_path /auth
-    google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
+    # google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
+    simple pbovbel={{ web_password }}
     redirect_check_referer false
   }
 }
