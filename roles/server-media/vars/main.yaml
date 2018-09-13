@@ -159,12 +159,11 @@ docker_compose:
     deluge:
       image: linuxserver/deluge
       container_name: deluge
-      networks:
-        - media
-      ports:
-        - 58846:58846
-        - 58946:58946
-        - 15000:15000
+      network_mode: host
+      # ports:
+      #   - 58846:58846
+      #   - 58946:58946
+      #   - 15000:15000
       volumes:
         - "{{ appdata_folder }}/deluge:/config"
         - "{{ download_folder }}:/downloads"
