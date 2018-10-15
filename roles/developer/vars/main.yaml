@@ -1,22 +1,20 @@
-ros_distro: "{{ {'trusty':'indigo', 'xenial':'kinetic'}[ansible_distribution_release] }}"
-
 apt_remove:
   - packages: ['unity-webapps-common','thunderbird*','pidgin*','rhythmbox*','usb-creator*','ubuntuone*','empathy*']
 
 apt_install:
   - packages: []
-    repo: "deb http://archive.can onical.com/ubuntu/ {{ ansible_distribution_release }} partner"
+    repo: "deb http://archive.canonical.com/ubuntu/ {{ ansible_distribution_release }} partner"
     filename: /etc/apt/sources.list
 
-  - packages: ['oracle-java9-installer']
-    repo: ppa:webupd8team/java
-    filename: java
+  # - packages: ['oracle-java9-installer']
+  #   repo: ppa:webupd8team/java
+  #   filename: java
 
   - packages: ['git']
     repo: ppa:git-core/ppa
     filename: git
 
-  - packages: ['nvidia-378', 'nvidia-prime']
+  - packages: ['nvidia-396', 'nvidia-prime']
     repo: ppa:graphics-drivers/ppa
     filename: graphics-drivers
 
@@ -24,32 +22,18 @@ apt_install:
     repo: ppa:nilarimogard/webupd8
     filename: prime-indicator
 
-  - packages: ['mono-complete']
-    repo: "deb http://download.mono-project.com/repo/debian wheezy main"
-    keyid: 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-    filename: mono
+  # - packages: ['mono-complete']
+  #   repo: "deb http://download.mono-project.com/repo/debian wheezy main"
+  #   keyid: 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+  #   filename: mono
 
   - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip','vlc','unity-tweak-tool','solaar-gnome3']
 
   - packages: ['pcscd','scdaemon','gnupg2','pcsc-tools']
 
-  - packages: ['ros-{{ ros_distro }}-ros-base', 'python-catkin-tools', 'python-wstool', 'python-bloom']
-    repo: "deb http://packages.ros.org/ros/ubuntu {{ ansible_distribution_release }} main"
-    keyurl: https://raw.githubusercontent.com/ros/rosdistro/master/ros.key
-    filename: ros
-
-  - packages: []
-    repo: "deb http://packages.osrfoundation.org/gazebo/ubuntu {{ ansible_distribution_release }} main"
-    keyurl: http://packages.osrfoundation.org/gazebo.key
-    filename: gazebo
-
   - packages: ['tlp', 'smartmontools', 'ethtool']
     repo: ppa:linrunner/tlp
     filename: tlp
-
-  - packages: ['atom']
-    repo: ppa:webupd8team/atom
-    filename: atom
 
   - packages: ['unetbootin']
     repo: ppa:gezakovacs/ppa
@@ -63,9 +47,9 @@ apt_install:
     repo: ppa:numix/ppa
     filename: numix
 
-  - packages: ['ubuntu-make']
-    repo: ppa:ubuntu-desktop/ubuntu-make
-    filename: ubuntu-ake
+  # - packages: ['ubuntu-make']
+  #   repo: ppa:ubuntu-desktop/ubuntu-make
+  #   filename: ubuntu-ake
 
   - packages: ['wireshark']
     repo: ppa:wireshark-dev/stable
@@ -74,11 +58,6 @@ apt_install:
   - packages: ['deluge']
     repo: ppa:deluge-team/ppa
     filename: deluge
-
-  - packages: ['spotify-client']
-    repo: "deb http://repository.spotify.com stable non-free"
-    keyid: BBEBDCB318AD50EC6865090613B00F1FD2C19886
-    filename: spotify
 
   - packages: ['remmina']
     repo: ppa:remmina-ppa-team/remmina-next
@@ -99,14 +78,8 @@ apt_install:
     keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
     filename: resilio
 
-  - packages: ['guake','terminator','redshift-gtk']
+  - packages: ['terminator','redshift-gtk']
 
-  - packages: ['git-lfs']
-    repo: "deb https://packagecloud.io/github/git-lfs/ubuntu/ {{ ansible_distribution_release }} main"
-    keyurl: https://packagecloud.io/github/git-lfs/gpgkey
-    filename: git-lfs
-
-  - packages: ['docker-ce']
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-    keyurl: https://download.docker.com/linux/ubuntu/gpg
-    filename: docker
+snap_install:
+  - slack
+  - spotify

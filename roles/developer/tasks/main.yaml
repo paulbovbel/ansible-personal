@@ -1,7 +1,7 @@
 ---
 - import_tasks: 00-apt.yaml
 - import_tasks: 01-git.yaml
-- import_tasks: 02-atom.yaml
 - import_tasks: 03-secrets.yaml
 - import_tasks: 04-jupyter.yaml
   tags: jupyter
+- import_tasks: 05-resilio.yaml

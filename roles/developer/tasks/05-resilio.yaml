@@ -1,4 +1,9 @@
 ---
+- name: create systemd directory
+  file:
+    path: ~/.config/systemd/user/
+    state: directory
+
 - name: install resilio service
   template:
     src: /usr/lib/systemd/user/resilio-sync.service
