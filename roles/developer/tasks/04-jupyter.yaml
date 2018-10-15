@@ -10,28 +10,11 @@
     - ipython
     - ipython-notebook
 
-- name: install/upgrade pip
-  pip:
-    name: pip
-    state: latest
-  become: true
-
 - name: install jupyter
   pip:
     name: jupyter
     state: latest
-  become: true
-
-- name: install python3 kernel
-  pip:
-    name: ipykernel
-    state: latest
     executable: pip3
-  become: true
-
-- name: configure python3 kernel
-  shell: |
-    python3 -m ipykernel install
   become: true
 
 - name: ensure ~/jupyter directory exists.

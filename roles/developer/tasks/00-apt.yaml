@@ -1,4 +1,12 @@
 ---
+- name: install apt https
+  apt:
+    name: apt-transport-https
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
 - name: install repo keys from url
   apt_key:
     url: "{{ item.keyurl }}"
