@@ -88,3 +88,7 @@ apt_install:
 snap_install:
   - slack
   - spotify
+
+vscode:
+  extensions:
+    - akamud.vscode-theme-onedark
