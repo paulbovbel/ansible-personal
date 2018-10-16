@@ -56,6 +56,8 @@ docker_compose:
       environment:
         - "UID={{ uid }}"
         - "GID={{ gid }}"
+      ports:
+        - 8096:8096
       restart: unless-stopped
     ombi:
       image: linuxserver/ombi
@@ -152,6 +154,21 @@ docker_compose:
         - 8843:8843
         - 8880:8880
         - 6789:6789
+      restart: unless-stopped
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+    deluge:
+      image: linuxserver/deluge
+      container_name: deluge
+      network_mode: host
+      # ports:
+      #   - 58846:58846
+      #   - 58946:58946
+      #   - 15000:15000
+      volumes:
+        - "{{ appdata_folder }}/deluge:/config"
+        - "{{ download_folder }}:/downloads"
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
