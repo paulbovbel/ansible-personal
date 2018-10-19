@@ -100,7 +100,7 @@ docker_compose:
         - "/etc/localtime:/etc/localtime:ro"
       links:
         - jackett
-        - deluge
+        - rtorrent
         - plex
       restart: unless-stopped
       environment:
@@ -121,7 +121,7 @@ docker_compose:
         - /etc/localtime:/etc/localtime:ro
       links:
         - jackett
-        - deluge
+        - rtorrent
         - plex
       restart: unless-stopped
       environment:
@@ -158,36 +158,25 @@ docker_compose:
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
-    deluge:
-      image: linuxserver/deluge
-      container_name: deluge
-      network_mode: host
-      # ports:
-      #   - 58846:58846
-      #   - 58946:58946
-      #   - 15000:15000
+    rtorrent:
+      image: xataz/rtorrent-rutorrent:latest
+      container_name: rtorrent
+      networks:
+        - media
+      ports:
+        - 45000:45000/tcp
+        - 45000:45000/udp
+        - 6881:6881/udp
       volumes:
-        - "{{ appdata_folder }}/deluge:/config"
+        - "{{ appdata_folder }}/rtorrent:/config"
         - "{{ download_folder }}:/downloads"
       restart: unless-stopped
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-    deluge:
-      image: linuxserver/deluge
-      container_name: deluge
-      network_mode: host
-      # ports:
-      #   - 58846:58846
-      #   - 58946:58946
-      #   - 15000:15000
-      volumes:
-        - "{{ appdata_folder }}/deluge:/config"
-        - "{{ download_folder }}:/downloads"
-      restart: unless-stopped
-      environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
+        - "UID={{ uid }}"
+        - "GID={{ gid }}"
+        - "PORT_RTORRENT=45000"
+        - "DHT_RTORRENT=on"
+        - "WEBROOT=/rtorrent"
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio

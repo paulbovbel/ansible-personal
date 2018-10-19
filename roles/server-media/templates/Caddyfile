@@ -20,7 +20,7 @@
   jwt {
     path /
     except /favicon.ico
-    except /deluge  # TODO(pbovbel) remove deluge hack, use jinja templating
+    except /rtorrent  # TODO(pbovbel) remove rtorrent hack, use jinja templating
     except /emby  # TODO(pbovbel) remove emby hack, use jinja templating
     allow sub pbovbel
     allow domain bovbel.com
@@ -39,15 +39,13 @@ media.bovbel.com {
   import logging
   import fancy_auth
 
-  basicauth /deluge pbovbel {{ web_password }}
-
-  proxy /deluge deluge:8112 {
-    transparent
-    without /deluge
-    header_upstream X-Deluge-Base "/deluge"
-  }
+  basicauth /rtorrent pbovbel {{ web_password }}
 
   proxy /radarr radarr:7878 {
+    transparent
+  }
+
+  proxy /rtorrent rtorrent:8080 {
     transparent
   }
 

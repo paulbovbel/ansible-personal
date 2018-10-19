@@ -55,10 +55,6 @@ apt_install:
     repo: ppa:wireshark-dev/stable
     filename: wireshark
 
-  - packages: ['deluge']
-    repo: ppa:deluge-team/ppa
-    filename: deluge
-
   - packages: ['remmina']
     repo: ppa:remmina-ppa-team/remmina-next
     filename: remmina
@@ -81,7 +77,7 @@ apt_install:
   - packages: ['code']
     repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
     keyurl: https://packages.microsoft.com/keys/microsoft.asc
-    filename: resilio    
+    filename: resilio
 
   - packages: ['terminator','redshift-gtk']
 
