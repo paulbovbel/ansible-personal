@@ -17,9 +17,14 @@
     executable: pip3
   become: true
 
-- name: ensure ~/jupyter directory exists.
+- name: ensure ~/jupyter directory exists
   file:
     dest: ~/jupyter
+    state: directory
+
+- name: ensure systemd user directory exists
+  file:
+    dest: ~/.config/systemd/user
     state: directory
 
 - name: install jupyter service

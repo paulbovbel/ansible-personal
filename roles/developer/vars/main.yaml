@@ -27,7 +27,7 @@ apt_install:
   #   keyid: 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
   #   filename: mono
 
-  - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip','vlc','unity-tweak-tool','solaar-gnome3']
+  - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip','vlc','unity-tweak-tool','solaar-gnome3','steam']
 
   - packages: ['pcscd','scdaemon','gnupg2','pcsc-tools']
 
@@ -77,12 +77,12 @@ apt_install:
   - packages: ['code']
     repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
     keyurl: https://packages.microsoft.com/keys/microsoft.asc
-    filename: resilio
+    filename: vscode
 
   - packages: ['terminator','redshift-gtk']
 
 snap_install:
-  - slack
+  - slack --classic
   - spotify
 
 vscode:
