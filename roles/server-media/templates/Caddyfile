@@ -20,8 +20,8 @@
   jwt {
     path /
     except /favicon.ico
-    except /rtorrent  # TODO(pbovbel) remove rtorrent hack, use jinja templating
-    except /emby  # TODO(pbovbel) remove emby hack, use jinja templating
+    except /emby
+    except /transmission
     allow sub pbovbel
     allow domain bovbel.com
     allow email sean.vedell@gmail.com
@@ -29,8 +29,8 @@
   }
   login {
     login_path /auth
-    # google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
-    simple pbovbel={{ web_password }}
+    google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
+    # simple pbovbel={{ web_password }}
     redirect_check_referer false
   }
 }
@@ -39,13 +39,13 @@ media.bovbel.com {
   import logging
   import fancy_auth
 
-  basicauth /rtorrent pbovbel {{ web_password }}
+  basicauth /transmission pbovbel {{ web_password }}
 
   proxy /radarr radarr:7878 {
     transparent
   }
 
-  proxy /rtorrent rtorrent:8080 {
+  proxy /transmission transmission:9091 {
     transparent
   }
 
@@ -110,7 +110,7 @@ metal.bovbel.com {
   import logging
   import fancy_auth
 
-  proxy / metal:80 {
+  proxy / metal:3052 {
     transparent
     websocket
   }

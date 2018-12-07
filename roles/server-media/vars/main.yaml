@@ -100,7 +100,7 @@ docker_compose:
         - "/etc/localtime:/etc/localtime:ro"
       links:
         - jackett
-        - rtorrent
+        - transmission
         - plex
       restart: unless-stopped
       environment:
@@ -121,7 +121,7 @@ docker_compose:
         - /etc/localtime:/etc/localtime:ro
       links:
         - jackett
-        - rtorrent
+        - transmission
         - plex
       restart: unless-stopped
       environment:
@@ -158,25 +158,43 @@ docker_compose:
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
-    rtorrent:
-      image: xataz/rtorrent-rutorrent:latest
-      container_name: rtorrent
+    # rtorrent:
+    #   image: xataz/rtorrent-rutorrent:latest
+    #   container_name: rtorrent
+    #   networks:
+    #     - media
+    #   ports:
+    #     - 45000:45000/tcp
+    #     - 45000:45000/udp
+    #     - 6881:6881/udp
+    #   volumes:
+    #     - "{{ appdata_folder }}/rtorrent:/config"
+    #     - "{{ download_folder }}:/downloads"
+    #   restart: unless-stopped
+    #   environment:
+    #     - "UID={{ uid }}"
+    #     - "GID={{ gid }}"
+    #     - "PORT_RTORRENT=45000"
+    #     - "DHT_RTORRENT=on"
+    #     - "WEBROOT=/rtorrent"
+    transmission:
+      container_name: transmission
+      environment:
+        - PUID=1000
+        - PGID=1000
+      image: linuxserver/transmission:latest
       networks:
         - media
       ports:
-        - 45000:45000/tcp
-        - 45000:45000/udp
-        - 6881:6881/udp
-      volumes:
-        - "{{ appdata_folder }}/rtorrent:/config"
-        - "{{ download_folder }}:/downloads"
+        - 51413:51413
+        - 51413:51413/udp
       restart: unless-stopped
+      volumes:
+        - "{{ appdata_folder }}/transmission:/config"
+        - "{{ download_folder }}:/downloads"
       environment:
-        - "UID={{ uid }}"
-        - "GID={{ gid }}"
-        - "PORT_RTORRENT=45000"
-        - "DHT_RTORRENT=on"
-        - "WEBROOT=/rtorrent"
+        - PUID=1000
+        - PGID=1000
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
