@@ -8,7 +8,6 @@
   template:
     src: /usr/lib/systemd/user/resilio-sync.service
     dest: ~/.config/systemd/user/resilio-sync.service
-    remote_src: true
 
 - name: fix dependency in resilio service
   lineinfile:

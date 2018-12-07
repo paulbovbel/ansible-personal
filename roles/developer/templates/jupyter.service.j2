@@ -3,7 +3,7 @@ Description=Jupyter Notebook
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/jupyter-notebook
+ExecStart=/usr/bin/jupyter-notebook
 WorkingDirectory=/home/{{ ansible_user }}/jupyter
 Restart=always
 RestartSec=10

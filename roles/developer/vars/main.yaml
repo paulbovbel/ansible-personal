@@ -14,7 +14,7 @@ apt_install:
     repo: ppa:git-core/ppa
     filename: git
 
-  - packages: ['nvidia-396', 'nvidia-prime']
+  - packages: ['nvidia-driver-415', 'nvidia-prime']
     repo: ppa:graphics-drivers/ppa
     filename: graphics-drivers
 
@@ -43,7 +43,7 @@ apt_install:
   #   repo: "deb http://linux.dropbox.com/ubuntu {{ ansible_distribution_release }} main"
   #   keyid: 5044912E
 
-  - packages: ['numix-gtk-theme', 'numix-icon-theme-circle', 'numix-wallpaper-*']
+  - packages: ['numix-*']
     repo: ppa:numix/ppa
     filename: numix
 

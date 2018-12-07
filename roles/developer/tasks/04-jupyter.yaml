@@ -8,14 +8,7 @@
   become: true
   with_items:
     - ipython
-    - ipython-notebook
-
-- name: install jupyter
-  pip:
-    name: jupyter
-    state: latest
-    executable: pip3
-  become: true
+    - jupyter-notebook
 
 - name: ensure ~/jupyter directory exists
   file:
