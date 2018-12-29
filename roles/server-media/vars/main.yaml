@@ -198,6 +198,7 @@ docker_compose:
         - media
       ports:
         - 55555:55555
+        - 55555:55555/udp
       volumes:
         - "{{ appdata_folder }}/resilio:/config"
         - "{{ data_folder }}:/sync"

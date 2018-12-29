@@ -75,6 +75,11 @@ media.bovbel.com {
     websocket
   }
 
+  proxy /gui resilio:8888 {
+    transparent
+    websocket
+  }
+
   # cockpit
   proxy / media:9090 {
     transparent
@@ -101,6 +106,26 @@ nas.bovbel.com {
   import fancy_auth
 
   proxy / nas:80 {
+    transparent
+    websocket
+  }
+}
+
+arthur-cam.bovbel.com {
+  import logging
+  import fancy_auth
+
+  proxy / arthur-cam:80 {
+    transparent
+    websocket
+  }
+}
+
+door-cam.bovbel.com {
+  import logging
+  import fancy_auth
+
+  proxy / door-cam:80 {
     transparent
     websocket
   }
