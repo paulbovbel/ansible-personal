@@ -80,11 +80,15 @@ media.bovbel.com {
     websocket
   }
 
+  redir 302 {
+    if {path} is /
+    / /dashboard/
+  }
+
   # cockpit
-  proxy / media:9090 {
+  proxy /dashboard media:9090 {
     transparent
     websocket
-    except /share  # proxy takes priority over browse
   }
 
   browse /share

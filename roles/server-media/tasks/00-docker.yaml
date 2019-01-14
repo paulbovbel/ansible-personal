@@ -72,7 +72,7 @@
     - docker-compose
   become: true
 
-- name: create caddyfile file
+- name: create caddyfile
   template:
     src: Caddyfile
     dest: /etc/docker/Caddyfile
