@@ -100,7 +100,7 @@ docker_compose:
         - "/etc/localtime:/etc/localtime:ro"
       links:
         - jackett
-        - transmission
+        - rtorrent
         - plex
       restart: unless-stopped
       environment:
@@ -121,7 +121,7 @@ docker_compose:
         - /etc/localtime:/etc/localtime:ro
       links:
         - jackett
-        - transmission
+        - rtorrent
         - plex
       restart: unless-stopped
       environment:
@@ -139,58 +139,38 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
     unifi:
-      image: linuxserver/unifi
+      image: linuxserver/unifi-controller
       container_name: unifi
-      networks:
-        - media
+      # APs get stuck on 'adopting' when not running host networking
+      network_mode: host
+      # networks:
+      #   - media
       volumes:
         - "{{ appdata_folder }}/unifi:/config"
-      ports:
-        - 3478:3478/udp
-        - 10001:10001/udp
-        - 8080:8080
-        - 8443:8443
-        - 8880:8880
-        - 8843:8843
-        - 6789:6789
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
-    # rtorrent:
-    #   image: xataz/rtorrent-rutorrent:latest
-    #   container_name: rtorrent
-    #   networks:
-    #     - media
-    #   ports:
-    #     - 45000:45000/tcp
-    #     - 45000:45000/udp
-    #     - 6881:6881/udp
-    #   volumes:
-    #     - "{{ appdata_folder }}/rtorrent:/config"
-    #     - "{{ download_folder }}:/downloads"
-    #   restart: unless-stopped
-    #   environment:
-    #     - "UID={{ uid }}"
-    #     - "GID={{ gid }}"
-    #     - "PORT_RTORRENT=45000"
-    #     - "DHT_RTORRENT=on"
-    #     - "WEBROOT=/rtorrent"
-    transmission:
-      container_name: transmission
-      image: linuxserver/transmission:latest
+    rtorrent:
+      image: xataz/rtorrent-rutorrent:latest
+      container_name: rtorrent
       networks:
         - media
       ports:
-        - 51413:51413
-        - 51413:51413/udp
-      restart: unless-stopped
+        - 45000:45000/tcp
+        - 45000:45000/udp
+        - 6881:6881/udp
       volumes:
-        - "{{ appdata_folder }}/transmission:/config"
-        - "{{ download_folder }}:/downloads"
+        - "{{ appdata_folder }}/rtorrent/config:/config"
+        - "{{ appdata_folder }}/rtorrent/data:/data"
+        - "{{ download_folder }}:/data/torrents"
+      restart: unless-stopped
       environment:
-        - PUID=1000
-        - PGID=1000
+        - "UID={{ uid }}"
+        - "GID={{ gid }}"
+        - "PORT_RTORRENT=45000"
+        - "DHT_RTORRENT=on"
+        - "WEBROOT=/rtorrent"
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
