@@ -1,17 +1,11 @@
 ---
-- name: add cockpit repo
-  apt_repository:
-    repo: ppa:cockpit-project/cockpit
-    state: present
-    update_cache: true
-  become: true
-
 - name: install cockpit packages
   apt:
     name: "{{ item }}"
     state: latest
     update_cache: true
     cache_valid_time: 3600
+    default_release: xenial-backports
   become: true
   with_items:
     - cockpit-bridge
