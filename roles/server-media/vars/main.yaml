@@ -34,16 +34,13 @@ docker_compose:
     plex:
       image: plexinc/pms-docker:plexpass
       container_name: plex
-      networks:
-        - media
+      network_mode: host
       volumes:
         - "{{ appdata_folder }}/plex:/config"
         - "{{ media_folder }}:/mnt/storage/share:ro"
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
-      ports:
-        - 32400:32400
       restart: unless-stopped
     emby:
       image: emby/embyserver:latest
@@ -69,8 +66,6 @@ docker_compose:
       volumes:
         - "{{ appdata_folder }}/tautulli:/config"
         - "{{ appdata_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
-      links:
-        - plex
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -88,10 +83,6 @@ docker_compose:
         - "{{ media_folder }}/tv:/tv"
         - "{{ download_folder }}:/downloads"
         - "/etc/localtime:/etc/localtime:ro"
-      links:
-        - jackett
-        - transmission
-        - plex
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -109,10 +100,6 @@ docker_compose:
         - "{{ media_folder }}/movies:/movies"
         - "{{ download_folder }}:/downloads"
         - /etc/localtime:/etc/localtime:ro
-      links:
-        - jackett
-        - transmission
-        - plex
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -129,43 +116,15 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
     unifi:
-      image: linuxserver/unifi
+      image: linuxserver/unifi-controller
       container_name: unifi
-      networks:
-        - media
+      network_mode: host
       volumes:
         - "{{ appdata_folder }}/unifi:/config"
-      ports:
-        - 3478:3478/udp
-        - 10001:10001/udp
-        - 8080:8080
-        - 8443:8443
-        - 8880:8880
-        - 8843:8843
-        - 6789:6789
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
-    # rtorrent:
-    #   image: xataz/rtorrent-rutorrent:latest
-    #   container_name: rtorrent
-    #   networks:
-    #     - media
-    #   ports:
-    #     - 45000:45000/tcp
-    #     - 45000:45000/udp
-    #     - 6881:6881/udp
-    #   volumes:
-    #     - "{{ appdata_folder }}/rtorrent:/config"
-    #     - "{{ download_folder }}:/downloads"
-    #   restart: unless-stopped
-    #   environment:
-    #     - "UID={{ uid }}"
-    #     - "GID={{ gid }}"
-    #     - "PORT_RTORRENT=45000"
-    #     - "DHT_RTORRENT=on"
-    #     - "WEBROOT=/rtorrent"
     transmission:
       container_name: transmission
       image: linuxserver/transmission:latest

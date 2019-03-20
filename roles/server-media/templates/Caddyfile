@@ -69,12 +69,6 @@ media.bovbel.com {
     transparent
   }
 
-  proxy /unifi unifi:8443 {
-    transparent
-    without /unifi
-    websocket
-  }
-
   proxy /gui resilio:8888 {
     transparent
     websocket
