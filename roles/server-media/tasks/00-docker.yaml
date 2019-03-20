@@ -108,3 +108,7 @@
     value: 32768
     state: present
   become: true
+
+- name: prune docker
+  shell: |
+    docker system prune -af

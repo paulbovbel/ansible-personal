@@ -59,16 +59,6 @@ docker_compose:
       ports:
         - 8096:8096
       restart: unless-stopped
-    ombi:
-      image: linuxserver/ombi
-      container_name: ombi
-      volumes:
-        - "{{ appdata_folder }}/ombi:/config"
-        - "{{ media_folder }}:/mnt/storage/share"
-      restart: unless-stopped
-      environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
     tautulli:
       image: linuxserver/tautulli
       container_name: tautulli
