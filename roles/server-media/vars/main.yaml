@@ -70,6 +70,7 @@ docker_compose:
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
+        - "TZ=America/Toronto"
     sonarr:
       image: linuxserver/sonarr
       container_name: sonarr
@@ -87,6 +88,7 @@ docker_compose:
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
+        - "TZ=America/Toronto"
     radarr:
       image: linuxserver/radarr
       container_name: radarr
@@ -104,6 +106,7 @@ docker_compose:
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
+        - "TZ=America/Toronto"
     jackett:
       image: linuxserver/jackett
       container_name: jackett
@@ -115,6 +118,7 @@ docker_compose:
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
+        - "TZ=America/Toronto"
     unifi:
       image: linuxserver/unifi-controller
       container_name: unifi
@@ -125,6 +129,7 @@ docker_compose:
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
+        - "TZ=America/Toronto"
     transmission:
       container_name: transmission
       image: linuxserver/transmission:latest
@@ -140,6 +145,7 @@ docker_compose:
       environment:
         - PUID=1000
         - PGID=1000
+        - "TZ=America/Toronto"
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
@@ -155,6 +161,7 @@ docker_compose:
       environment:
         - PUID=1000
         - PGID=1000
+        - "TZ=America/Toronto"
     watchtower:
       image: v2tec/watchtower
       container_name: watchtower
