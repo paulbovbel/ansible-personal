@@ -1,52 +1,52 @@
 ---
 - name: install docker repo key
   apt_key:
-    keyserver: hkp://p80.pool.sks-keyservers.net:80
-    id: 58118E89F3A912897C070ADBF76221572C52609D
+    url: https://download.docker.com/linux/ubuntu/gpg
     state: present
   become: true
 
 - name: add docker apt repo
   apt_repository:
-    repo: deb https://apt.dockerproject.org/repo ubuntu-xenial main
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
     update_cache: true
   become: true
 
 - name: install docker packages
   apt:
-    name: "{{ item }}"
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
     state: latest
     update_cache: true
     cache_valid_time: 3600
   become: true
-  with_items:
-    - docker-engine
-    - open-iscsi
-    - python-dnspython
 
-- name: discover iscsi
-  open_iscsi:
-    portal: "{{ lookup('dig', nfs_host) }}"
-    discover: true
-    login: true
-  become: true
-
-- name: mount appdata
-  mount:
-    name: "{{ appdata_folder }}"
-    src: /dev/sda1
-    fstype: ext4
-    opts: defaults,auto,_netdev,noatime,nodiratime
-    state: mounted
-  become: true
-
-- name: apt install pip
+- name: install python3 venv and pip
   apt:
-    pkg: python-pip
+    name:
+      - python3-pip
+      - python3-venv
     state: latest
     update_cache: true
     cache_valid_time: 3600
+  become: true
+
+- name: install docker-compose
+  pip:
+    name: docker-compose
+    state: latest
+    virtualenv: "/opt/virtualenv"
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: true
+
+- name: symlink docker-compose
+  file:
+    src: "/opt/virtualenv/bin/docker-compose"
+    dest: "/usr/local/bin/docker-compose"
+    state: link
+    force: true
   become: true
 
 - name: configure docker group
@@ -62,15 +62,6 @@
     append: true
   become: true
   notify: restart docker
-
-- name: install docker-compose library
-  pip:
-    name: "{{ item }}"
-    state: latest
-  with_items:
-    - docker
-    - docker-compose
-  become: true
 
 - name: create caddyfile
   template:
@@ -105,10 +96,10 @@
 - name: increase number of watches
   sysctl:
     name: fs.inotify.max_user_watches
-    value: 32768
+    value: "32768"
     state: present
   become: true
 
-- name: prune docker
+- name: prune docker images
   shell: |
-    docker system prune -af
+    docker image prune -af --filter="until=24h"

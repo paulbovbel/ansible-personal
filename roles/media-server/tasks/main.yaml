@@ -1,0 +1,6 @@
+---
+- import_tasks: 00-ssh.yaml
+- import_tasks: 01-system.yaml
+- import_tasks: 02-unattended-upgrades.yaml
+- import_tasks: 03-docker.yaml
+- import_tasks: 04-cockpit.yaml

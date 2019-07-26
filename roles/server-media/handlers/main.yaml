@@ -1,6 +1,0 @@
----
-- name: restart samba
-  service:
-    name: smbd
-    state: restarted
-  become: true

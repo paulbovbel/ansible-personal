@@ -6,7 +6,7 @@
     cache_valid_time: 3600
   become: true
 
-- name: create APT auto-upgrades configuration
+- name: create apt auto-upgrades configuration
   copy:
     src: auto-upgrades
     dest: /etc/apt/apt.conf.d/20auto-upgrades

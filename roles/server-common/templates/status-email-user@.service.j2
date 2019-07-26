@@ -1,8 +1,0 @@
-[Unit]
-Description=status email for %i to {{ ansible_user }}
-
-[Service]
-Type=oneshot
-ExecStart=/usr/local/bin/systemd-email {{ ansible_email }} %i
-User=nobody
-Group=systemd-journal

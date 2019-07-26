@@ -1,0 +1,9 @@
+kernel_options:
+  # disable all mitigations (only works in 5.2+ kernel)
+  - mitigations=off
+  # disable Spectre and Meltdown mitigation (https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/SpectreAndMeltdown)
+  - nopti noibrs noibpb nospectre_v2 spec_store_bypass_disable=off
+  # disable L1TF mitigations (https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/L1TF)
+  - l1tf=off
+  # disable MDS mitigations (https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/MDS)
+  - mds=off

@@ -24,7 +24,6 @@
     except /transmission
     allow sub pbovbel
     allow domain bovbel.com
-    allow email sean.vedell@gmail.com
     redirect /auth?backTo=https://{hostonly}{rewrite_uri}
   }
   login {
@@ -41,32 +40,46 @@ media.bovbel.com {
 
   basicauth /transmission pbovbel {{ web_password }}
 
+  redir 302 {
+    if {path} is /
+    / /dashboard/
+  }
+
+  browse /share
+
+  proxy /dashboard media:9090 {
+    transparent
+    websocket
+  }
+
   proxy /radarr radarr:7878 {
     transparent
+    websocket
   }
 
   proxy /transmission transmission:9091 {
     transparent
+    websocket
   }
 
   proxy /sonarr sonarr:8989 {
     transparent
+    websocket
   }
 
   proxy /tautulli tautulli:8181 {
     transparent
+    websocket
   }
 
   proxy /jackett jackett:9117 {
     transparent
-  }
-
-  proxy /ombi ombi:3579 {
-    transparent
+    websocket
   }
 
   proxy /emby emby:8096 {
     transparent
+    websocket
   }
 
   proxy /gui resilio:8888 {
@@ -74,78 +87,4 @@ media.bovbel.com {
     websocket
   }
 
-  redir 302 {
-    if {path} is /
-    / /dashboard/
-  }
-
-  # cockpit
-  proxy /dashboard media:9090 {
-    transparent
-    websocket
-  }
-
-  browse /share
-
-}
-
-router.bovbel.com {
-  import logging
-  import fancy_auth
-
-  proxy / router:80 {
-    transparent
-    websocket
-  }
-}
-
-nas.bovbel.com {
-  import logging
-  import fancy_auth
-
-  proxy / nas:80 {
-    transparent
-    websocket
-  }
-}
-
-arthur-cam.bovbel.com {
-  import logging
-  import fancy_auth
-
-  proxy / arthur-cam:80 {
-    transparent
-    websocket
-  }
-}
-
-door-cam.bovbel.com {
-  import logging
-  import fancy_auth
-
-  proxy / door-cam:80 {
-    transparent
-    websocket
-  }
-}
-
-metal.bovbel.com {
-  import logging
-  import fancy_auth
-
-  proxy / metal:3052 {
-    transparent
-    websocket
-  }
-}
-
-octopi.bovbel.com {
-  import logging
-
-  basicauth / pbovbel {{ web_password }}
-
-  proxy / octopi:80 {
-    transparent
-    websocket
-  }
 }

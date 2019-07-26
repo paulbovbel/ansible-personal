@@ -6,6 +6,13 @@
     enabled: true
   become: true
 
+- name: restart docker
+  service:
+    name: docker
+    state: restarted
+    enabled: true
+  become: true
+
 - name: restart sshd
   service:
     name: sshd
@@ -13,20 +20,10 @@
     enabled: true
   become: true
 
-- name: restart postfix
-  service:
-    name: postfix
-    state: restarted
-    enabled: true
-  become: true
-
-- name: generate postfix db
-  command: |
-    /usr/sbin/postmap hash:/etc/postfix/sasl_passwd
-  args:
-    creates: /etc/postfix/sasl_passwd.db
-  become: true
-
 - name: update apt cache
   apt:
     update_cache: true
+
+- name: update-grub
+  shell: update-grub
+  become: true

@@ -5,6 +5,23 @@ docker_compose:
     media:
       name: media
   services:
+    ddns:
+      container_name: ddns
+      image: sjmayotte/route53-dynamic-dns:latest
+      networks:
+        - media
+      environment:
+        - "AWS_ACCESS_KEY_ID={{ aws_access_key_id }}"
+        - "AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}"
+        - "AWS_REGION=us-east-1"
+        - "ROUTE53_HOSTED_ZONE_ID={{ aws_ddns_hosted_zone }}"
+        - "ROUTE53_DOMAIN={{ inventory_hostname }}"
+        - "ROUTE53_TYPE=A"
+        - "ROUTE53_TTL=300"
+        - "UPDATE_FREQUENCY=60000"
+        - "SEND_EMAIL_SES=true"
+        - "SES_FROM_ADDRESS={{ ansible_email }}"
+        - "SES_TO_ADDRESS={{ ansible_email }}"
     smtp:
       container_name: smtp
       image: namshi/smtp
@@ -28,15 +45,15 @@ docker_compose:
       restart: unless-stopped
       volumes:
         - /etc/docker/Caddyfile:/etc/Caddyfile:ro
-        - "{{ appdata_folder }}/caddy:/root/.caddy"
+        - "{{ app_folder }}/caddy:/root/.caddy"
         - "{{ media_folder }}:/srv/share:ro"
-        - "{{ appdata_folder }}/caddy/log:/log"
+        - "{{ app_folder }}/caddy/log:/log"
     plex:
       image: plexinc/pms-docker:plexpass
       container_name: plex
       network_mode: host
       volumes:
-        - "{{ appdata_folder }}/plex:/config"
+        - "{{ app_folder }}/plex:/config"
         - "{{ media_folder }}:/mnt/storage/share:ro"
       environment:
         - "PUID={{ uid }}"
@@ -48,13 +65,13 @@ docker_compose:
       networks:
         - media
       volumes:
-        - "{{ appdata_folder }}/emby:/config"
+        - "{{ app_folder }}/emby:/config"
         - "{{ media_folder }}:/media:ro"
       environment:
         - "UID={{ uid }}"
         - "GID={{ gid }}"
-      ports:
-        - 8096:8096
+      # ports:
+      #   - 8096:8096
       restart: unless-stopped
     tautulli:
       image: linuxserver/tautulli
@@ -64,8 +81,8 @@ docker_compose:
       depends_on:
         - plex
       volumes:
-        - "{{ appdata_folder }}/tautulli:/config"
-        - "{{ appdata_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
+        - "{{ app_folder }}/tautulli:/config"
+        - "{{ app_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -79,7 +96,7 @@ docker_compose:
       depends_on:
         - jackett
       volumes:
-        - "{{ appdata_folder }}/sonarr:/config"
+        - "{{ app_folder }}/sonarr:/config"
         - "{{ backup_folder }}/apps/sonarr:/config/Backups"
         - "{{ media_folder }}/tv:/tv"
         - "{{ download_folder }}:/downloads"
@@ -97,7 +114,7 @@ docker_compose:
       depends_on:
         - jackett
       volumes:
-        - "{{ appdata_folder }}/radarr:/config"
+        - "{{ app_folder }}/radarr:/config"
         - "{{ backup_folder }}/apps/radarr:/config/Backups"
         - "{{ media_folder }}/movies:/movies"
         - "{{ download_folder }}:/downloads"
@@ -113,18 +130,7 @@ docker_compose:
       networks:
         - media
       volumes:
-        - "{{ appdata_folder }}/jackett:/config"
-      restart: unless-stopped
-      environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
-    unifi:
-      image: linuxserver/unifi-controller
-      container_name: unifi
-      network_mode: host
-      volumes:
-        - "{{ appdata_folder }}/unifi:/config"
+        - "{{ app_folder }}/jackett:/config"
       restart: unless-stopped
       environment:
         - "PUID={{ uid }}"
@@ -132,20 +138,32 @@ docker_compose:
         - "TZ=America/Toronto"
     transmission:
       container_name: transmission
-      image: linuxserver/transmission:latest
+      image: haugene/transmission-openvpn:latest
+      cap_add:
+        - NET_ADMIN
       networks:
         - media
-      ports:
-        - 51413:51413
-        - 51413:51413/udp
       restart: unless-stopped
       volumes:
-        - "{{ appdata_folder }}/transmission:/config"
+        - "{{ app_folder }}/transmission/config:/config"
+        - "{{ app_folder }}/transmission/home:/data/transmission-home"
         - "{{ download_folder }}:/downloads"
       environment:
-        - PUID=1000
-        - PGID=1000
+        - "PUID=1000"
+        - "PGID=1000"
         - "TZ=America/Toronto"
+        - "WEBPROXY_ENABLED=false"
+        - "LOCAL_NETWORK=172.25.0.0/16"
+        - "OPENVPN_PROVIDER=PIA"
+        - "OPENVPN_CONFIG=CA\ Toronto"
+        - "OPENVPN_USERNAME={{ pia_username }}"
+        - "OPENVPN_PASSWORD={{ pia_password }}"
+        - "CREATE_TUN_DEVICE=true"
+        - "TRANSMISSION_INCOMPLETE_DIR_ENABLED=false"
+        - "TRANSMISSION_WATCH_DIR=/downloads/watch"
+        - "TRANSMISSION_DOWNLOAD_DIR=/downloads"
+        - "TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED=true"
+        - "TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME=/config/unpack.sh"
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
@@ -155,7 +173,7 @@ docker_compose:
         - 55555:55555
         - 55555:55555/udp
       volumes:
-        - "{{ appdata_folder }}/resilio:/config"
+        - "{{ app_folder }}/resilio:/config"
         - "{{ data_folder }}:/sync"
       restart: unless-stopped
       environment:

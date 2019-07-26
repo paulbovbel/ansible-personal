@@ -1,0 +1,21 @@
+---
+- name: install zfs
+  apt:
+    name: zfsutils-linux
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+# TODO import pool if necessary
+
+# TODO setup automatic scrub, monitoring
+
+- name: populate kernel parameters
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=.*$'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="{{ kernel_options | join(" ") }}"'
+  become: true
+  notify:
+    - update-grub

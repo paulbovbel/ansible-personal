@@ -1,36 +1,38 @@
 ---
 - name: install openssh-server
   apt:
-    name: "{{ item }}"
+    name:
+      - openssh-server
+      - htop
+      - iotop
     state: latest
     update_cache: true
     cache_valid_time: 3600
   become: true
-  with_items:
-    - openssh-server
-    - htop
-    - iotop
 
-- name: configure hostname
+- name: configure hosts file
   copy:
     content: |
       127.0.0.1	localhost
+      ::1		localhost6.localdomain6	localhost6
       127.0.1.1	{{ inventory_hostname }} {{ ansible_hostname }}
 
-      ::1     localhost ip6-localhost ip6-loopback
+      ::1		localhost6.localdomain6	localhost6
+      fe00::0 ip6-localnet
       ff02::1 ip6-allnodes
       ff02::2 ip6-allrouters
+      ff02::3 ip6-allhosts
     dest: /etc/hosts
   become: true
 
-- name: set authorized key took from file
+- name: set authorized key from file
   authorized_key:
     user: "{{ ansible_user }}"
     state: present
     key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
   register: add_identity_key
 
-- name: Disable empty password login
+- name: disable empty password login
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^#?PermitEmptyPasswords"
@@ -38,7 +40,7 @@
   become: true
   notify: restart sshd
 
-- name: Disable remote root login
+- name: disable remote root login
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^#?PermitRootLogin"
@@ -46,19 +48,25 @@
   become: true
   notify: restart sshd
 
-- name: Disable password login
+- name: disable password login
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^#?PasswordAuthentication"
     line: "PasswordAuthentication no"
-  when: add_identity_key|success and not add_identity_key|skipped
+  when: add_identity_key is success and not add_identity_key is skipped
   become: true
   notify: restart sshd
 
-- name: Enable PAM
+- name: enable PAM
   lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^#?UsePAM"
     line: "UsePAM yes"
   become: true
   notify: restart sshd
+
+- name: disable cloud-init
+  file:
+    path: /etc/cloud/cloud-init.disabled
+    state: touch
+  become: true
