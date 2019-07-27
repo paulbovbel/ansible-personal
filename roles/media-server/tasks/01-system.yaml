@@ -1,15 +1,18 @@
 ---
 - name: install zfs
   apt:
-    name: zfsutils-linux
+    name:
+      - zfsutils-linux
+      - zfs-auto-snapshot
     state: latest
     update_cache: true
     cache_valid_time: 3600
   become: true
 
-# TODO import pool if necessary
-
-# TODO setup automatic scrub, monitoring
+- name: import pool if necessary
+  shell: |
+    zpool import storage || true
+  become: true
 
 - name: populate kernel parameters
   lineinfile:
