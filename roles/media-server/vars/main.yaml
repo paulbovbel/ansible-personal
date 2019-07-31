@@ -143,6 +143,9 @@ docker_compose:
         - NET_ADMIN
       networks:
         - media
+      dns:
+        - 8.8.8.8
+        - 1.1.1.1
       restart: unless-stopped
       volumes:
         - "{{ app_folder }}/transmission/config:/config"

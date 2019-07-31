@@ -96,7 +96,7 @@
 - name: increase number of watches
   sysctl:
     name: fs.inotify.max_user_watches
-    value: "32768"
+    value: "1048576"
     state: present
   become: true
 
