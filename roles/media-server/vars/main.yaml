@@ -59,20 +59,6 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
       restart: unless-stopped
-    emby:
-      image: emby/embyserver:latest
-      container_name: emby
-      networks:
-        - media
-      volumes:
-        - "{{ app_folder }}/emby:/config"
-        - "{{ media_folder }}:/media:ro"
-      environment:
-        - "UID={{ uid }}"
-        - "GID={{ gid }}"
-      # ports:
-      #   - 8096:8096
-      restart: unless-stopped
     tautulli:
       image: linuxserver/tautulli
       container_name: tautulli
