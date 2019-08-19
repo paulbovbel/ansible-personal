@@ -68,6 +68,7 @@
     src: Caddyfile
     dest: /etc/docker/Caddyfile
   become: true
+  notify: restart caddy
 
 - name: determine uid
   command: "id -u {{ ansible_user }}"
@@ -92,6 +93,7 @@
   shell: |
     cd /etc/docker &&
     docker-compose pull && docker-compose up -d --no-deps --remove-orphans --build
+  become: true
 
 - name: increase number of watches
   sysctl:
@@ -103,3 +105,4 @@
 - name: prune docker images
   shell: |
     docker image prune -af --filter="until=24h"
+  become: true

@@ -20,6 +20,11 @@
     enabled: true
   become: true
 
+- name: restart caddy
+  shell:
+    docker restart caddy
+  become: true
+
 - name: update apt cache
   apt:
     update_cache: true
