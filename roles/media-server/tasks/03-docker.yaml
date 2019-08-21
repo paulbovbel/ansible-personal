@@ -65,7 +65,7 @@
 
 - name: create caddyfile
   template:
-    src: Caddyfile
+    src: Caddyfile.j2
     dest: /etc/docker/Caddyfile
   become: true
   notify: restart caddy

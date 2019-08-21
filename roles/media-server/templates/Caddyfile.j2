@@ -1,0 +1,55 @@
+media.bovbel.com {
+  log /log/requests.log {
+    rotate_size 50
+    rotate_age  90
+    rotate_keep 20
+    rotate_compress
+  }
+
+  errors /log/error.log {
+  	rotate_size 50
+  	rotate_age  90
+  	rotate_keep 20
+  	rotate_compress
+  }
+
+  login {
+    login_path /auth
+    google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
+    redirect_check_referer false
+  }
+
+{% if caddy.redirect is defined %}
+  redir 302 {
+    if {path} is /
+    / {{ caddy.redirect }}/
+  }
+{% endif %}
+
+{% for endpoint in caddy.endpoints %}
+  {% if endpoint.type == "proxy" %}
+  proxy {{ endpoint.path }} {{ endpoint.host }}:{{ endpoint.port }} {
+    transparent
+    websocket
+  }
+
+  {% elif endpoint.type == "share" %}
+  browse /share
+  {% endif %}
+
+  {% if endpoint.auth == "basic" %}
+  basicauth {{ endpoint.path }} {{ web_user }} {{ web_password }}
+
+  {% elif endpoint.auth == "oauth" %}
+  jwt {
+    path {{ endpoint.path }}
+    {% for user in endpoint.users %}
+    allow sub {{ user }}
+    {% endfor %}
+    redirect /auth?backTo=https://{hostonly}{rewrite_uri}
+  }
+  {% endif %}
+
+{% endfor %}
+
+}

@@ -51,13 +51,18 @@ docker_compose:
     plex:
       image: plexinc/pms-docker:plexpass
       container_name: plex
-      network_mode: host
+      networks:
+        - media
+      ports:
+        - 32400:32400
       volumes:
         - "{{ app_folder }}/plex:/config"
         - "{{ media_folder }}:/mnt/storage/share:ro"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
+        - "PLEX_UID={{ uid }}"
+        - "PLEX_GID={{ gid }}"
+        - "TZ=America/Toronto"
+        - ADVERTISE_IP=http://{{ ansible_default_ipv4.address }}:32400/
       restart: unless-stopped
     tautulli:
       image: linuxserver/tautulli
@@ -170,7 +175,7 @@ docker_compose:
         - "PGID={{ gid }}"
         - "TZ=America/Toronto"
     watchtower:
-      image: v2tec/watchtower
+      image: containrrr/watchtower
       container_name: watchtower
       networks:
         - media
@@ -190,3 +195,82 @@ docker_compose:
       volumes:
         - "{{ app_folder }}/ombi:/config"
       restart: unless-stopped
+
+admin_users:
+  - paul@bovbel.com
+
+share_users:
+  - paul@bovbel.com
+  - eugene.tkach@gmail.com
+  - igorlitvinov@gmail.com
+
+caddy:
+  redirect: /dashboard
+  endpoints:
+
+  - type: proxy
+    auth: oauth
+    path: /radarr
+    host: radarr
+    port: 7878
+    users: "{{ admin_users }}"
+
+  - type: proxy
+    auth: oauth
+    path: /sonarr
+    host: sonarr
+    port: 8989
+    users: "{{ admin_users }}"
+
+  - type: proxy
+    auth: oauth
+    path: /radarr
+    host: radarr
+    port: 7878
+    users: "{{ admin_users }}"
+
+  - type: proxy
+    auth: oauth
+    path: /tautulli
+    host: tautulli
+    port: 8181
+    users: "{{ admin_users }}"
+
+  - type: proxy
+    auth: oauth
+    path: /jackett
+    host: jackett
+    port: 9117
+    users: "{{ admin_users }}"
+
+  - type: proxy
+    auth: oauth
+    path: /gui
+    host: resilio
+    port: 8888
+    users: "{{ admin_users }}"
+
+  - type: proxy
+    auth: oauth
+    path: /dashboard
+    host: "{{ ansible_default_ipv4.address }}"
+    port: 9090
+    users: "{{ admin_users }}"
+
+  - type: proxy
+    auth: oauth
+    path: /ombi
+    host: ombi
+    port: 3579
+    users: "{{ share_users }}"
+
+  - type: proxy
+    auth: basic
+    path: /transmission
+    host: transmission
+    port: 9091
+
+  - type: share
+    auth: oauth
+    path: /share
+    users: "{{ share_users }}"
