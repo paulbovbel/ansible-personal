@@ -20,9 +20,5 @@ To deploy homelab:
 `ansible-playbook -Kvvi inventory/homelab playbooks/homelab.yaml`
 
 TODO:
-  - dockerize remaining media services (cockpit, SMTP, AWS DDNS, samba)
-  - use an internal docker network to avoid exposing ports from internal services (use caddy as only bridge to external network)
   - make a fancy login template for caddy (https://github.com/tarent/loginsrv/blob/master/README.md#templating)
-  - use SSO for caddy (https://caddyserver.com/docs/http.login)
-  - mount NFS in docker (https://stackoverflow.com/questions/46570355/mounting-nfs-shares-inside-docker-container-using-shell-script)
-    - pending https://github.com/moby/moby/issues/32582
+
