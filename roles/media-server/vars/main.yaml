@@ -195,13 +195,6 @@ docker_compose:
         - "{{ app_folder }}/ombi:/config"
       restart: unless-stopped
 
-admin_users:
-  - paul@bovbel.com
-
-share_users:
-  - eugene.tkach@gmail.com
-  - igorlitvinov@gmail.com
-
 caddy:
   redirect: /dashboard
   endpoints:
