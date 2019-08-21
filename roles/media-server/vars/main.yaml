@@ -138,8 +138,8 @@ docker_compose:
         - "{{ app_folder }}/transmission/home:/data/transmission-home"
         - "{{ download_folder }}:/downloads"
       environment:
-        - "PUID=1000"
-        - "PGID=1000"
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
         - "TZ=America/Toronto"
         - "WEBPROXY_ENABLED=false"
         - "LOCAL_NETWORK=172.25.0.0/16"
@@ -166,8 +166,8 @@ docker_compose:
         - "{{ data_folder }}:/sync"
       restart: unless-stopped
       environment:
-        - PUID=1000
-        - PGID=1000
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
         - "TZ=America/Toronto"
     watchtower:
       image: v2tec/watchtower
@@ -176,4 +176,17 @@ docker_compose:
         - media
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+      restart: unless-stopped
+    ombi:
+      image: linuxserver/ombi
+      container_name: ombi
+      networks:
+        - media
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+        - "TZ=America/Toronto"
+        - BASE_URL=/ombi
+      volumes:
+        - "{{ app_folder }}/ombi:/config"
       restart: unless-stopped

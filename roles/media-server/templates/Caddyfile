@@ -87,4 +87,9 @@ media.bovbel.com {
     websocket
   }
 
+  proxy /ombi ombi:3579 {
+    transparent
+    websocket
+  }
+
 }
