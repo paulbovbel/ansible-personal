@@ -191,7 +191,6 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
         - "TZ=America/Toronto"
-        - BASE_URL=/ombi
       volumes:
         - "{{ app_folder }}/ombi:/config"
       restart: unless-stopped
@@ -200,7 +199,6 @@ admin_users:
   - paul@bovbel.com
 
 share_users:
-  - paul@bovbel.com
   - eugene.tkach@gmail.com
   - igorlitvinov@gmail.com
 
@@ -258,11 +256,11 @@ caddy:
     users: "{{ admin_users }}"
 
   - type: proxy
-    auth: oauth
+    auth: null
     path: /ombi
     host: ombi
     port: 3579
-    users: "{{ share_users }}"
+    users: "{{ admin_users + share_users }}"
 
   - type: proxy
     auth: basic
@@ -273,4 +271,4 @@ caddy:
   - type: share
     auth: oauth
     path: /share
-    users: "{{ share_users }}"
+    users: "{{ admin_users + share_users }}"

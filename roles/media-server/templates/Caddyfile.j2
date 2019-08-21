@@ -46,7 +46,7 @@ media.bovbel.com {
     {% for user in endpoint.users %}
     allow sub {{ user }}
     {% endfor %}
-    redirect /auth?backTo=https://{hostonly}{rewrite_uri}
+    redirect /auth?backTo={scheme}://{host}{{ endpoint.path }}
   }
   {% endif %}
 

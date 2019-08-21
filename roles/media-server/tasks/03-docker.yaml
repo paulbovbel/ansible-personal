@@ -67,6 +67,7 @@
   template:
     src: Caddyfile.j2
     dest: /etc/docker/Caddyfile
+    lstrip_blocks: true
   become: true
   notify: restart caddy
 
