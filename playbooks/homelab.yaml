@@ -1,4 +1,0 @@
----
-- hosts: media_server
-  roles:
-    - media-server

@@ -71,4 +71,34 @@
   become: true
   with_items: "{{ snap_install }}"
 
+- name: install python3 venv and pip
+  apt:
+    name:
+      - python3-pip
+      - python3-venv
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: install ansible
+  pip:
+    name: ansible
+    state: latest
+    virtualenv: "/opt/virtualenv"
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: true
+
+- name: symlink ansible
+  file:
+    src: "/opt/virtualenv/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: true
+  become: true
+  with_items:
+    - ansible
+    - ansible-playbook
+    - ansible-vault
+
   # TODO(pbovbel) configure vscode

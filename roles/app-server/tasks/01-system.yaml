@@ -1,4 +1,12 @@
 ---
+- name: install hwe
+  apt:
+    name: "linux-generic-hwe-{{ ansible_distribution_version }}"
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
 - name: install zfs
   apt:
     name:
@@ -8,11 +16,13 @@
     update_cache: true
     cache_valid_time: 3600
   become: true
+  when: zfs_pool is defined
 
 - name: import pool if necessary
   shell: |
-    zpool import storage || true
+    zpool import {{ zfs_pool }} || true
   become: true
+  when: zfs_pool is defined
 
 - name: populate kernel parameters
   lineinfile:
@@ -22,3 +32,8 @@
   become: true
   notify:
     - update-grub
+
+- name: set timezone
+  timezone:
+    name: America/Toronto
+  become: true

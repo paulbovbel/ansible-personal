@@ -3,8 +3,8 @@
   apt:
     name:
     - cockpit
-    - cockpit-docker
     - cockpit-pcp
+    default_release: "{{ ansible_distribution_release }}-backports"
     state: latest
     update_cache: true
     cache_valid_time: 3600

@@ -17,7 +17,8 @@ To deploy on the current machine:
 
 To deploy homelab:
 
-`ansible-playbook -Kvvi inventory/homelab playbooks/homelab.yaml`
+`ansible-playbook -Kvvi inventory/franklin playbooks/lab.yaml`
+`ansible-playbook -Kvvi inventory/richmond playbooks/lab.yaml`
 
 TODO:
   - make a fancy login template for caddy (https://github.com/tarent/loginsrv/blob/master/README.md#templating)

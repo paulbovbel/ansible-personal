@@ -1,4 +1,5 @@
-media.bovbel.com {
+(logging)
+{
   log /log/requests.log {
     rotate_size 50
     rotate_age  90
@@ -12,12 +13,20 @@ media.bovbel.com {
   	rotate_keep 20
   	rotate_compress
   }
+}
 
+(login)
+{
   login {
     login_path /auth
     google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
     redirect_check_referer false
   }
+}
+
+{{ inventory_hostname }} {
+  import logging
+  import login
 
 {% if caddy.redirect is defined %}
   redir 302 {
@@ -26,9 +35,9 @@ media.bovbel.com {
   }
 {% endif %}
 
-{% for endpoint in caddy.endpoints %}
+{% for endpoint in caddy.endpoints.values() %}
   {% if endpoint.type == "proxy" %}
-  proxy {{ endpoint.path }} {{ endpoint.host }}:{{ endpoint.port }} {
+  proxy {{ endpoint.path }} {{ endpoint.scheme | default('http') }}://{{ endpoint.host }}:{{ endpoint.port }} {
     transparent
     websocket
   }
@@ -53,3 +62,33 @@ media.bovbel.com {
 {% endfor %}
 
 }
+
+{% for remote in caddy.remotes.values() %}
+
+{{ remote.host }}.{{ remote.domain }} {
+  import logging
+  import login
+
+  {% if remote.auth == "basic" %}
+  basicauth / {{ web_user }} {{ web_password }}
+
+  {% elif remote.auth == "oauth" %}
+
+  jwt {
+    path /
+    {% for user in remote.users %}
+    allow sub {{ user }}
+    {% endfor %}
+    redirect /auth?backTo={scheme}://{host}
+  }
+  {% endif %}
+
+  proxy / {{ remote.scheme | default('http') }}://{{ remote.host }}:{{ remote.port }} {
+    transparent
+    websocket
+    insecure_skip_verify
+  }
+
+}
+
+{% endfor %}
