@@ -1,4 +1,6 @@
 ---
 - hosts: app_server
   roles:
-    - app-server
+    - base
+    - cockpit
+    - media-server

@@ -65,8 +65,8 @@
   become: true
   notify: restart sshd
 
-- name: disable cloud-init
-  file:
-    path: /etc/cloud/cloud-init.disabled
-    state: touch
-  become: true
+# - name: disable cloud-init
+#   file:
+#     path: /etc/cloud/cloud-init.disabled
+#     state: touch
+#   become: true

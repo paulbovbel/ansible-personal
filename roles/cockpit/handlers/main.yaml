@@ -1,0 +1,7 @@
+---
+- name: restart cockpit
+  service:
+    name: cockpit
+    state: restarted
+    enabled: true
+  become: true

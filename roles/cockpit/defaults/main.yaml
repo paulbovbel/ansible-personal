@@ -1,0 +1,11 @@
+---
+caddy:
+    redirect: /dashboard/
+    endpoints:
+      dashboard:
+        type: proxy
+        auth: oauth
+        path: /dashboard
+        host: "{{ ansible_default_ipv4.address }}"
+        port: 9090
+        users: "{{ admin_users }}"

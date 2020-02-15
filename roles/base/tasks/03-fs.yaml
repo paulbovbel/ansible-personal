@@ -1,0 +1,82 @@
+---
+- name: install zfs
+  apt:
+    name:
+      - zfsutils-linux
+      - zfs-auto-snapshot
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  when: zfs_pool is defined
+
+- name: import pool if necessary
+  shell: |
+    zpool import {{ zfs_pool }} || true
+  become: true
+  when: zfs_pool is defined
+
+- name: install nfs client
+  apt:
+    pkg: nfs-common
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  when: nfs_mounts is defined
+
+- name: Ensure directory exists
+  file:
+    path: "{{ item.mount }}"
+    state: directory
+  become: true
+  with_items:
+    - "{{ nfs_mounts }}"
+  when: nfs_mounts is defined
+
+- name: configure nfs mounts
+  mount:
+    name: "{{ item.mount }}"
+    src: "{{ item.url }}"
+    fstype: nfs
+    opts: defaults,noatime,nodiratime,_netdev,auto,x-systemd.requires=network-online.target,x-systemd.before=docker.service
+    state: mounted
+  become: true
+  with_items:
+    - "{{ nfs_mounts }}"
+  when: nfs_mounts is defined
+
+- name: install open-iscsi
+  apt:
+    pkg: open-iscsi
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+  when: iscsi_host is defined
+
+- name: start open-iscsi
+  systemd:
+    name: iscsid.service
+    state: started
+    enabled: true
+  become: true
+  when: iscsi_host is defined
+
+- name: discover iscsi
+  open_iscsi:
+    portal: "{{ iscsi_host }}"
+    discover: true
+    login: true
+    auto_node_startup: true
+  become: true
+  when: iscsi_host is defined
+
+- name: configure iscsi mount
+  mount:
+    name: "{{ app_folder }}"
+    src: "/dev/sdb1"
+    fstype: ext4
+    opts: defaults,noatime,nodiratime,_netdev,auto,x-systemd.requires=network-online.target,x-systemd.before=docker.service
+    state: mounted
+  become: true

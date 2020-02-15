@@ -7,22 +7,11 @@
     cache_valid_time: 3600
   become: true
 
-- name: install zfs
-  apt:
-    name:
-      - zfsutils-linux
-      - zfs-auto-snapshot
-    state: latest
-    update_cache: true
-    cache_valid_time: 3600
+- name: enable wait online
+  systemd:
+    name: systemd-networkd-wait-online.service
+    enabled: true
   become: true
-  when: zfs_pool is defined
-
-- name: import pool if necessary
-  shell: |
-    zpool import {{ zfs_pool }} || true
-  become: true
-  when: zfs_pool is defined
 
 - name: populate kernel parameters
   lineinfile:

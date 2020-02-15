@@ -47,7 +47,7 @@
   {% endif %}
 
   {% if endpoint.auth == "basic" %}
-  basicauth {{ endpoint.path }} {{ web_user }} {{ web_password }}
+  basicauth {{ endpoint.path }} {{ endpoint.user }} {{ endpoint.password }}
 
   {% elif endpoint.auth == "oauth" %}
   jwt {
@@ -55,7 +55,7 @@
     {% for user in endpoint.users %}
     allow sub {{ user }}
     {% endfor %}
-    redirect /auth?backTo={scheme}://{host}{{ endpoint.path }}
+    redirect /auth?backTo={scheme}://{host}{rewrite_uri}
   }
   {% endif %}
 

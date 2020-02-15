@@ -1,0 +1,51 @@
+---
+- name: stop docker
+  service:
+    name: docker
+    state: stopped
+  become: true
+
+- name: configure jackett basepath
+  replace:
+    path: "{{ app_folder }}/jackett/Jackett/ServerConfig.json"
+    regexp: '"BasePathOverride": ".*",'
+    replace: '"BasePathOverride": "/jackett",'
+
+- name: configure radarr basepath
+  replace:
+    path: "{{ app_folder }}/radarr/config.xml"
+    regexp: '<UrlBase>.*</UrlBase>'
+    replace: '<UrlBase>radarr</UrlBase>'
+
+- name: configure sonarr basepath
+  replace:
+    path: "{{ app_folder }}/sonarr/config.xml"
+    regexp: '<UrlBase>.*</UrlBase>'
+    replace: '<UrlBase>sonarr</UrlBase>'
+
+- name: configure tautulli basepath
+  replace:
+    path: "{{ app_folder }}/tautulli/config.ini"
+    regexp: 'http_root = ".*"'
+    replace: 'http_root = tautulli'
+
+- name: configure tautulli proxy
+  replace:
+    path: "{{ app_folder }}/tautulli/config.ini"
+    regexp: 'http_proxy = 0'
+    replace: 'http_proxy = 1'
+
+- name: disable transmission whitelist
+  replace:
+    path: "{{ app_folder }}/transmission/settings.json"
+    regexp: '"rpc-host-whitelist-enabled": true,'
+    replace: '"rpc-host-whitelist-enabled": false,'
+  ignore_errors: true
+
+- name: start docker
+  service:
+    name: docker
+    state: started
+  become: true
+
+  # TODO unpack.sh?

@@ -64,14 +64,6 @@
   become: true
   notify: restart docker
 
-- name: create caddyfile
-  template:
-    src: Caddyfile.j2
-    dest: /etc/docker/Caddyfile
-    lstrip_blocks: true
-  become: true
-  notify: restart caddy
-
 - name: determine uid
   command: "id -u {{ ansible_user }}"
   register: uid
