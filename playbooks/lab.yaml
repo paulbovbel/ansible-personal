@@ -3,4 +3,9 @@
   roles:
     - base
     - cockpit
+
+- hosts: media_server
+  roles:
+    - base
+    - cockpit
     - media-server

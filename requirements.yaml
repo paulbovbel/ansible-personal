@@ -1,0 +1,4 @@
+---
+roles:
+  - src: stuvusit.smartd
+    version: 3bc09cc981507b39e4773b15e11cd8812508f96b
