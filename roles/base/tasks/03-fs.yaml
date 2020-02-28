@@ -80,3 +80,27 @@
     opts: defaults,noatime,nodiratime,_netdev,auto,x-systemd.requires=network-online.target,x-systemd.before=docker.service
     state: mounted
   become: true
+
+- name: install smartmontools
+  apt:
+    name:
+    - smartmontools
+    - mailutils
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: create smartd configuration
+  template:
+    src: smartd.conf.j2
+    dest: /etc/smartd.conf
+    validate: smartd -q onecheck -c %s
+  notify: restart smartd
+  become: true
+
+- name: enable smartd
+  service:
+    name: smartd
+    state: started
+    enabled: yes

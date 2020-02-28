@@ -3,7 +3,12 @@
   service:
     name: sshd
     state: restarted
-    enabled: true
+  become: true
+
+- name: restart smartd
+  service:
+    name: smartd
+    state: restarted
   become: true
 
 - name: update-grub
