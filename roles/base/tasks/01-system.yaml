@@ -27,10 +27,11 @@
     name: America/Toronto
   become: true
 
-- name: install mailutils
+- name: install mail
   apt:
     name:
-    - mailutils
+      - sendmail-bin
+      - bsd-mailx
     state: latest
     update_cache: true
     cache_valid_time: 3600

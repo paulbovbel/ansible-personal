@@ -7,6 +7,3 @@ kernel_options:
   - l1tf=off
   # disable MDS mitigations (https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/MDS)
   - mds=off
-
-smartd_default_mail_recipients:
-  - "{{ ansible_email }}"

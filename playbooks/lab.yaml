@@ -9,3 +9,13 @@
     - base
     - cockpit
     - media-server
+
+- hosts:
+    - app_server
+    - media_server
+  roles:
+    - role: stuvusit.smartd
+      become: true
+      vars:
+        smartd_default_mail_recipients: ["{{ ansible_email }}"]
+        smartd_default_mail_frequency: test
