@@ -79,13 +79,15 @@
     discover: true
     login: true
     auto_node_startup: true
+    show_nodes: true
   become: true
   when: iscsi_host is defined
+  register: iscsi
 
 - name: configure iscsi mount
   mount:
     name: "{{ app_folder }}"
-    src: "/dev/sdb1"
+    src: "/dev/disk/by-path/ip-{{ iscsi_host }}:3260-iscsi-{{ iscsi.nodes[0] }}-lun-0-part1"
     fstype: ext4
     opts: defaults,noatime,nodiratime,_netdev,auto,x-systemd.requires=network-online.target,x-systemd.before=docker.service
     state: mounted
