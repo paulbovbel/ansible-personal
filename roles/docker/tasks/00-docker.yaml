@@ -83,7 +83,7 @@
     dest: /etc/docker/docker-compose.yaml
   become: true
 
-- name: pull and run containers
+- name: configure containers
   shell: |
     cd /etc/docker &&
     docker-compose pull && docker-compose up --no-deps --no-start --remove-orphans --build

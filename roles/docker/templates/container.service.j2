@@ -3,12 +3,12 @@
 [Unit]
 Description=Start docker container {{ service.key }}
 Before=multi-user.target
-Requires=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
-After=docker.service {{ service.value['x-systemd-requires'] | default([]) |join(' ') }}
+BindsTo=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
+After=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
 
 [Service]
 ExecStart=/usr/bin/docker start {{ service.key }} -a
-Type=exec
+Type=simple
 RestartSec=5s
 Restart=always
 SyslogIdentifier={{ service.key }}
@@ -16,4 +16,4 @@ TimeoutStartSec=600s
 TimeoutStopSec=5s
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
