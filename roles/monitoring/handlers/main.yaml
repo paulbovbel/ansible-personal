@@ -1,0 +1,5 @@
+---
+- name: restart caddy
+  shell:
+    docker restart caddy
+  become: true

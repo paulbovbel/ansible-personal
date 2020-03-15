@@ -1,0 +1,23 @@
+docker_compose:
+  services:
+    caddy:
+      build:
+        args:
+          plugins: login,jwt
+        context: github.com/abiosoft/caddy-docker.git
+      container_name: caddy
+      networks:
+        - apps
+      ports:
+        - 80:80
+        - 443:443
+      restart: "no"
+      volumes:
+        - /etc/docker/Caddyfile:/etc/Caddyfile:ro
+        - "{{ app_folder }}/caddy:/root/.caddy"
+        - "{{ app_folder }}/caddy/log:/log"
+        - "{{ share_folder }}:/srv/share:ro"
+
+# caddy:
+#   endpoints: {}
+#   remotes: {}

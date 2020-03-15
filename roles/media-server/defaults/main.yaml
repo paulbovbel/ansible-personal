@@ -24,7 +24,7 @@ docker_compose:
         - ADVERTISE_IP=http://{{ ansible_default_ipv4.address }}:32400/
       devices:
         - /dev/dri:/dev/dri
-      restart: unless-stopped
+      restart: "no"
     tautulli:
       image: linuxserver/tautulli
       container_name: tautulli
@@ -35,7 +35,7 @@ docker_compose:
       volumes:
         - "{{ app_folder }}/tautulli:/config"
         - "{{ app_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
-      restart: unless-stopped
+      restart: "no"
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
@@ -52,7 +52,7 @@ docker_compose:
         - "{{ app_folder }}/sonarr:/config"
         - "{{ tv_folder }}:/tv"
         - "{{ download_folder }}:/downloads"
-      restart: unless-stopped
+      restart: "no"
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
@@ -69,7 +69,7 @@ docker_compose:
         - "{{ app_folder }}/radarr:/config"
         - "{{ movies_folder }}:/movies"
         - "{{ download_folder }}:/downloads"
-      restart: unless-stopped
+      restart: "no"
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
@@ -81,7 +81,7 @@ docker_compose:
         - apps
       volumes:
         - "{{ app_folder }}/jackett:/config"
-      restart: unless-stopped
+      restart: "no"
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
@@ -93,7 +93,7 @@ docker_compose:
         - apps
       ports:
         - 51413:51413
-      restart: unless-stopped
+      restart: "no"
       volumes:
         - "{{ app_folder }}/transmission:/config"
         - "{{ download_folder }}:/downloads"

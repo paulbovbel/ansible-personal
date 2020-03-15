@@ -24,6 +24,7 @@
     regexp: "ZED_EMAIL_ADDR"
     line: "ZED_EMAIL_ADDR='{{ ansible_email }}'"
   become: true
+  when: zfs_pool is defined
   notify: restart zed
 
 - name: install nfs client
@@ -49,7 +50,7 @@
     name: "{{ item.mount }}"
     src: "{{ item.url }}"
     fstype: nfs
-    opts: defaults,noatime,nodiratime,_netdev,auto,x-systemd.requires=network-online.target,x-systemd.before=docker.service
+    opts: "{{ network_mount_options | join(',') }}"
     state: mounted
   become: true
   with_items:
@@ -84,12 +85,29 @@
   when: iscsi_host is defined
   register: iscsi
 
+- name: discover iscsi
+  open_iscsi:
+    portal: "{{ iscsi_host }}"
+    discover: true
+    show_nodes: true
+  become: true
+  when: iscsi_host is defined
+  register: iscsi
+
+- name: login to iscsi
+  open_iscsi:
+    target: "{{ iscsi.nodes[0] }}"
+    login: true
+    auto_node_startup: true
+  become: true
+  when: iscsi_host is defined
+
 - name: configure iscsi mount
   mount:
     name: "{{ app_folder }}"
     src: "/dev/disk/by-path/ip-{{ iscsi_host }}:3260-iscsi-{{ iscsi.nodes[0] }}-lun-0-part1"
     fstype: ext4
-    opts: defaults,noatime,nodiratime,_netdev,auto,x-systemd.requires=network-online.target,x-systemd.before=docker.service
+    opts: "{{ network_mount_options | join(',') }}"
     state: mounted
   become: true
   when: iscsi_host is defined

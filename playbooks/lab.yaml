@@ -19,3 +19,13 @@
       vars:
         smartd_default_mail_recipients: ["{{ ansible_email }}"]
         smartd_default_mail_frequency: test
+  tasks:
+    - name: update all remaining packages
+      apt:
+        upgrade: dist
+        force: true
+      become: true
+
+    - name: clean apt
+      shell: apt-get autoremove --purge -y && apt-get clean
+      become: true
