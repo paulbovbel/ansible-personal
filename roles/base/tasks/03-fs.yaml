@@ -1,4 +1,6 @@
 ---
+# TODO(pbovbel) configure ppa:jonathonf/zfs
+
 - name: install zfs
   apt:
     name:

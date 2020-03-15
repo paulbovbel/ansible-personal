@@ -3,6 +3,7 @@
   roles:
     - base
     - cockpit
+    - caddy
 
 - hosts: media_server
   roles:
@@ -18,7 +19,6 @@
       become: true
       vars:
         smartd_default_mail_recipients: ["{{ ansible_email }}"]
-        smartd_default_mail_frequency: test
   tasks:
     - name: update all remaining packages
       apt:
