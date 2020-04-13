@@ -10,8 +10,6 @@ kernel_options:
 
 network_mount_options:
   - defaults
-  - auto
-  - _netdev
   - noatime
   - nodiratime
   - x-systemd.requires=network-online.target
