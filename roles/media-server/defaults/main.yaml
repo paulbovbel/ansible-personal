@@ -51,7 +51,7 @@ docker_compose:
         - "/etc/localtime:/etc/localtime:ro"
         - "{{ app_folder }}/sonarr:/config"
         - "{{ tv_folder }}:/tv"
-        - "{{ download_folder }}:/downloads"
+        - "{{ downloads_folder }}:/downloads"
       restart: "no"
       environment:
         - "PUID={{ uid }}"
@@ -68,7 +68,7 @@ docker_compose:
         - /etc/localtime:/etc/localtime:ro
         - "{{ app_folder }}/radarr:/config"
         - "{{ movies_folder }}:/movies"
-        - "{{ download_folder }}:/downloads"
+        - "{{ downloads_folder }}:/downloads"
       restart: "no"
       environment:
         - "PUID={{ uid }}"
@@ -96,7 +96,7 @@ docker_compose:
       restart: "no"
       volumes:
         - "{{ app_folder }}/transmission:/config"
-        - "{{ download_folder }}:/downloads"
+        - "{{ downloads_folder }}:/downloads"
       environment:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
