@@ -13,3 +13,4 @@ network_mount_options:
   - noatime
   - nodiratime
   - x-systemd.requires=network-online.target
+  - _netdev
