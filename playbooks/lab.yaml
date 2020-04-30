@@ -9,23 +9,18 @@
   roles:
     - base
     - cockpit
+    - caddy
     - media-server
 
 - hosts:
     - app_server
     - media_server
-  roles:
-    - role: stuvusit.smartd
-      become: true
-      vars:
-        smartd_default_mail_recipients: ["{{ ansible_email }}"]
   tasks:
     - name: update all remaining packages
       apt:
         upgrade: dist
         force: true
       become: true
-
     - name: clean apt
       shell: apt-get autoremove --purge -y && apt-get clean
       become: true

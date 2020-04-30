@@ -102,3 +102,13 @@
     state: mounted
   become: true
   when: iscsi_host is defined
+
+- name: include smartd role
+  include_role:
+    name: stuvusit.smartd
+    apply:
+      become: true
+  vars:
+    smartd_default_mail_recipients:
+      - "{{ ansible_email }}"
+  when: ansible_virtualization_role != "guest"
