@@ -27,11 +27,12 @@
     name: America/Toronto
   become: true
 
-- name: install mail
+- name: install stuff
   apt:
     name:
-      - sendmail-bin
-      - bsd-mailx
+      - htop
+      - iotop
+      - ncdu
     state: latest
     update_cache: true
     cache_valid_time: 3600

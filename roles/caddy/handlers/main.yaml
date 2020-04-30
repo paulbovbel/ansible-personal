@@ -3,3 +3,9 @@
   shell:
     docker restart caddy
   become: true
+
+- name: restart fail2ban
+  service:
+    name: fail2ban
+    state: restarted
+  become: true

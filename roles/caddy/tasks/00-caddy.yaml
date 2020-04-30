@@ -6,3 +6,39 @@
     lstrip_blocks: true
   become: true
   notify: restart caddy
+
+- name: install fail2ban
+  apt:
+    name: fail2ban
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: configure fail2ban filter
+  copy:
+    dest: '/etc/fail2ban/filter.d/caddy-basic-auth.conf'
+    content: |
+      # fail2ban filter configuration for caddy basicauth
+
+      [Definition]
+      failregex = ^ \[ERROR.*BasicAuth.*incorrect\. <HOST> .*$
+      ignoreregex =
+
+      datepattern = {^LN-BEG}
+  become: true
+  notify: restart fail2ban
+
+- name: configure fail2ban jail
+  blockinfile:
+    marker: "# {mark} include caddy fail2ban config"
+    path: '/etc/fail2ban/jail.local'
+    block: |
+      [caddy-basic-auth]
+      enabled  = true
+      port     = http,https
+      logpath  = {{ app_folder }}/caddy/log/error.log
+    state: present
+    create: true
+  become: true
+  notify: restart fail2ban
