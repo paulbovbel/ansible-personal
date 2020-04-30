@@ -1,0 +1,33 @@
+
+admin_users: []
+share_users: []
+
+docker_compose:
+  services:
+    caddy:
+      # build:
+      #   args:
+      #     plugins: login,jwt
+      #   context: github.com/abiosoft/caddy-docker.git
+      image: paulbovbel/caddy:latest
+      container_name: caddy
+      networks:
+        - apps
+      ports:
+        - 80:80
+        - 443:443
+      restart: "no"
+      volumes:
+        - /etc/docker/Caddyfile:/etc/Caddyfile:ro
+        - "{{ app_folder }}/caddy:/root/.caddy"
+        - "{{ app_folder }}/caddy/log:/log"
+        - "{{ share_folder }}:/srv/share:ro"
+
+caddy:
+  endpoints:
+    share:
+      type: share
+      auth: oauth
+      path: /share
+      users: "{{ admin_users + share_users | default([]) }}"
+  remotes: {}

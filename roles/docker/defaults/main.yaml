@@ -1,0 +1,28 @@
+docker_compose:
+  version: '3.7'
+  networks:
+    apps:
+      name: apps
+  services:
+    # TODO(pbovbel) fix SMTP server
+    # smtp:
+    #   container_name: smtp
+    #   image: namshi/smtp
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - '25:25'
+    #   environment:
+    #     - "RELAY_NETWORKS=:10.0.0.0/8:172.16.0.0/12:192.168.0.0/16"
+    #     - "GMAIL_USER={{ ansible_email }}"
+    #     - "GMAIL_PASSWORD={{ gmail_access_key }}"
+    watchtower:
+      image: containrrr/watchtower
+      container_name: watchtower
+      networks:
+        - apps
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      restart: "no"
+
+docker_systemd_dir: /etc/docker/systemd
