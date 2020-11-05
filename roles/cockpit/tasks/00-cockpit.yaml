@@ -5,8 +5,6 @@
     - cockpit
     - cockpit-bridge
     - cockpit-dashboard
-    - cockpit-docker
-    - cockpit-networkmanager
     - cockpit-packagekit
     - cockpit-pcp
     - cockpit-storaged

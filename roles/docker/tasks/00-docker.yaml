@@ -18,7 +18,8 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
-      - cockpit-docker
+    # - cockpit-docker  # removed in 20.04
+      - python3-docker
     state: latest
     update_cache: true
     cache_valid_time: 3600
@@ -82,6 +83,11 @@
     content: "{{ docker_compose | to_nice_yaml }}"
     dest: /etc/docker/docker-compose.yaml
   become: true
+
+- name: docker login
+  docker_login:
+    username: "{{ docker_username }}"
+    password: "{{ docker_password }}"
 
 - name: configure containers
   shell: |

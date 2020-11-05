@@ -9,6 +9,15 @@ ansible_become_pass: !vault |
   3139
 ansible_email: paul@bovbel.com
 
+docker_username: paulbovbel
+docker_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  38313336353934356666323239323864623536366132653739383733363338626430616638393537
+  3830343331653064313831366561356465303365653438630a613666363163356439383435646366
+  36653933316138316635633435313066656436303765363531303633613066623265623837613162
+  3934633763376364650a366630366664393835383632393830343331363565383637623431323636
+  3664
+
 web_user: pbovbel
 web_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
@@ -47,9 +56,6 @@ aws_secret_access_key: !vault |
   3939366334653533380a366635343864666461396463383965613664373534656533393163346662
   31636131323563383339656664636165643437363838316532656563323466333465653233656630
   3965306538613234646336636438316366323532303638653834
-
-admin_users:
-  - paul@bovbel.com
 
 # Useful paths
 data_folder: "/home/{{ ansible_user }}"
@@ -112,6 +118,10 @@ docker_compose:
         ROUTE53_DOMAIN: metal.bovbel.com
 
 caddy:
+  users:
+    - name: paul@bovbel.com
+      roles: ['admin', 'share']
+
   remotes:
     franklin:
       host: franklin
@@ -119,20 +129,20 @@ caddy:
       auth: oauth
       scheme: https
       port: 443
-      users: "{{ admin_users }}"
+      roles: ['admin']
 
-    metal:
-      host: metal
-      domain: bovbel.com
-      auth: oauth
-      scheme: https
-      port: 443
-      users: "{{ admin_users }}"
+    # metal:
+    #   host: metal
+    #   domain: bovbel.com
+    #   auth: oauth
+    #   scheme: https
+    #   port: 443
+    #   roles: ['admin']
 
-    octopi:
-      host: octopi
-      domain: bovbel.com
-      auth: basic
-      user: "{{ web_user }}"
-      password: "{{ web_password }}"
-      port: 80
+    # octopi:
+    #   host: octopi
+    #   domain: bovbel.com
+    #   auth: basic
+    #   user: "{{ web_user }}"
+    #   password: "{{ web_password }}"
+    #   port: 80

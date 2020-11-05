@@ -10,9 +10,14 @@ ansible_become_pass: !vault |
 
 ansible_email: sean.vedell@gmail.com
 
-admin_users:
-  - sean.vedell@gmail.com
-  - paul@bovbel.com
+docker_username: paulbovbel
+docker_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  38313336353934356666323239323864623536366132653739383733363338626430616638393537
+  3830343331653064313831366561356465303365653438630a613666363163356439383435646366
+  36653933316138316635633435313066656436303765363531303633613066623265623837613162
+  3934633763376364650a366630366664393835383632393830343331363565383637623431323636
+  3664
 
 web_user: svedell
 web_password: !vault |
@@ -108,3 +113,10 @@ docker_compose:
       x-systemd-requires:
         - mnt-app.mount
         - mnt-downloads.mount
+
+caddy:
+  users:
+    - name: paul@bovbel.com
+      roles: ['admin', 'share']
+    - name: sean.vedell@gmail.com
+      roles: ['admin', 'share']

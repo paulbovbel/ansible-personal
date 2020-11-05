@@ -110,7 +110,7 @@ caddy:
       path: /radarr
       host: radarr
       port: 7878
-      users: "{{ admin_users }}"
+      roles: ['admin']
 
     sonarr:
       type: proxy
@@ -118,7 +118,7 @@ caddy:
       path: /sonarr
       host: sonarr
       port: 8989
-      users: "{{ admin_users }}"
+      roles: ['admin']
 
     tautulli:
       type: proxy
@@ -126,7 +126,7 @@ caddy:
       path: /tautulli
       host: tautulli
       port: 8181
-      users: "{{ admin_users }}"
+      roles: ['admin']
 
     jackett:
       type: proxy
@@ -134,7 +134,7 @@ caddy:
       path: /jackett
       host: jackett
       port: 9117
-      users: "{{ admin_users }}"
+      roles: ['admin']
 
     transmission:
       type: proxy

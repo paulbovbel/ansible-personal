@@ -1,15 +1,9 @@
 
-admin_users: []
-share_users: []
-
 docker_compose:
   services:
     caddy:
-      # build:
-      #   args:
-      #     plugins: login,jwt
-      #   context: github.com/abiosoft/caddy-docker.git
-      image: paulbovbel/caddy:latest
+      # TODO(pbovbel): build a caddy image containing jwt and auth_portal on demand
+      image: paulbovbel/caddy:2.2.1
       container_name: caddy
       networks:
         - apps
@@ -18,16 +12,19 @@ docker_compose:
         - 443:443
       restart: "no"
       volumes:
-        - /etc/docker/Caddyfile:/etc/Caddyfile:ro
-        - "{{ app_folder }}/caddy:/root/.caddy"
-        - "{{ app_folder }}/caddy/log:/log"
-        - "{{ share_folder }}:/srv/share:ro"
+        - /etc/docker/Caddyfile:/etc/caddy/Caddyfile:ro
+        - "{{ app_folder }}/caddy/data:/data"
+        - "{{ app_folder }}/caddy/config:/config"
+        - "{{ share_folder }}:/share:ro"
 
 caddy:
+  users: []
   endpoints:
     share:
       type: share
       auth: oauth
       path: /share
-      users: "{{ admin_users + share_users | default([]) }}"
+      roles:
+        - share
   remotes: {}
+  token_secret: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') | to_uuid }}"

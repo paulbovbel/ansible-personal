@@ -1,2 +1,3 @@
 ---
 - import_tasks: 00-docker.yaml
+  tags: docker

@@ -8,4 +8,4 @@ caddy:
         path: /dashboard
         host: "{{ ansible_default_ipv4.address }}"
         port: 9090
-        users: "{{ admin_users }}"
+        roles: ['admin']

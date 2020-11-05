@@ -1,63 +1,87 @@
-(logging)
 {
-  log /log/requests.log {
-    rotate_size 50
-    rotate_age  90
-    rotate_keep 20
-    rotate_compress
-  }
+    email {{ ansible_email }}
+}
 
-  errors /log/error.log {
-  	rotate_size 50
-  	rotate_age  90
-  	rotate_keep 20
-  	rotate_compress
+(auth) {
+  route /auth* {
+    auth_portal {
+      path /auth
+      context {args.0}
+      backends {
+        google_oauth2_backend {
+          method oauth2
+          realm google
+          provider google
+          client_id {{ google_oauth2_client_id }}
+          client_secret {{ google_oauth2_client_secret }}
+          # scopes openid email profile
+          scopes email
+          {% for user in caddy.users %}
+          user "{{ user.name }}" add roles {{ user.roles | join (" ") }}
+          {% endfor %}
+        }
+      }
+      jwt {
+        token_name access_token
+        token_secret {{ caddy.token_secret }}
+      }
+      ui {
+        logo_url "https://caddyserver.com/resources/images/caddy-circle-lock.svg"
+        logo_description "Caddy"
+        links {
+          "Share" /share/
+        }
+      }
+    }
   }
 }
 
-(login)
-{
-  login {
-    login_path /auth
-    google client_id={{ google_oauth2_client_id }},client_secret={{ google_oauth2_client_secret }},scope=https://www.googleapis.com/auth/userinfo.email
-    redirect_check_referer false
-  }
-}
-
-{{ inventory_hostname }} {
-  import logging
-  import login
+127.0.0.1, localhost, {{ inventory_hostname }} {
 
 {% if caddy.redirect is defined %}
-  redir 302 {
-    if {path} is /
-    / {{ caddy.redirect }}/
-  }
+  redir / {{ caddy.redirect }}
 {% endif %}
 
-{% for endpoint in caddy.endpoints.values() %}
-  {% if endpoint.type == "proxy" %}
-  proxy {{ endpoint.path }} {{ endpoint.scheme | default('http') }}://{{ endpoint.host }}:{{ endpoint.port }} {
-    transparent
-    websocket
+  route / {
+    jwt {
+      primary yes
+      auth_url /auth
+      trusted_tokens {
+        static_secret {
+          token_name access_token
+          token_secret {{ caddy.token_secret }}
+        }
+      }
+    }
   }
 
-  {% elif endpoint.type == "share" %}
-  browse /share
-  {% endif %}
+  import auth
+
+{% for endpoint in caddy.endpoints.values() %}
+  redir {{ endpoint.path }} {{ endpoint.path }}/
 
   {% if endpoint.auth == "basic" %}
-  basicauth {{ endpoint.path }} {{ endpoint.user }} {{ endpoint.password }}
-
-  {% elif endpoint.auth == "oauth" %}
-  jwt {
-    path {{ endpoint.path }}
-    {% for user in endpoint.users %}
-    allow sub {{ user }}
-    {% endfor %}
-    redirect /auth?backTo={scheme}://{host}{rewrite_uri}
-  }
+    basicauth {{ endpoint.path }}* {
+      {{ endpoint.user }} {{ endpoint.password | password_hash('bcrypt') | b64encode }}
+    }
   {% endif %}
+
+  route {{ endpoint.path }}* {
+  {% if endpoint.auth == "oauth" %}
+    jwt {
+      allow roles {{ endpoint.roles | join (' ') }}
+    }
+  {% endif %}
+
+  {% if endpoint.type == "proxy" %}
+    reverse_proxy * {{ endpoint.scheme | default('http') }}://{{ endpoint.host }}:{{ endpoint.port }}
+
+  {% elif endpoint.type == "share" %}
+    uri strip_prefix {{ endpoint.path }}
+    root * {{ endpoint.path }}
+    file_server browse
+  {% endif %}
+  }
 
 {% endfor %}
 
@@ -66,29 +90,39 @@
 {% for remote in caddy.remotes.values() %}
 
 {{ remote.host }}.{{ remote.domain }} {
-  import logging
-  import login
 
   {% if remote.auth == "basic" %}
-  basicauth / {{ web_user }} {{ web_password }}
-
-  {% elif remote.auth == "oauth" %}
-
-  jwt {
-    path /
-    {% for user in remote.users %}
-    allow sub {{ user }}
-    {% endfor %}
-    redirect /auth?backTo={scheme}://{host}
+  basicauth /* {
+    {{ remote.user }} {{ remote.password | password_hash('bcrypt') | b64encode }}
   }
   {% endif %}
 
-  proxy / {{ remote.scheme | default('http') }}://{{ remote.host }}:{{ remote.port }} {
-    transparent
-    websocket
-    insecure_skip_verify
+  route /* {
+
+  {% if remote.auth == "oauth" %}
+    jwt {
+      primary yes
+      context {{ remote.host }}
+      auth_url /auth
+      trusted_tokens {
+        static_secret {
+          token_name access_token
+          token_secret {{ caddy.token_secret }}
+        }
+      }
+      allow roles {{ remote.roles | join (' ') }}
+    }
+  {% endif %}
+    reverse_proxy * {{ remote.scheme | default('http') }}://{{ remote.host }}:{{ remote.port }} {
+      {% if remote.scheme | default('http') == "https" %}
+      transport http {
+        tls_insecure_skip_verify
+      }
+      {% endif %}
+    }
   }
 
+  import auth {{ remote.host }}
 }
 
 {% endfor %}
