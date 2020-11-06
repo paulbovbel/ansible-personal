@@ -20,12 +20,9 @@
     dest: '/etc/fail2ban/filter.d/caddy-basic-auth.conf'
     content: |
       # fail2ban filter configuration for caddy basicauth
-
       [Definition]
-      failregex = ^ \[ERROR.*BasicAuth.*incorrect\. <HOST> .*$
+      failregex = ^.*error.*remote_addr": "<HOST>.*"Authorization".*$
       ignoreregex =
-
-      datepattern = {^LN-BEG}
   become: true
   notify: restart fail2ban
 
@@ -36,8 +33,9 @@
     block: |
       [caddy-basic-auth]
       enabled  = true
+      chain    = DOCKER-USER
       port     = http,https
-      logpath  = {{ app_folder }}/caddy/log/error.log
+      logpath  = {{ app_folder }}/caddy/data/log/error.log
     state: present
     create: true
   become: true

@@ -28,16 +28,19 @@
       ui {
         logo_url "https://caddyserver.com/resources/images/caddy-circle-lock.svg"
         logo_description "Caddy"
-        links {
-          "Share" /share/
-        }
       }
     }
   }
 }
 
 127.0.0.1, localhost, {{ inventory_hostname }} {
-
+  log {
+      level ERROR
+      format console {
+        time_format wall
+      }
+      output file /data/log/error.log
+  }
 {% if caddy.redirect is defined %}
   redir / {{ caddy.redirect }}
 {% endif %}
