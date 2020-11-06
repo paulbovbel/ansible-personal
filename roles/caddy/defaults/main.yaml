@@ -16,6 +16,8 @@ docker_compose:
         - "{{ app_folder }}/caddy/data:/data"
         - "{{ app_folder }}/caddy/config:/config"
         - "{{ share_folder }}:/share:ro"
+      environment:
+        - "TZ=America/Toronto"  # TODO(pbovbel) not working https://github.com/caddyserver/caddy-docker/issues/58
 
 caddy:
   users: []
