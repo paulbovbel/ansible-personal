@@ -86,21 +86,37 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
         - "TZ=America/Toronto"
-    transmission:
-      container_name: transmission
-      image: linuxserver/transmission:latest
+    deluge:
+      container_name: deluge
+      image: binhex/arch-delugevpn
+      privileged: true
+      sysctls:
+        - net.ipv4.conf.all.src_valid_mark=1
+      cap_add:
+        - NET_ADMIN
       networks:
         - apps
-      ports:
-        - 51413:51413
-      restart: "no"
       volumes:
-        - "{{ app_folder }}/transmission:/config"
-        - "{{ downloads_folder }}:/downloads"
+        - "/etc/localtime:/etc/localtime:ro"
+        - "{{ app_folder }}/deluge:/config"
+        - "{{ downloads_folder }}:/data"
+      ports:  # https://github.com/binhex/arch-delugevpn/issues/139
+        - 58846:58846
       environment:
+        - "VPN_ENABLED=yes"
+        - "VPN_PROV=pia"
+        - "VPN_USER={{ pia_username }}"
+        - "VPN_PASS={{ pia_password }}"
+        - "VPN_CLIENT=wireguard"
+        - "STRICT_PORT_FORWARD=yes"
+        - "LAN_NETWORK={{ lan_network }}"
+        - "NAME_SERVERS=8.8.8.8,8.8.4.4"
+        - "DELUGE_DAEMON_LOG_LEVEL=info"
+        - "DELUGE_WEB_LOG_LEVEL=info"
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        - "DEBUG=true"
+        - "ADDITIONAL_PORTS=58846"
 
 caddy:
   endpoints:
@@ -136,11 +152,14 @@ caddy:
       port: 9117
       roles: ['admin']
 
-    transmission:
+    deluge:
       type: proxy
       auth: basic
       user: "{{ web_user }}"
       password: "{{ web_password }}"
-      path: /transmission
-      host: transmission
-      port: 9091
+      path: /deluge
+      host: deluge
+      port: 8112
+      strip_prefix: true
+      header_up:
+        - X-Deluge-Base "/deluge"

@@ -36,17 +36,8 @@
     regexp: 'http_proxy = 0'
     replace: 'http_proxy = 1'
 
-- name: disable transmission whitelist
-  replace:
-    path: "{{ app_folder }}/transmission/settings.json"
-    regexp: '"rpc-host-whitelist-enabled": true,'
-    replace: '"rpc-host-whitelist-enabled": false,'
-  ignore_errors: true
-
 # - name: start docker
 #   service:
 #     name: docker
 #     state: started
 #   become: true
-
-# TODO(pbovbel) unpack.sh?

@@ -101,32 +101,6 @@ docker_compose:
       volumes:
         - "{{ app_folder }}/plex:/config"
         - "{{ media_folder }}:/mnt/storage/share:ro"
-    transmission:
-      image: haugene/transmission-openvpn:latest
-      cap_add:
-        - NET_ADMIN
-      networks:
-        - apps
-      volumes:
-        - "{{ app_folder }}/transmission/config:/config"
-        - "{{ app_folder }}/transmission/home:/data/transmission-home"
-        - "{{ downloads_folder }}:/downloads"
-      environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
-        - "WEBPROXY_ENABLED=false"
-        - "LOCAL_NETWORK=172.25.0.0/16"
-        - "OPENVPN_PROVIDER=PIA"
-        - "OPENVPN_CONFIG=CA\ Toronto"
-        - "OPENVPN_USERNAME={{ pia_username }}"
-        - "OPENVPN_PASSWORD={{ pia_password }}"
-        - "CREATE_TUN_DEVICE=true"
-        - "TRANSMISSION_INCOMPLETE_DIR_ENABLED=false"
-        - "TRANSMISSION_WATCH_DIR=/downloads/watch"
-        - "TRANSMISSION_DOWNLOAD_DIR=/downloads"
-        - "TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED=true"
-        - "TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME=/config/unpack.sh"
     jellyfin:
       image: linuxserver/jellyfin
       container_name: jellyfin
@@ -183,3 +157,5 @@ caddy:
       host: resilio
       port: 8888
       roles: ['admin']
+
+lan_network: 192.168.0.0/16

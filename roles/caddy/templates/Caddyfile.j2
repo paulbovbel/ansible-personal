@@ -73,11 +73,19 @@
     }
   {% endif %}
 
+  {% if endpoint.type == "share" or endpoint.strip_prefix | default(false) %}
+    uri strip_prefix {{ endpoint.path }}
+  {% endif %}
+
   {% if endpoint.type == "proxy" %}
-    reverse_proxy * {{ endpoint.scheme | default('http') }}://{{ endpoint.host }}:{{ endpoint.port }}
+    reverse_proxy * {{ endpoint.scheme | default('http') }}://{{ endpoint.host }}:{{ endpoint.port }} {
+
+    {% for header in endpoint.header_up | default ([]) %}
+      header_up {{ header }}
+    {% endfor %}
+    }
 
   {% elif endpoint.type == "share" %}
-    uri strip_prefix {{ endpoint.path }}
     root * {{ endpoint.path }}
     file_server browse
   {% endif %}
