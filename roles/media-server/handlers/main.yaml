@@ -1,0 +1,31 @@
+---
+- name: restart netfilter-persistent
+  service:
+    name: netfilter-persistent
+    state: restarted
+  become: true
+
+- name: restart sonarr
+  shell:
+    docker restart sonarr
+  become: true
+
+- name: restart radarr
+  shell:
+    docker restart radarr
+  become: true
+
+- name: restart jackett
+  shell:
+    docker restart jackett
+  become: true
+
+- name: restart deluge
+  shell:
+    docker restart deluge
+  become: true
+
+- name: restart tautulli
+  shell:
+    docker restart tautulli
+  become: true

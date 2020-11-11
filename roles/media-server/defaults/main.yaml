@@ -117,6 +117,10 @@ docker_compose:
         - "PGID={{ gid }}"
         - "DEBUG=true"
         - "ADDITIONAL_PORTS=58846"
+      x-systemd-start-post:
+        # deluge thin client iptable rule to allow external access
+        - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
+
 
 caddy:
   endpoints:

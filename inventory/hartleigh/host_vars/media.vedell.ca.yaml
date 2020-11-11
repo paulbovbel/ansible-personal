@@ -118,5 +118,3 @@ caddy:
       roles: ['admin', 'share']
     - name: sean.vedell@gmail.com
       roles: ['admin', 'share']
-
-lan_network: 192.168.0.0/16

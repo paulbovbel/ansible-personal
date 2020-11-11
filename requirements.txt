@@ -12,8 +12,10 @@ chardet==3.0.4            # via requests
 cryptography==3.2.1       # via ansible
 docker==4.3.1
 idna==2.10                # via requests
+importlib-resources==3.3.0  # via netaddr
 jinja2==2.11.2            # via ansible
 markupsafe==1.1.1         # via jinja2
+netaddr==0.8.0
 passlib==1.7.4
 pycparser==2.20           # via cffi
 pyyaml==5.3.1             # via ansible
@@ -21,3 +23,4 @@ requests==2.24.0          # via docker
 six==1.15.0               # via bcrypt, cryptography, docker, websocket-client
 urllib3==1.25.11          # via requests
 websocket-client==0.57.0  # via docker
+zipp==3.4.0               # via importlib-resources
