@@ -15,7 +15,7 @@
     cache_valid_time: 3600
   become: true
 
-- name: configure fail2ban filter
+- name: configure caddy fail2ban filter
   copy:
     dest: '/etc/fail2ban/filter.d/caddy-basic-auth.conf'
     content: |
@@ -26,7 +26,7 @@
   become: true
   notify: restart fail2ban
 
-- name: configure fail2ban jail
+- name: configure caddy fail2ban jail
   blockinfile:
     marker: "# {mark} include caddy fail2ban config"
     path: '/etc/fail2ban/jail.local'

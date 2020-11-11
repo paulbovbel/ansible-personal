@@ -101,21 +101,21 @@ docker_compose:
       volumes:
         - "{{ app_folder }}/plex:/config"
         - "{{ media_folder }}:/mnt/storage/share:ro"
-    jellyfin:
-      image: linuxserver/jellyfin
-      container_name: jellyfin
-      networks:
-        - apps
-      ports:
-        - 8096:8096
-      environment:
-        - "PLEX_UID={{ uid }}"
-        - "PLEX_GID={{ gid }}"
-        - "TZ=America/Toronto"
-      volumes:
-        - "{{ app_folder }}/jellyfin:/config"
-        - "{{ media_folder }}:/data:ro"
-      restart: "no"
+    # jellyfin:
+    #   image: linuxserver/jellyfin
+    #   container_name: jellyfin
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - 8096:8096
+    #   environment:
+    #     - "PLEX_UID={{ uid }}"
+    #     - "PLEX_GID={{ gid }}"
+    #     - "TZ=America/Toronto"
+    #   volumes:
+    #     - "{{ app_folder }}/jellyfin:/config"
+    #     - "{{ media_folder }}:/data:ro"
+    #   restart: "no"
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
@@ -143,13 +143,13 @@ caddy:
       roles: ['share']
 
   endpoints:
-    jellyfin:
-      type: proxy
-      auth: null
-      path: /jellyfin
-      host: jellyfin
-      port: 8096
-      roles: ['admin']
+    # jellyfin:
+    #   type: proxy
+    #   auth: null
+    #   path: /jellyfin
+    #   host: jellyfin
+    #   port: 8096
+    #   roles: ['admin']
     resilio:
       type: proxy
       auth: oauth
