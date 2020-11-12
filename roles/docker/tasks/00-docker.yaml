@@ -37,8 +37,7 @@
 
 - name: install docker-compose
   pip:
-    name: docker-compose
-    state: latest
+    name: docker-compose==1.27.4
     virtualenv: "/opt/virtualenv"
     virtualenv_command: /usr/bin/python3 -m venv
   become: true
@@ -84,15 +83,22 @@
     dest: /etc/docker/docker-compose.yaml
   become: true
 
-- name: docker login
-  docker_login:
-    username: "{{ docker_username }}"
-    password: "{{ docker_password }}"
+# - name: docker login
+#   docker_login:
+#     username: "{{ docker_username }}"
+#     password: "{{ docker_password }}"
 
 - name: configure containers
   shell: |
     cd /etc/docker &&
+    docker login -u {{ docker_username }} -p {{ docker_password }} &&
     docker-compose pull && docker-compose up --no-deps --no-start --remove-orphans --build
+  # docker_compose:  # Can't run docker_compose ansible task from virtualenv
+  #   project_src: /etc/docker
+  #   build: true
+  #   pull: true
+  #   dependencies: false
+  #   remove_orphans: true
   become: true
 
 - name: increase number of watches

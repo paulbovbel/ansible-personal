@@ -1,4 +1,4 @@
-plex_claim: ""
+deluge_vpn_enabled: true
 
 docker_compose:
   services:
@@ -20,7 +20,7 @@ docker_compose:
         - "PLEX_UID={{ uid }}"
         - "PLEX_GID={{ gid }}"
         - "TZ=America/Toronto"
-        - "PLEX_CLAIM={{ plex_claim }}"
+        # - "PLEX_CLAIM={{ plex_claim }}"
         - ADVERTISE_IP=http://{{ ansible_default_ipv4.address }}:32400/
       devices:
         - /dev/dri:/dev/dri
@@ -102,8 +102,9 @@ docker_compose:
         - "{{ downloads_folder }}:/downloads"
       ports:  # https://github.com/binhex/arch-delugevpn/issues/139
         - 58846:58846
+        - 30034:30034
       environment:
-        - "VPN_ENABLED=yes"
+        - "VPN_ENABLED={{ deluge_vpn_enabled }}"
         - "VPN_PROV=pia"
         - "VPN_USER={{ pia_username }}"
         - "VPN_PASS={{ pia_password }}"

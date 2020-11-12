@@ -1,0 +1,3 @@
+---
+- import_tasks: 00-nextcloud.yaml
+  tags: nextcloud

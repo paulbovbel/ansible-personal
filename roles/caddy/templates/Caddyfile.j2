@@ -98,9 +98,9 @@
 
 }
 
-{% for remote in caddy.remotes.values() %}
+{% for name, remote in caddy.remotes.items() %}
 
-{{ remote.host }}.{{ remote.domain }} {
+{{ name }}.{{ remote.domain }} {
 
   {% if remote.auth == "basic" %}
   basicauth /* {
@@ -124,7 +124,7 @@
       allow roles {{ remote.roles | join (' ') }}
     }
   {% endif %}
-    reverse_proxy * {{ remote.scheme | default('http') }}://{{ remote.host }}:{{ remote.port }} {
+    reverse_proxy * {{ remote.scheme | default('http') }}://{{ remote.host }}:{{ remote.port | default('80') }} {
       {% if remote.scheme | default('http') == "https" %}
       transport http {
         tls_insecure_skip_verify

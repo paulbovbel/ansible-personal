@@ -118,3 +118,5 @@ caddy:
       roles: ['admin', 'share']
     - name: sean.vedell@gmail.com
       roles: ['admin', 'share']
+
+deluge_vpn_enabled: false
