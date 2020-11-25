@@ -80,23 +80,35 @@ zfs_pool: storage
 
 docker_compose:
   services:
-    ddns:
+    ddns: &ddns
       container_name: ddns
       image: sjmayotte/route53-dynamic-dns:latest
       networks:
         - apps
+      environment: &ddns_environment
+        AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+        AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+        AWS_REGION: us-east-1
+        ROUTE53_HOSTED_ZONE_ID: "{{ aws_ddns_hosted_zone }}"
+        ROUTE53_TYPE: A
+        ROUTE53_TTL: "300"
+        UPDATE_FREQUENCY: "60000"
+        SEND_EMAIL_SES: "true"
+        SES_FROM_ADDRESS: "{{ ansible_email }}"
+        SES_TO_ADDRESS: "{{ ansible_email }}"
+        ROUTE53_DOMAIN: "{{ inventory_hostname }}"
+    ddns-minecraft:
+      <<: *ddns
+      container_name: ddns-minecraft
       environment:
-        - "AWS_ACCESS_KEY_ID={{ aws_access_key_id }}"
-        - "AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}"
-        - "AWS_REGION=us-east-1"
-        - "ROUTE53_HOSTED_ZONE_ID={{ aws_ddns_hosted_zone }}"
-        - "ROUTE53_DOMAIN={{ inventory_hostname }}"
-        - "ROUTE53_TYPE=A"
-        - "ROUTE53_TTL=300"
-        - "UPDATE_FREQUENCY=60000"
-        - "SEND_EMAIL_SES=true"
-        - "SES_FROM_ADDRESS={{ ansible_email }}"
-        - "SES_TO_ADDRESS={{ ansible_email }}"
+        <<: *ddns_environment
+        ROUTE53_DOMAIN: minecraft.bovbel.com
+    ddns-minecraft-ws:
+      <<: *ddns
+      container_name: ddns-minecraft-ws
+      environment:
+        <<: *ddns_environment
+        ROUTE53_DOMAIN: ws.minecraft.bovbel.com
     plex:
       volumes:
         - "{{ app_folder }}/plex:/config"
@@ -132,6 +144,49 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
         - "TZ=America/Toronto"
+    minecraft:
+      image: itzg/minecraft-server
+      container_name: minecraft
+      ports:
+        - "25565:25565"
+      volumes:
+        - "{{ app_folder }}/minecraft:/data"
+      environment:
+        UID: "{{ uid }}"
+        GID: "{{ gid }}"
+        EULA: "TRUE"
+        MAX_MEMORY: "16G"
+        # MAX_BUILD_HEIGHT: "256"
+        # MAX_PLAYERS: "50"
+        # VIEW_DISTANCE: "15"
+        # LEVEL_TYPE: "LARGEBIOMES"
+        ENABLE_AUTOPAUSE: "TRUE"
+        WHITELIST: "{{ minecraft_users | join(',') }}"
+        OPS: "{{ minecraft_ops | join(',') }}"
+        ENABLE_RCON: "TRUE"
+        RCON_PASSWORD: "{{ web_password }}"
+      restart: always
+    rcon:
+      image: itzg/rcon
+      container_name: rcon
+      volumes:
+        - "{{ app_folder }}/rcon:/opt/rcon-web-admin/db"
+      environment:
+        RWA_ENV: "TRUE"
+        RWA_PASSWORD: "{{ web_password }}"
+        RWA_WEBSOCKET_URL: "ws://ws.minecraft.bovbel.com"
+        RWA_WEBSOCKET_URL_SSL: "wss://ws.minecraft.bovbel.com"
+
+minecraft_ops:
+  - agentx3r
+  - LEVI00
+
+minecraft_users:
+  - agentx3r
+  - FeelsKaleMan
+  - NovaNoot
+  - landon0909
+  - LEVI00
 
 caddy:
   users:
@@ -156,4 +211,18 @@ caddy:
       path: /gui
       host: resilio
       port: 8888
+      roles: ['admin']
+
+  remotes:
+    minecraft:
+      host: rcon
+      domain: bovbel.com
+      auth: oauth
+      port: 4326
+      roles: ['admin']
+    ws.minecraft:
+      host: rcon
+      domain: bovbel.com
+      auth: oauth
+      port: 4327
       roles: ['admin']

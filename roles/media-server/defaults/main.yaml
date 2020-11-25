@@ -100,7 +100,7 @@ docker_compose:
         - "/etc/localtime:/etc/localtime:ro"
         - "{{ app_folder }}/deluge:/config"
         - "{{ downloads_folder }}:/downloads"
-      ports:  # https://github.com/binhex/arch-delugevpn/issues/139
+      ports:
         - 58846:58846
         - 30034:30034
       environment:
@@ -120,6 +120,7 @@ docker_compose:
         - "ADDITIONAL_PORTS=58846"
       x-systemd-start-post:
         # deluge thin client iptable rule to allow external access
+        # https://github.com/binhex/arch-delugevpn/issues/139
         - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
 
 
