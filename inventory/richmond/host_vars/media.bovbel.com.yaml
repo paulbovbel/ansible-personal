@@ -147,6 +147,8 @@ docker_compose:
     minecraft:
       image: itzg/minecraft-server
       container_name: minecraft
+      networks:
+        - apps
       ports:
         - "25565:25565"
       volumes:
@@ -160,7 +162,8 @@ docker_compose:
         # MAX_PLAYERS: "50"
         # VIEW_DISTANCE: "15"
         # LEVEL_TYPE: "LARGEBIOMES"
-        ENABLE_AUTOPAUSE: "TRUE"
+        # ENABLE_AUTOPAUSE: "TRUE"
+        # AUTOPAUSE_TIMEOUT_EST: 60
         WHITELIST: "{{ minecraft_users | join(',') }}"
         OPS: "{{ minecraft_ops | join(',') }}"
         ENABLE_RCON: "TRUE"
@@ -169,11 +172,17 @@ docker_compose:
     rcon:
       image: itzg/rcon
       container_name: rcon
+      networks:
+        - apps
       volumes:
         - "{{ app_folder }}/rcon:/opt/rcon-web-admin/db"
       environment:
         RWA_ENV: "TRUE"
+        RWA_RCON_HOST: minecraft
+        RWA_RCON_PASSWORD: "{{ web_password }}"
+        RWA_USERNAME: "{{ web_user }}"
         RWA_PASSWORD: "{{ web_password }}"
+        RWA_ADMIN: "TRUE"
         RWA_WEBSOCKET_URL: "ws://ws.minecraft.bovbel.com"
         RWA_WEBSOCKET_URL_SSL: "wss://ws.minecraft.bovbel.com"
 
