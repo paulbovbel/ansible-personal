@@ -103,12 +103,12 @@ docker_compose:
       environment:
         <<: *ddns_environment
         ROUTE53_DOMAIN: minecraft.bovbel.com
-    ddns-minecraft-ws:
-      <<: *ddns
-      container_name: ddns-minecraft-ws
-      environment:
-        <<: *ddns_environment
-        ROUTE53_DOMAIN: ws.minecraft.bovbel.com
+    # ddns-minecraft-ws:
+    #   <<: *ddns
+    #   container_name: ddns-minecraft-ws
+    #   environment:
+    #     <<: *ddns_environment
+    #     ROUTE53_DOMAIN: ws.minecraft.bovbel.com
     plex:
       volumes:
         - "{{ app_folder }}/plex:/config"
@@ -168,23 +168,24 @@ docker_compose:
         OPS: "{{ minecraft_ops | join(',') }}"
         ENABLE_RCON: "TRUE"
         RCON_PASSWORD: "{{ web_password }}"
+        TYPE: PAPER
       restart: always
-    rcon:
-      image: itzg/rcon
-      container_name: rcon
-      networks:
-        - apps
-      volumes:
-        - "{{ app_folder }}/rcon:/opt/rcon-web-admin/db"
-      environment:
-        RWA_ENV: "TRUE"
-        RWA_RCON_HOST: minecraft
-        RWA_RCON_PASSWORD: "{{ web_password }}"
-        RWA_USERNAME: "{{ web_user }}"
-        RWA_PASSWORD: "{{ web_password }}"
-        RWA_ADMIN: "TRUE"
-        RWA_WEBSOCKET_URL: "ws://ws.minecraft.bovbel.com"
-        RWA_WEBSOCKET_URL_SSL: "wss://ws.minecraft.bovbel.com"
+    # rcon:
+    #   image: itzg/rcon
+    #   container_name: rcon
+    #   networks:
+    #     - apps
+    #   volumes:
+    #     - "{{ app_folder }}/rcon:/opt/rcon-web-admin/db"
+    #   environment:
+    #     RWA_ENV: "TRUE"
+    #     RWA_RCON_HOST: minecraft
+    #     RWA_RCON_PASSWORD: "{{ web_password }}"
+    #     RWA_USERNAME: "{{ web_user }}"
+    #     RWA_PASSWORD: "{{ web_password }}"
+    #     RWA_ADMIN: "TRUE"
+    #     RWA_WEBSOCKET_URL: "ws://ws.minecraft.bovbel.com"
+    #     RWA_WEBSOCKET_URL_SSL: "wss://ws.minecraft.bovbel.com"
 
 minecraft_ops:
   - agentx3r
@@ -196,6 +197,8 @@ minecraft_users:
   - NovaNoot
   - landon0909
   - LEVI00
+  - ur_hot
+  - sufferingtree11
 
 caddy:
   users:
@@ -222,16 +225,16 @@ caddy:
       port: 8888
       roles: ['admin']
 
-  remotes:
-    minecraft:
-      host: rcon
-      domain: bovbel.com
-      auth: oauth
-      port: 4326
-      roles: ['admin']
-    ws.minecraft:
-      host: rcon
-      domain: bovbel.com
-      auth: oauth
-      port: 4327
-      roles: ['admin']
+  # remotes:
+  #   minecraft:
+  #     host: rcon
+  #     domain: bovbel.com
+  #     auth: oauth
+  #     port: 4326
+  #     roles: ['admin']
+  #   ws.minecraft:
+  #     host: rcon
+  #     domain: bovbel.com
+  #     auth: oauth
+  #     port: 4327
+  #     roles: ['admin']
