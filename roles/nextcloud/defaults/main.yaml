@@ -1,6 +1,6 @@
 plex_claim: ""
 
-docker_compose:
+docker:
   services:
     mariadb:
       image: mariadb

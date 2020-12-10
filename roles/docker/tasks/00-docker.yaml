@@ -79,7 +79,7 @@
 
 - name: create docker-compose file
   copy:
-    content: "{{ docker_compose | to_nice_yaml }}"
+    content: "{{ docker | to_nice_yaml }}"
     dest: /etc/docker/docker-compose.yaml
   become: true
 
@@ -93,7 +93,7 @@
     cd /etc/docker &&
     docker login -u {{ docker_username }} -p {{ docker_password }} &&
     docker-compose pull && docker-compose up --no-deps --no-start --remove-orphans --build
-  # docker_compose:  # Can't run docker_compose ansible task from virtualenv
+  # docker:  # Can't run docker_compose ansible task from virtualenv
   #   project_src: /etc/docker
   #   build: true
   #   pull: true
@@ -134,7 +134,7 @@
     src: container.service.j2
     dest: "{{ docker_systemd_dir }}/docker-{{ service.key }}.service"
   become: true
-  loop: "{{ docker_compose.services | dict2items }}"
+  loop: "{{ docker.services | dict2items }}"
   loop_control:
     loop_var: service
 
@@ -148,6 +148,6 @@
   #   enabled: true
   #   state: started
   become: true
-  loop: "{{ docker_compose.services | dict2items }}"
+  loop: "{{ docker.services | dict2items }}"
   loop_control:
     loop_var: service

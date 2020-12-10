@@ -2,12 +2,14 @@
 - hosts: app_server
   roles:
     - base
+    - aws_ddns
     - cockpit
     - caddy
 
 - hosts: media_server
   roles:
     - base
+    # - aws_ddns
     - cockpit
     - caddy
     - media-server

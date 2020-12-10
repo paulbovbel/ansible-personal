@@ -57,12 +57,17 @@ aws_secret_access_key: !vault |
   31636131323563383339656664636165643437363838316532656563323466333465653233656630
   3965306538613234646336636438316366323532303638653834
 
+aws_alias_domains:
+  - franklin.bovbel.com
+  - octopi.bovbel.com
+  - tower.bovbel.com
+
 # Useful paths
 data_folder: "/home/{{ ansible_user }}"
 app_folder: "{{ data_folder }}/app"
 share_folder: "{{ data_folder }}/share"
 
-docker_compose:
+docker:
   services:
     unifi:
       image: linuxserver/unifi-controller
@@ -75,47 +80,6 @@ docker_compose:
         - "PUID={{ uid }}"
         - "PGID={{ gid }}"
         - "TZ=America/Toronto"
-    ddns: &ddns
-      container_name: ddns
-      image: sjmayotte/route53-dynamic-dns:latest
-      networks:
-        - apps
-      environment: &ddns_environment
-        AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
-        AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-        AWS_REGION: us-east-1
-        ROUTE53_HOSTED_ZONE_ID: "{{ aws_ddns_hosted_zone }}"
-        ROUTE53_TYPE: A
-        ROUTE53_TTL: "300"
-        UPDATE_FREQUENCY: "60000"
-        SEND_EMAIL_SES: "true"
-        SES_FROM_ADDRESS: "{{ ansible_email }}"
-        SES_TO_ADDRESS: "{{ ansible_email }}"
-        ROUTE53_DOMAIN: "{{ inventory_hostname }}"
-    ddns-tower:
-      <<: *ddns
-      container_name: ddns-tower
-      environment:
-        <<: *ddns_environment
-        ROUTE53_DOMAIN: tower.bovbel.com
-    ddns-franklin:
-      <<: *ddns
-      container_name: ddns-franklin
-      environment:
-        <<: *ddns_environment
-        ROUTE53_DOMAIN: franklin.bovbel.com
-    ddns-octopi:
-      <<: *ddns
-      container_name: ddns-octopi
-      environment:
-        <<: *ddns_environment
-        ROUTE53_DOMAIN: octopi.bovbel.com
-    ddns-metal:
-      <<: *ddns
-      container_name: ddns-metal
-      environment:
-        <<: *ddns_environment
-        ROUTE53_DOMAIN: metal.bovbel.com
 
 caddy:
   users:
@@ -131,18 +95,10 @@ caddy:
       port: 443
       roles: ['admin']
 
-    # metal:
-    #   host: metal
-    #   domain: bovbel.com
-    #   auth: oauth
-    #   scheme: https
-    #   port: 443
-    #   roles: ['admin']
-
-    # octopi:
-    #   host: octopi
-    #   domain: bovbel.com
-    #   auth: basic
-    #   user: "{{ web_user }}"
-    #   password: "{{ web_password }}"
-    #   port: 80
+    octopi:
+      host: octopi
+      domain: bovbel.com
+      auth: basic
+      user: "{{ web_user }}"
+      password: "{{ web_password }}"
+      port: 80

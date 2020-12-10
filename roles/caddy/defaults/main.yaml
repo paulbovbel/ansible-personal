@@ -1,5 +1,5 @@
 
-docker_compose:
+docker:
   services:
     caddy:
       # TODO(pbovbel): build a caddy image containing jwt and auth_portal on demand

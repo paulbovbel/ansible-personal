@@ -1,6 +1,6 @@
 deluge_vpn_enabled: true
 
-docker_compose:
+docker:
   services:
     plex:
       image: plexinc/pms-docker:plexpass

@@ -1,11 +1,36 @@
 ---
+docker:
+  services:
+    smokeping:
+      image: ghcr.io/linuxserver/smokeping
+      container_name: smokeping
+      networks:
+        - apps
+      environment:
+        - "PUID={{ uid }}"
+        - "PGID={{ gid }}"
+        - "TZ=America/Toronto"
+      volumes:
+        - "{{ app_folder }}/smokeping/config:/config"
+        - "{{ app_folder }}/smokeping/data:/data"
+      restart: unless-stopped
+
 caddy:
-    redirect: /dashboard/
-    endpoints:
-      dashboard:
-        type: proxy
-        auth: oauth
-        path: /dashboard
-        host: "{{ ansible_default_ipv4.address }}"
-        port: 9090
-        roles: ['admin']
+  redirect: /dashboard/
+
+  endpoints:
+    smokeping:
+      type: proxy
+      auth: oauth
+      path: /smokeping
+      host: smokeping
+      port: 80
+      roles: ['admin']
+
+    dashboard:
+      type: proxy
+      auth: oauth
+      path: /dashboard
+      host: "{{ ansible_default_ipv4.address }}"
+      port: 9090
+      roles: ['admin']
