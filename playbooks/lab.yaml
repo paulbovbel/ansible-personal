@@ -9,7 +9,7 @@
 - hosts: media_server
   roles:
     - base
-    # - aws_ddns
+    - aws_ddns
     - cockpit
     - caddy
     - media-server

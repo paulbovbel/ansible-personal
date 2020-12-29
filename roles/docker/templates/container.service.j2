@@ -19,5 +19,4 @@ TimeoutStartSec=600s
 TimeoutStopSec=5s
 
 [Install]
-# WantedBy=multi-user.target docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
-WantedBy=multi-user.target
+WantedBy=multi-user.target docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
