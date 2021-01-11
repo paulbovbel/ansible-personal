@@ -151,7 +151,9 @@ docker:
         - "27020:27020/tcp"
         - "27020:27020/udp"
       volumes:
-        - "{{ app_folder }}/csgo:/home/steam/csgo"
+        - type: bind
+          source: "{{ app_folder }}/csgo"
+          target: /home/steam/csgo
       environment:
         SERVER_HOSTNAME: cs.bovbel.com
         SERVER_PASSWORD: "{{ csgo_server_password }}"
