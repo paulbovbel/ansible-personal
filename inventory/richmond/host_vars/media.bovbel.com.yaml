@@ -133,7 +133,7 @@ docker:
         GID: "{{ gid }}"
         EULA: "TRUE"
         MAX_MEMORY: "16G"
-        # ENABLE_AUTOPAUSE: "TRUE"
+        ENABLE_AUTOPAUSE: "TRUE"
         WHITELIST: "{{ minecraft_users | join(',') }}"
         OPS: "{{ minecraft_ops | join(',') }}"
         ENABLE_RCON: "TRUE"
