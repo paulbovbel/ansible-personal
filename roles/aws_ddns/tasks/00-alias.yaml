@@ -1,0 +1,30 @@
+---
+# TODO(pbovbel) figure out how to combine docker configurations conditionally
+# - name: configure ddns services
+#   set_fact:
+#     docker: "{{ docker | combine(aws_ddns_docker, recursive=True) }}"
+#     cacheable: true
+#   changed_when: true
+#   when: aws_ddns_hosted_zone
+
+- name: install boto
+  apt:
+    name: python3-boto
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: "alias against {{ inventory_hostname }}"
+  route53:
+    state: present
+    zone: bovbel.com
+    record: "{{ item }}"
+    type: "A"
+    value: "{{ inventory_hostname }}"
+    alias: True
+    alias_hosted_zone_id: "{{ aws_ddns_hosted_zone }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
+    overwrite: true
+  with_items: "{{ aws_alias_domains }}"
