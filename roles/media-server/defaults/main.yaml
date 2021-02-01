@@ -1,6 +1,6 @@
-deluge_vpn_enabled: true
+media_server: false
 
-docker:
+docker_media_server:
   services:
     plex:
       image: plexinc/pms-docker:plexpass
@@ -11,9 +11,6 @@ docker:
         - 32400:32400
       volumes:
         - "{{ app_folder }}/plex:/config"
-        - "{{ movies_folder }}:/data/movies:ro"
-        - "{{ tv_folder }}:/data/tv:ro"
-        - "{{ music_folder }}:/data/music:ro"
       tmpfs:
         - "/transcode"
       environment:
@@ -104,11 +101,6 @@ docker:
         - 58846:58846
         - 30034:30034
       environment:
-        - "VPN_ENABLED={{ deluge_vpn_enabled }}"
-        - "VPN_PROV=pia"
-        - "VPN_USER={{ pia_username }}"
-        - "VPN_PASS={{ pia_password }}"
-        - "VPN_CLIENT=wireguard"
         - "STRICT_PORT_FORWARD=yes"
         - "LAN_NETWORK={{ lan_network }}"
         - "NAME_SERVERS=8.8.8.8,8.8.4.4"
@@ -118,13 +110,9 @@ docker:
         - "PGID={{ gid }}"
         - "DEBUG=true"
         - "ADDITIONAL_PORTS=58846"
-      x-systemd-start-post:
-        # deluge thin client iptable rule to allow external access
-        # https://github.com/binhex/arch-delugevpn/issues/139
-        - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
 
 
-caddy:
+caddy_media_server:
   endpoints:
     radarr:
       type: proxy

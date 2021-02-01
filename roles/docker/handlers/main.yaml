@@ -5,3 +5,6 @@
     state: restarted
     enabled: true
   become: true
+
+- name: configure docker
+  include_tasks: handlers/configure-docker.yaml

@@ -1,4 +1,6 @@
-docker:
+aws_ddns: false
+
+docker_aws_ddns:
   services:
     aws_ddns_a:
       container_name: aws_ddns_a

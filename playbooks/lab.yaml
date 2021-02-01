@@ -1,29 +1,24 @@
 ---
-- hosts: app_server
+- hosts: server
   roles:
     - base
-    - aws_ddns
+    - role: aws-ddns
+      when: aws_ddns
     - cockpit
     - caddy
-
-- hosts: media_server
-  roles:
-    - base
-    - aws_ddns
-    - cockpit
-    - caddy
-    - media-server
+    - role: media-server
+      when: media_server
     # - nextcloud
 
 - hosts:
-    - app_server
-    - media_server
+    - server
   tasks:
     - name: update all remaining packages
       apt:
         upgrade: dist
         force: true
       become: true
+
     - name: clean apt
       shell: apt-get autoremove --purge -y && apt-get clean
       become: true

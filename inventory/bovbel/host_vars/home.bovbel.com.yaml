@@ -46,6 +46,7 @@ gmail_access_key: !vault |
   38316266373764333932346163323437383632393665303863376635316362323064
 
 # Route53 DDNS configuration
+aws_ddns: true
 aws_ddns_hosted_zone: ZJMZZCLW5S6T9
 aws_access_key_id: AKIA2MCQ5AI3ATQ5HA75
 aws_secret_access_key: !vault |
@@ -67,7 +68,7 @@ data_folder: "/home/{{ ansible_user }}"
 app_folder: "{{ data_folder }}/app"
 share_folder: "{{ data_folder }}/share"
 
-docker:
+docker_extras:
   services:
     unifi:
       image: linuxserver/unifi-controller
@@ -81,7 +82,7 @@ docker:
         - "PGID={{ gid }}"
         - "TZ=America/Toronto"
 
-caddy:
+caddy_extras:
   users:
     - name: paul@bovbel.com
       roles: ['admin', 'share']

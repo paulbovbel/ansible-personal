@@ -1,11 +1,11 @@
 ---
-# TODO(pbovbel) figure out how to combine docker configurations conditionally
-# - name: configure ddns services
-#   set_fact:
-#     docker: "{{ docker | combine(aws_ddns_docker, recursive=True) }}"
-#     cacheable: true
-#   changed_when: true
-#   when: aws_ddns_hosted_zone
+- name: configure ddns services
+  set_fact:
+    docker: "{{ docker | combine(docker_aws_ddns, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker
 
 - name: install boto
   apt:

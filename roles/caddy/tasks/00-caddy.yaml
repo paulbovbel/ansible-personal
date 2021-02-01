@@ -1,12 +1,4 @@
 ---
-- name: create caddyfile
-  template:
-    src: Caddyfile.j2
-    dest: /etc/docker/Caddyfile
-    lstrip_blocks: true
-  become: true
-  notify: restart caddy
-
 - name: install fail2ban
   apt:
     name: fail2ban
@@ -40,3 +32,19 @@
     create: true
   become: true
   notify: restart fail2ban
+
+- name: configure caddy defaults
+  set_fact:
+    caddy: "{{ caddy | combine(caddy_defaults, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure caddy
+  tags: caddy
+
+- name: configure caddy docker
+  set_fact:
+    docker: "{{ docker | combine(docker_caddy, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker

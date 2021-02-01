@@ -1,4 +1,6 @@
-docker:
+docker: {}
+
+docker_defaults:
   version: '3.7'
   networks:
     apps:

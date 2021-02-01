@@ -4,7 +4,6 @@
     name:
     - cockpit
     - cockpit-bridge
-    - cockpit-dashboard
     - cockpit-packagekit
     - cockpit-pcp
     - cockpit-storaged
@@ -15,6 +14,7 @@
     update_cache: true
     cache_valid_time: 3600
   become: true
+  tags: cockpit
 
 - name: configure cockpit
   template:
@@ -29,3 +29,19 @@
     state: started
     enabled: true
   become: true
+
+- name: configure cockpit caddy
+  set_fact:
+    caddy: "{{ caddy | combine(caddy_cockpit, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure caddy
+  tags: caddy
+
+- name: configure cockpit docker
+  set_fact:
+    docker: "{{ docker | combine(docker_cockpit, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker

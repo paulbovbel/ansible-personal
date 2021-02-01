@@ -1,5 +1,5 @@
 ---
-docker:
+docker_cockpit:
   services:
     smokeping:
       image: ghcr.io/linuxserver/smokeping
@@ -15,7 +15,7 @@ docker:
         - "{{ app_folder }}/smokeping/data:/data"
       restart: unless-stopped
 
-caddy:
+caddy_cockpit:
   redirect: /dashboard/
 
   endpoints:

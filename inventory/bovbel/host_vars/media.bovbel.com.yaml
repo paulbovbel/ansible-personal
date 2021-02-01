@@ -78,16 +78,29 @@ tv_folder: "{{ media_folder }}/tv"
 
 zfs_pool: storage
 
+aws_ddns: true
+media_server: true
+
 aws_alias_domains:
   - minecraft.bovbel.com
   - cs.bovbel.com
 
-docker:
+docker_extras:
   services:
     plex:
       volumes:
-        - "{{ app_folder }}/plex:/config"
         - "{{ media_folder }}:/mnt/storage/share:ro"
+    deluge:
+      environment:
+        - "VPN_ENABLED=yes"
+        - "VPN_PROV=pia"
+        - "VPN_USER={{ pia_username }}"
+        - "VPN_PASS={{ pia_password }}"
+        - "VPN_CLIENT=wireguard"
+      x-systemd-start-post:
+        # deluge thin client iptable rule to allow external access
+        # https://github.com/binhex/arch-delugevpn/issues/139
+        - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
     jellyfin:
       image: linuxserver/jellyfin
       container_name: jellyfin
@@ -211,7 +224,7 @@ minecraft_users:
   - _rusted_
   - rusnconcussion
 
-caddy:
+caddy_extras:
   users:
     - name: paul@bovbel.com
       roles: ['admin', 'share']

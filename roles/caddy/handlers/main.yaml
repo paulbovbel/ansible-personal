@@ -9,3 +9,6 @@
     name: fail2ban
     state: restarted
   become: true
+
+- name: configure caddy
+  include_tasks: handlers/configure-caddy.yaml

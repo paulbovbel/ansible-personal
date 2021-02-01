@@ -1,0 +1,69 @@
+---
+- name: include docker extras
+  set_fact:
+    docker: "{{ docker | combine(docker_extras, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+
+- name: create docker-compose file
+  copy:
+    content: "{{ docker | to_nice_yaml }}"
+    dest: /etc/docker/docker-compose.yaml
+  become: true
+
+- name: configure containers
+  shell: |
+    cd /etc/docker &&
+    docker login -u {{ docker_username }} -p {{ docker_password }} &&
+    docker-compose pull && docker-compose up --no-deps --no-start --remove-orphans --build
+  # docker:  # Can't run docker_compose ansible task from virtualenv
+  #   project_src: /etc/docker
+  #   build: true
+  #   pull: true
+  #   dependencies: false
+  #   remove_orphans: true
+  become: true
+
+- name: prune docker images
+  shell: |
+    docker image prune -af --filter="until=24h"
+  become: true
+
+- name: clean system directory
+  file:
+    path: "{{ docker_systemd_dir }}"
+    state: absent
+  become: true
+
+- name: create system directory
+  file:
+    path: "{{ docker_systemd_dir }}"
+    state: directory
+  become: true
+
+- name: clean up broken links
+  command: /usr/bin/find -L /etc/systemd/system -type l -delete
+  become: true
+
+- name: "install container services"
+  template:
+    src: container.service.j2
+    dest: "{{ docker_systemd_dir }}/docker-{{ service.key }}.service"
+  become: true
+  loop: "{{ docker.services | dict2items }}"
+  loop_control:
+    loop_var: service
+
+- name: "start container services"
+  shell: |
+    systemctl enable {{ docker_systemd_dir }}/docker-{{ service.key }}.service && \
+    systemctl start docker-{{ service.key }}.service
+  # (pbovbel): systemd module doesn't behave for units outside of /etc/systemd
+  # systemd:
+  #   name: "{{ docker_systemd_dir }}/{{ service.key }}.service"
+  #   enabled: true
+  #   state: started
+  become: true
+  loop: "{{ docker.services | dict2items }}"
+  loop_control:
+    loop_var: service

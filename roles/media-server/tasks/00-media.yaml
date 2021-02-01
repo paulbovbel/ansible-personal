@@ -1,41 +1,57 @@
 ---
-- name: configure jackett basepath
-  replace:
-    path: "{{ app_folder }}/jackett/Jackett/ServerConfig.json"
-    regexp: '"BasePathOverride": ".*",'
-    replace: '"BasePathOverride": "/jackett",'
-  notify: restart jackett
+# - name: configure jackett basepath
+#   replace:
+#     path: "{{ app_folder }}/jackett/Jackett/ServerConfig.json"
+#     regexp: '"BasePathOverride": ".*",'
+#     replace: '"BasePathOverride": "/jackett",'
+#   notify: restart jackett
 
-- name: configure radarr basepath
-  replace:
-    path: "{{ app_folder }}/radarr/config.xml"
-    regexp: '<UrlBase>.*</UrlBase>'
-    replace: '<UrlBase>radarr</UrlBase>'
-  notify: restart radarr
+# - name: configure radarr basepath
+#   replace:
+#     path: "{{ app_folder }}/radarr/config.xml"
+#     regexp: '<UrlBase>.*</UrlBase>'
+#     replace: '<UrlBase>radarr</UrlBase>'
+#   notify: restart radarr
 
-- name: configure sonarr basepath
-  replace:
-    path: "{{ app_folder }}/sonarr/config.xml"
-    regexp: '<UrlBase>.*</UrlBase>'
-    replace: '<UrlBase>sonarr</UrlBase>'
-  notify: restart sonarr
+# - name: configure sonarr basepath
+#   replace:
+#     path: "{{ app_folder }}/sonarr/config.xml"
+#     regexp: '<UrlBase>.*</UrlBase>'
+#     replace: '<UrlBase>sonarr</UrlBase>'
+#   notify: restart sonarr
 
-- name: configure tautulli basepath
-  replace:
-    path: "{{ app_folder }}/tautulli/config.ini"
-    regexp: 'http_root = ".*"'
-    replace: 'http_root = tautulli'
-  notify: restart tautulli
+# - name: configure tautulli basepath
+#   replace:
+#     path: "{{ app_folder }}/tautulli/config.ini"
+#     regexp: 'http_root = ".*"'
+#     replace: 'http_root = tautulli'
+#   notify: restart tautulli
 
-- name: configure tautulli proxy
-  replace:
-    path: "{{ app_folder }}/tautulli/config.ini"
-    regexp: 'http_proxy = 0'
-    replace: 'http_proxy = 1'
-  notify: restart tautulli
+# - name: configure tautulli proxy
+#   replace:
+#     path: "{{ app_folder }}/tautulli/config.ini"
+#     regexp: 'http_proxy = 0'
+#     replace: 'http_proxy = 1'
+#   notify: restart tautulli
 
-- name: configure deluge thin client auth
-  lineinfile:
-    dest: "{{ app_folder }}/deluge/auth"
-    line: "{{ web_user }}:{{ web_password }}:10"
-  notify: restart deluge
+# - name: configure deluge thin client auth
+#   lineinfile:
+#     dest: "{{ app_folder }}/deluge/auth"
+#     line: "{{ web_user }}:{{ web_password }}:10"
+#   notify: restart deluge
+
+- name: configure media server caddy
+  set_fact:
+    caddy: "{{ caddy | combine(caddy_media_server, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure caddy
+  tags: caddy
+
+- name: configure media server docker
+  set_fact:
+    docker: "{{ docker | combine(docker_media_server, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker

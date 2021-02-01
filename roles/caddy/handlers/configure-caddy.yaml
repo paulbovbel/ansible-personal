@@ -1,0 +1,14 @@
+---
+- name: include caddy extras
+  set_fact:
+    caddy: "{{ caddy | combine(caddy_extras, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+
+- name: write out Caddyfile
+  template:
+    src: Caddyfile.j2
+    dest: /etc/docker/Caddyfile
+    lstrip_blocks: true
+  become: true
+  notify: restart caddy

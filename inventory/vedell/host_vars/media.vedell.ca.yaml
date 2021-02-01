@@ -59,6 +59,8 @@ share_folder: "{{ data_folder }}"
 iscsi_host: 192.168.50.203
 iscsi_lun: lun-1
 
+media_server: true
+
 nfs_host: 192.168.50.203
 nfs_mounts:
   - mount: "{{ movies_folder }}"
@@ -69,7 +71,7 @@ nfs_mounts:
     url: "{{ nfs_host }}:/volume1/Music"
 
 
-docker:
+docker_extras:
   services:
     ddclient:
       container_name: ddclient
@@ -85,6 +87,10 @@ docker:
       x-systemd-requires:
         - mnt-app.mount
     plex:
+      volumes:
+        - "{{ music_folder }}:/data/music:ro"
+        - "{{ movies_folder }}:/data/movies:ro"
+        - "{{ tv_folder }}:/data/tv:ro"
       x-systemd-requires:
         - mnt-app.mount
         - mnt-downloads.mount
@@ -112,11 +118,9 @@ docker:
         - mnt-app.mount
         - mnt-downloads.mount
 
-caddy:
+caddy_extras:
   users:
     - name: paul@bovbel.com
       roles: ['admin', 'share']
     - name: sean.vedell@gmail.com
       roles: ['admin', 'share']
-
-deluge_vpn_enabled: false
