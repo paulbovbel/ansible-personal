@@ -48,7 +48,7 @@
   route / {
     jwt {
       primary yes
-      auth_url /auth
+      auth_url /auth/oauth2/google
       trusted_tokens {
         static_secret {
           token_name access_token
@@ -114,7 +114,7 @@
     jwt {
       primary yes
       context {{ name }}
-      auth_url /auth
+      auth_url /auth/oauth2/google
       trusted_tokens {
         static_secret {
           token_name access_token
