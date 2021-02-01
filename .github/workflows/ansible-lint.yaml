@@ -1,0 +1,17 @@
+name: ansible lint
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: lint ansible playbooks
+      uses: ansible/ansible-lint-action@f05dc373850a80f1da58eae655e47b85502cacbf
+      with:
+        targets: "playbooks/*"
+        override-deps: |
+          ansible>2.10
