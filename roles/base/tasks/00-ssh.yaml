@@ -12,8 +12,8 @@
 - name: configure hosts file
   copy:
     content: |
-      127.0.0.1	localhost
-      127.0.1.1	{{ inventory_hostname }} {{ ansible_hostname }}
+      127.0.0.1 localhost
+      127.0.1.1 {{ inventory_hostname }} {{ ansible_hostname }}
 
       ::1 localhost6.localdomain6 localhost6
       fe00::0 ip6-localnet

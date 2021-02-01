@@ -4,3 +4,4 @@ skip_list:
   - '106'  # don't care about role names
   - '208'  # default file permissions are fine
   - '305'  # shell is fine sometimes
+  - '301'  # don't care about command idempotency

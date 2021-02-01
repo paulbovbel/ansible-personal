@@ -54,7 +54,7 @@
   loop_control:
     loop_var: service
 
-- name: "start container services"
+- name: "start container services"  # noqa 303
   shell: |
     systemctl enable {{ docker_systemd_dir }}/docker-{{ service.key }}.service && \
     systemctl start docker-{{ service.key }}.service
