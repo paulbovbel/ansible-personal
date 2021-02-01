@@ -18,7 +18,8 @@
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
   become: true
 
-- file:
+- name: create directory for timer
+  file:
     path: /etc/systemd/system/apt-daily.timer.d
     state: directory
   become: true

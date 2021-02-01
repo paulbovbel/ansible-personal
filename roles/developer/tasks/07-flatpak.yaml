@@ -1,0 +1,34 @@
+---
+- name: install flatpaks
+  flatpak:
+    name: "{{ item }}"
+    state: present
+    method: system
+  with_items: "{{ flatpak_install }}"
+
+- name: setup flatpak update timer
+  copy:
+    content: |
+      [Unit]
+      Description=Flatpak update
+
+      [Timer]
+      OnCalendar=7:00
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    dest: ~/.config/systemd/user/flatpak-update.timer
+  notify: enable flatpak update
+
+- name: setup flatpak update service
+  copy:
+    content: |
+      [Unit]
+      Description=Flatpak update
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/flatpak update -y
+    dest: ~/.config/systemd/user/flatpak-update.service
+  notify: enable flatpak update

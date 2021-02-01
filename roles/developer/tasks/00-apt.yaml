@@ -65,12 +65,6 @@
     - "{{ apt_install }}"
     - packages
 
-- name: install snap packages
-  shell:
-    snap install {{ item }}
-  become: true
-  with_items: "{{ snap_install }}"
-
 - name: install python3 venv and pip
   apt:
     name:

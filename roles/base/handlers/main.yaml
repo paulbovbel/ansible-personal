@@ -18,5 +18,5 @@
   become: true
 
 - name: update-grub
-  shell: update-grub
+  command: /usr/sbin/update-grub
   become: true

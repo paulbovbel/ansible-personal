@@ -1,0 +1,11 @@
+---
+- name: enable flatpak update
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: "started"
+    daemon_reload: true
+    user: true
+  with_items:
+    - flatpak-update.timer
+    - flatpak-update.service
