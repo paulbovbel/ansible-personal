@@ -81,9 +81,9 @@ docker_extras:
       volumes:
         - "{{ app_folder }}/ddclient:/config"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
       x-systemd-requires:
         - mnt-app.mount
     plex:

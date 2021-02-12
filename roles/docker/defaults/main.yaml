@@ -15,9 +15,9 @@ docker_defaults:
     #   ports:
     #     - '25:25'
     #   environment:
-    #     - "RELAY_NETWORKS=:10.0.0.0/8:172.16.0.0/12:192.168.0.0/16"
-    #     - "GMAIL_USER={{ ansible_email }}"
-    #     - "GMAIL_PASSWORD={{ gmail_access_key }}"
+    #     RELAY_NETWORKS: ":10.0.0.0/8:172.16.0.0/12:192.168.0.0/16"
+    #     GMAIL_USER: "{{ ansible_email }}"
+    #     GMAIL_PASSWORD: "{{ gmail_access_key }}"
     watchtower:
       image: containrrr/watchtower
       container_name: watchtower

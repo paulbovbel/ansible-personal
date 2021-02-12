@@ -14,11 +14,10 @@ docker_media_server:
       tmpfs:
         - "/transcode"
       environment:
-        - "PLEX_UID={{ uid }}"
-        - "PLEX_GID={{ gid }}"
-        - "TZ=America/Toronto"
-        # - "PLEX_CLAIM={{ plex_claim }}"
-        - ADVERTISE_IP=http://{{ ansible_default_ipv4.address }}:32400/
+        PLEX_UID: "{{ uid }}"
+        PLEX_GID: "{{ gid }}"
+        TZ: America/Toronto
+        ADVERTISE_IP: "http://{{ ansible_default_ipv4.address }}:32400/"
       devices:
         - /dev/dri:/dev/dri
       restart: "no"
@@ -34,9 +33,9 @@ docker_media_server:
         - "{{ app_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
       restart: "no"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
     sonarr:
       image: linuxserver/sonarr
       container_name: sonarr
@@ -51,9 +50,9 @@ docker_media_server:
         - "{{ downloads_folder }}:/downloads"
       restart: "no"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
     radarr:
       image: linuxserver/radarr
       container_name: radarr
@@ -68,9 +67,9 @@ docker_media_server:
         - "{{ downloads_folder }}:/downloads"
       restart: "no"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
     jackett:
       image: linuxserver/jackett
       container_name: jackett
@@ -80,9 +79,9 @@ docker_media_server:
         - "{{ app_folder }}/jackett:/config"
       restart: "no"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
     deluge:
       container_name: deluge
       image: binhex/arch-delugevpn
@@ -101,15 +100,16 @@ docker_media_server:
         - 58846:58846
         - 30034:30034
       environment:
-        - "STRICT_PORT_FORWARD=yes"
-        - "LAN_NETWORK={{ lan_network }}"
-        - "NAME_SERVERS=8.8.8.8,8.8.4.4"
-        - "DELUGE_DAEMON_LOG_LEVEL=info"
-        - "DELUGE_WEB_LOG_LEVEL=info"
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "DEBUG=true"
-        - "ADDITIONAL_PORTS=58846"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
+        STRICT_PORT_FORWARD: "yes"
+        LAN_NETWORK: "{{ lan_network }}"
+        NAME_SERVERS: "8.8.8.8,8.8.4.4"
+        DELUGE_DAEMON_LOG_LEVEL: info
+        DELUGE_WEB_LOG_LEVEL: info
+        DEBUG: "true"
+        ADDITIONAL_PORTS: 58846
 
 
 caddy_media_server:

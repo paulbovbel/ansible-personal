@@ -59,9 +59,9 @@ aws_secret_access_key: !vault |
   3965306538613234646336636438316366323532303638653834
 
 aws_alias_domains:
-  - franklin.bovbel.com
   - octopi.bovbel.com
   - tower.bovbel.com
+  - pihole.bovbel.com
 
 # Useful paths
 data_folder: "/home/{{ ansible_user }}"
@@ -78,28 +78,59 @@ docker_extras:
         - "{{ app_folder }}/unifi:/config"
       restart: "no"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
+    pihole:
+      image: pihole/pihole:latest
+      container_name: pihole
+      ports:
+        - "53:53/tcp"
+        - "53:53/udp"
+        - "67:67/udp"
+        - "1080:80/tcp"
+      environment:
+        TZ: America/Toronto
+        WEBPASSWORD: "{{ web_password }}"
+        VIRTUAL_HOST: pihole.bovbel.com"
+        DNS1: "{{ ansible_default_ipv4.gateway }}"
+        DNS2: "no"
+      volumes:
+        - "{{ app_folder }}/pihole/etc:/etc/pihole/"
+        - "{{ app_folder }}/pihole/dnsmasq:/etc/dnsmasq.d/"
+      # Recommended but not required (DHCP needs NET_ADMIN)
+      #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
+      # cap_add:
+      #   - NET_ADMIN
+      restart: "no"
 
 caddy_extras:
   users:
     - name: paul@bovbel.com
       roles: ['admin', 'share']
 
+  # endpoints:
+  #   pihole:
+  #     type: proxy
+  #     auth: oauth
+  #     path: /admin
+  #     host: pihole
+  #     port: 80
+  #     roles: ['admin']
+
   remotes:
-    franklin:
-      host: franklin
+
+    pihole:
+      host: pihole
       domain: bovbel.com
       auth: oauth
-      scheme: https
-      port: 443
       roles: ['admin']
-
-    octopi:
-      host: octopi
-      domain: bovbel.com
-      auth: basic
-      user: "{{ web_user }}"
-      password: "{{ web_password }}"
       port: 80
+
+    # octopi:
+    #   host: octopi
+    #   domain: bovbel.com
+    #   auth: basic
+    #   user: "{{ web_user }}"
+    #   password: "{{ web_password }}"
+    #   port: 80

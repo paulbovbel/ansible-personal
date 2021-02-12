@@ -92,11 +92,11 @@ docker_extras:
         - "{{ media_folder }}:/mnt/storage/share:ro"
     deluge:
       environment:
-        - "VPN_ENABLED=yes"
-        - "VPN_PROV=pia"
-        - "VPN_USER={{ pia_username }}"
-        - "VPN_PASS={{ pia_password }}"
-        - "VPN_CLIENT=wireguard"
+        VPN_ENABLED: "yes"
+        VPN_PROV: pia
+        VPN_USER: "{{ pia_username }}"
+        VPN_PASS: "{{ pia_password }}"
+        VPN_CLIENT: wireguard
       x-systemd-start-post:
         # deluge thin client iptable rule to allow external access
         # https://github.com/binhex/arch-delugevpn/issues/139
@@ -109,9 +109,9 @@ docker_extras:
       ports:
         - 8096:8096
       environment:
-        - "PLEX_UID={{ uid }}"
-        - "PLEX_GID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
       volumes:
         - "{{ app_folder }}/jellyfin:/config"
         - "{{ media_folder }}:/data:ro"
@@ -129,9 +129,9 @@ docker_extras:
         - "{{ data_folder }}:/sync"
       restart: "no"
       environment:
-        - "PUID={{ uid }}"
-        - "PGID={{ gid }}"
-        - "TZ=America/Toronto"
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
     minecraft:
       image: itzg/minecraft-server
       container_name: minecraft
