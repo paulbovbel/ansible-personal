@@ -1,4 +1,20 @@
 ---
+- name: configure media server caddy
+  set_fact:
+    caddy: "{{ caddy | combine(caddy_media_server, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure caddy
+  tags: caddy
+
+- name: configure media server docker
+  set_fact:
+    docker: "{{ docker | combine(docker_media_server, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker
+
 # - name: configure jackett basepath
 #   replace:
 #     path: "{{ app_folder }}/jackett/Jackett/ServerConfig.json"
@@ -39,19 +55,3 @@
 #     dest: "{{ app_folder }}/deluge/auth"
 #     line: "{{ web_user }}:{{ web_password }}:10"
 #   notify: restart deluge
-
-- name: configure media server caddy
-  set_fact:
-    caddy: "{{ caddy | combine(caddy_media_server, recursive=True, list_merge='append') }}"
-    cacheable: true
-  changed_when: true
-  notify: configure caddy
-  tags: caddy
-
-- name: configure media server docker
-  set_fact:
-    docker: "{{ docker | combine(docker_media_server, recursive=True, list_merge='append') }}"
-    cacheable: true
-  changed_when: true
-  notify: configure docker
-  tags: docker

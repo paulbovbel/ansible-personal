@@ -1,3 +1,2 @@
 ---
 - import_tasks: 00-caddy.yaml
-  tags: caddy
