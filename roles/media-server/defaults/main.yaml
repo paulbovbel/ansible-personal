@@ -110,6 +110,7 @@ docker_media_server:
         DELUGE_WEB_LOG_LEVEL: info
         DEBUG: "true"
         ADDITIONAL_PORTS: 58846
+        VPN_ENABLED: "no"
 
 
 caddy_media_server:

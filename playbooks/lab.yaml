@@ -2,12 +2,10 @@
 - hosts: server
   roles:
     - base
-    - role: aws-ddns
-      when: aws_ddns
+    - aws-ddns
     - cockpit
     - caddy
-    - role: media-server
-      when: media_server
+    - media-server
     # - nextcloud
 
 - hosts:

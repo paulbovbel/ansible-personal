@@ -1,3 +1,4 @@
 ---
 - import_tasks: 00-media.yaml
   tags: media_server
+  when: media_server
