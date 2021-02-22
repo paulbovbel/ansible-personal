@@ -1,4 +1,3 @@
 ---
 - import_tasks: 00-alias.yaml
-  tags: ddns
   when: aws_ddns
