@@ -32,6 +32,7 @@ docker_extras:
     plex:
       volumes:
         - "{{ media_folder }}:/mnt/storage/share:ro"
+      x-systemd-requires: ['mnt-storage.mount']
     deluge:
       environment:
         VPN_ENABLED: "yes"
@@ -43,6 +44,7 @@ docker_extras:
         # deluge thin client iptable rule to allow external access
         # https://github.com/binhex/arch-delugevpn/issues/139
         - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
+      x-systemd-requires: ['mnt-storage.mount']
     jellyfin:
       image: linuxserver/jellyfin
       container_name: jellyfin
@@ -58,6 +60,15 @@ docker_extras:
         - "{{ app_folder }}/jellyfin:/config"
         - "{{ media_folder }}:/data:ro"
       restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
+    tautulli:
+      x-systemd-requires: ['mnt-storage.mount']
+    sonarr:
+      x-systemd-requires: ['mnt-storage.mount']
+    radarr:
+      x-systemd-requires: ['mnt-storage.mount']
+    jackett:
+      x-systemd-requires: ['mnt-storage.mount']
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
@@ -74,6 +85,8 @@ docker_extras:
         PUID: "{{ uid }}"
         PGID: "{{ gid }}"
         TZ: America/Toronto
+      x-systemd-requires:
+        - mnt-storage.mount
     minecraft:
       image: itzg/minecraft-server
       container_name: minecraft
@@ -95,6 +108,7 @@ docker_extras:
         RCON_PASSWORD: "{{ web_password }}"
         TYPE: PAPER
       restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
     csgo:
       image: kmallea/csgo
       container_name: csgo
@@ -115,9 +129,8 @@ docker_extras:
         RCON_PASSWORD: "{{ web_password }}"
         STEAM_ACCOUNT: "{{ csgo_app_id }}"
         SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
-        # RETAKES: 1
-        INSTALL_PLUGINS: "{{ csgo_plugins | join(' ') }}"
       restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
     valheim:
       image: mbround18/valheim:latest
       container_name: valheim
@@ -148,6 +161,7 @@ docker_extras:
         - "{{ app_folder }}/valheim/server:/home/steam/valheim"
         - "{{ app_folder }}/valheim/backups:/home/steam/backups"
       restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
 
 csgo_server_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
