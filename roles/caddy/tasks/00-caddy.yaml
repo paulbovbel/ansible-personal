@@ -13,7 +13,7 @@
     content: |
       # fail2ban filter configuration for caddy basicauth
       [Definition]
-      failregex = ^.*error.*remote_addr": "<HOST>.*"Authorization": ["Basic.*"status": 401.*$
+      failregex = ^.*error.*remote_addr": "<HOST>.*"Authorization": \["Basic.*"status": (400|401).*$
       ignoreregex =
   become: true
   notify: restart fail2ban
