@@ -18,6 +18,15 @@ docker_caddy:
         - "{{ share_folder }}:/share:ro"
       environment:
         TZ: America/Toronto  # TODO(pbovbel) not working https://github.com/caddyserver/caddy-docker/issues/58
+    filebrowser:
+      image: filebrowser/filebrowser
+      container_name: filebrowser
+      networks:
+        - apps
+      volumes:
+        - "{{ share_folder }}:/srv"
+        - "{{ app_folder }}/filebrowser/filebrowser.db:/database.db"
+      command: "-b /browser"
 
 caddy: {}
 
@@ -28,8 +37,14 @@ caddy_defaults:
       type: share
       auth: oauth
       path: /share
-      roles:
-        - share
+      roles: ['share']
+    browser:
+      type: proxy
+      auth: oauth
+      path: /browser
+      host: filebrowser
+      port: 80
+      roles: ['admin']
   remotes: {}
   token_secret: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') | to_uuid }}"
 

@@ -49,6 +49,7 @@
     jwt {
       primary yes
       auth_url /auth/oauth2/google
+      enable claim headers
       trusted_tokens {
         static_secret {
           token_name access_token
@@ -72,6 +73,7 @@
   route {{ endpoint.path }}* {
   {% if endpoint.auth == "oauth" %}
     jwt {
+      enable claim headers
       allow roles {{ endpoint.roles | join (' ') }}
     }
   {% endif %}
@@ -115,6 +117,7 @@
       primary yes
       context {{ name }}
       auth_url /auth/oauth2/google
+      enable claim headers
       trusted_tokens {
         static_secret {
           token_name access_token
