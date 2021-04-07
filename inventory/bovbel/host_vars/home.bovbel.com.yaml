@@ -2,7 +2,6 @@
 aws_alias_domains:
   - octopi.bovbel.com
   - tower.bovbel.com
-  - pihole.bovbel.com
 
 # Useful paths
 data_folder: "/home/{{ ansible_user }}"
