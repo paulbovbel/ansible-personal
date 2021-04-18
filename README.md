@@ -15,7 +15,7 @@ python3 -m venv venv
 
 To deploy on the current machine:
 
-`./venv/bin/ansible-playbook -Ki inventory/personal playbooks/developer.yaml`
+`./venv/bin/ansible-playbook -Ki inventory/bovbel playbooks/developer.yaml`
 
 To deploy homelab:
 

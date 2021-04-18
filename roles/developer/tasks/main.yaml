@@ -1,10 +1,10 @@
 ---
-- import_tasks: 00-apt.yaml
+# - import_tasks: 00-apt.yaml
+- import_tasks: 00-secrets.yaml
 - import_tasks: 01-git.yaml
-- import_tasks: 03-secrets.yaml
-- import_tasks: 04-jupyter.yaml
-  tags: jupyter
-- import_tasks: 05-resilio.yaml
-- import_tasks: 06-vscode.yaml
-- import_tasks: 07-flatpak.yaml
-  tags: flatpak
+# - import_tasks: 04-jupyter.yaml
+#   tags: jupyter
+# - import_tasks: 05-resilio.yaml
+# - import_tasks: 06-vscode.yaml
+# - import_tasks: 07-flatpak.yaml
+#   tags: flatpak

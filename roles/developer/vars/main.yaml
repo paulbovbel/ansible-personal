@@ -10,17 +10,17 @@ apt_install:
   #   repo: ppa:webupd8team/java
   #   filename: java
 
-  - packages: ['git']
-    repo: ppa:git-core/ppa
-    filename: git
+  # - packages: ['git']
+  #   repo: ppa:git-core/ppa
+  #   filename: git
 
-  - packages: ['nvidia-driver-415', 'nvidia-prime']
-    repo: ppa:graphics-drivers/ppa
-    filename: graphics-drivers
+  # - packages: ['nvidia-driver-415', 'nvidia-prime']
+  #   repo: ppa:graphics-drivers/ppa
+  #   filename: graphics-drivers
 
-  - packages: ['prime-indicator']
-    repo: ppa:nilarimogard/webupd8
-    filename: prime-indicator
+  # - packages: ['prime-indicator']
+  #   repo: ppa:nilarimogard/webupd8
+  #   filename: prime-indicator
 
   # - packages: ['mono-complete']
   #   repo: "deb http://download.mono-project.com/repo/debian wheezy main"
@@ -31,21 +31,21 @@ apt_install:
 
   - packages: ['pcscd','scdaemon','gnupg2','pcsc-tools']
 
-  - packages: ['tlp', 'smartmontools', 'ethtool']
-    repo: ppa:linrunner/tlp
-    filename: tlp
+  # - packages: ['tlp', 'smartmontools', 'ethtool']
+  #   repo: ppa:linrunner/tlp
+  #   filename: tlp
 
-  - packages: ['unetbootin']
-    repo: ppa:gezakovacs/ppa
-    filename: unetbootin
+  # - packages: ['unetbootin']
+  #   repo: ppa:gezakovacs/ppa
+  #   filename: unetbootin
 
   # - packages: ['dropbox']
   #   repo: "deb http://linux.dropbox.com/ubuntu {{ ansible_distribution_release }} main"
   #   keyid: 5044912E
 
-  - packages: ['numix-*']
-    repo: ppa:numix/ppa
-    filename: numix
+  # - packages: ['numix-*']
+  #   repo: ppa:numix/ppa
+  #   filename: numix
 
   # - packages: ['ubuntu-make']
   #   repo: ppa:ubuntu-desktop/ubuntu-make
@@ -55,37 +55,35 @@ apt_install:
     repo: ppa:wireshark-dev/stable
     filename: wireshark
 
-  - packages: ['remmina']
-    repo: ppa:remmina-ppa-team/remmina-next
-    filename: remmina
+  # - packages: ['remmina']
+  #   repo: ppa:remmina-ppa-team/remmina-next
+  #   filename: remmina
 
-  - packages: ['virtualbox-5.1']
-    repo: "deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
-    keyurl: http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc
-    filename: virtualbox
+  # - packages: ['virtualbox-5.1']
+  #   repo: "deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
+  #   keyurl: http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc
+  #   filename: virtualbox
 
-  - packages: ['google-chrome-stable']
-    repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
-    keyurl: https://dl-ssl.google.com/linux/linux_signing_key.pub
-    filename: google-chrome
+  # - packages: ['google-chrome-stable']
+  #   repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+  #   keyurl: https://dl-ssl.google.com/linux/linux_signing_key.pub
+  #   filename: google-chrome
 
-  - packages: ['resilio-sync']
-    repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
-    keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
-    filename: resilio
+  # - packages: ['resilio-sync']
+  #   repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
+  #   keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
+  #   filename: resilio
 
-  - packages: ['code']
-    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    keyurl: https://packages.microsoft.com/keys/microsoft.asc
-    filename: vscode
+  # - packages: ['code']
+  #   repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+  #   keyurl: https://packages.microsoft.com/keys/microsoft.asc
+  #   filename: vscode
 
-  - packages: ['terminator','redshift-gtk']
+  - packages: ['terminator']
 
 flatpak_install:
-  - com.mojang.Minecraft
   - com.slack.Slack
   - com.spotify.Client
-  - com.valvesoftware.Steam
   - org.gimp.GIMP
   - org.inkscape.Inkscape
   - org.signal.Signal
