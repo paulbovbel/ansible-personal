@@ -1,0 +1,68 @@
+name: ansible deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.0
+      with:
+        access_token: ${{ github.token }}
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_KEY }}
+        name: id_rsa
+        known_hosts: |
+          |1|A9f1PoTIHyJEeuR0SqoAhrEhmMM=|lOb1NIKTSF9nGDa+h5u8iGZfNX8= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF0+NifFX5kHunc5JeoKmIu/pwlBbyhMlATusV6OTNywHhe6eEaeiqno2MMUCkHyNJNgIc7BQ23ijfHPq4DBz1E=
+
+    - name: Write secrets
+      shell: bash
+      env:
+        VAULT_PASS : ${{ secrets.VAULT_PASS }}
+      run: |
+        echo $VAULT_PASS >> vault_pass.txt
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Cache pip
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ hashFiles('requirements.txt') }}
+
+    - name: Install pip
+      run: |
+        python3 -m venv venv
+        venv/bin/pip install -r requirements.txt
+
+    - name: Cache ansible
+      uses: actions/cache@v1
+      with:
+        path: ~/.ansible/collections
+        key: ${{ hashFiles('requirements.yaml') }}
+
+    - name: Install ansible galaxy
+      shell: bash
+      env:
+        VAULT_PASS : ${{ secrets.VAULT_PASS }}
+      run: |
+        venv/bin/ansible-galaxy install -r requirements.yaml
+
+    - name: Run ansible
+      shell: bash
+      run: |
+        venv/bin/ansible-playbook -vi inventory/bovbel --limit media.bovbel.com playbooks/lab.yaml

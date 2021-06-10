@@ -27,13 +27,21 @@
   authorized_key:
     user: "{{ ansible_user }}"
     state: present
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    key: https://github.com/paulbovbel.keys
   register: add_identity_key
+
+- name: require protocol 2
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#?Protocol.*"
+    line: "Protocol 2"
+  become: true
+  notify: restart sshd
 
 - name: disable empty password login
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^#?PermitEmptyPasswords"
+    regexp: "^#?PermitEmptyPasswords.*"
     line: "PermitEmptyPasswords no"
   become: true
   notify: restart sshd
@@ -41,7 +49,7 @@
 - name: disable remote root login
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^#?PermitRootLogin"
+    regexp: "^#?PermitRootLogin.*"
     line: "PermitRootLogin no"
   become: true
   notify: restart sshd
@@ -49,7 +57,7 @@
 - name: disable password login
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^#?PasswordAuthentication"
+    regexp: "^#?PasswordAuthentication.*"
     line: "PasswordAuthentication no"
   when: add_identity_key is success and not add_identity_key is skipped
   become: true
@@ -58,7 +66,7 @@
 - name: enable PAM
   lineinfile:
     dest: /etc/ssh/sshd_config
-    regexp: "^#?UsePAM"
+    regexp: "^#?UsePAM.*"
     line: "UsePAM yes"
   become: true
   notify: restart sshd

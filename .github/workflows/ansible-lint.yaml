@@ -7,12 +7,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Cancel Previous Runs
+      uses: styfle/cancel-workflow-action@0.9.0
+      with:
+        access_token: ${{ github.token }}
+
     - uses: actions/checkout@v2
+
     - name: write vault_pass to file
       run: echo $VAULT_PASS >> vault_pass.txt
       shell: bash
       env:
         VAULT_PASS : ${{ secrets.VAULT_PASS }}
+
     - name: lint ansible playbooks
       uses: ansible/ansible-lint-action@f05dc373850a80f1da58eae655e47b85502cacbf
       with:

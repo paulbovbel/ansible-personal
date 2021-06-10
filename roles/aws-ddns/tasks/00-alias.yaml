@@ -7,9 +7,9 @@
   notify: configure docker
   tags: docker
 
-- name: install boto
+- name: install boto3
   apt:
-    name: python3-boto
+    name: python3-boto3
     state: latest
     update_cache: true
     cache_valid_time: 3600
