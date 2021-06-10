@@ -9,6 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        target:
+          - media.bovbel.com
+          - home.bovbel.com
+
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.0
@@ -23,15 +29,13 @@ jobs:
       with:
         key: ${{ secrets.SSH_KEY }}
         name: id_rsa
-        known_hosts: |
-          |1|A9f1PoTIHyJEeuR0SqoAhrEhmMM=|lOb1NIKTSF9nGDa+h5u8iGZfNX8= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBF0+NifFX5kHunc5JeoKmIu/pwlBbyhMlATusV6OTNywHhe6eEaeiqno2MMUCkHyNJNgIc7BQ23ijfHPq4DBz1E=
+        known_hosts: unnecessary
 
     - name: Write secrets
       shell: bash
       env:
-        VAULT_PASS : ${{ secrets.VAULT_PASS }}
-      run: |
-        echo $VAULT_PASS >> vault_pass.txt
+        VAULT_PASS: ${{ secrets.VAULT_PASS }}
+      run: echo $VAULT_PASS >> vault_pass.txt
 
     - name: Setup Python
       uses: actions/setup-python@v2
@@ -52,7 +56,9 @@ jobs:
     - name: Cache ansible
       uses: actions/cache@v1
       with:
-        path: ~/.ansible/collections
+        path: |
+          ~/.ansible/collections
+          roles/stuvusit.smartd
         key: ${{ hashFiles('requirements.yaml') }}
 
     - name: Install ansible galaxy
@@ -64,5 +70,8 @@ jobs:
 
     - name: Run ansible
       shell: bash
+      env:
+        TARGET : ${{ matrix.target }}
       run: |
-        venv/bin/ansible-playbook -vi inventory/bovbel --limit media.bovbel.com playbooks/lab.yaml
+        ssh-keyscan -H $TARGET >> ~/.ssh/known_hosts &&
+        venv/bin/ansible-playbook -i inventory/bovbel --limit $TARGET playbooks/lab.yaml
