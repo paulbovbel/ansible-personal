@@ -65,6 +65,7 @@
   #   enabled: true
   #   state: started
   become: true
+  no_log: true
   loop: "{{ docker.services | dict2items }}"
   loop_control:
     loop_var: service
