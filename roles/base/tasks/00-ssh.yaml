@@ -23,56 +23,18 @@
     dest: /etc/hosts
   become: true
 
-- name: set authorized key from file
+- name: set authorized key from github
   authorized_key:
     user: "{{ ansible_user }}"
     state: present
     key: https://github.com/paulbovbel.keys
-  register: add_identity_key
 
-- name: require protocol 2
+- name: harden sshd
   lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^#?Protocol.*"
-    line: "Protocol 2"
+    dest: "/etc/ssh/sshd_config"
+    regexp: '^#?\s*{{ item.key }}.*'
+    value: "{{ item.key }} {{ item.value }}"
+    validate: "sshd -t -f %s"
+  loop: "{{ sshd_config | dict2items }}"
   become: true
-  notify: restart sshd
-
-- name: disable empty password login
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^#?PermitEmptyPasswords.*"
-    line: "PermitEmptyPasswords no"
-  become: true
-  notify: restart sshd
-
-- name: disable remote root login
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^#?PermitRootLogin.*"
-    line: "PermitRootLogin no"
-  become: true
-  notify: restart sshd
-
-- name: disable password login
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^#?PasswordAuthentication.*"
-    line: "PasswordAuthentication no"
-  when: add_identity_key is success and not add_identity_key is skipped
-  become: true
-  notify: restart sshd
-
-- name: enable PAM
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: "^#?UsePAM.*"
-    line: "UsePAM yes"
-  become: true
-  notify: restart sshd
-
-# - name: disable cloud-init
-#   file:
-#     path: /etc/cloud/cloud-init.disabled
-#     state: touch
-#   become: true
+  notify: reload sshd

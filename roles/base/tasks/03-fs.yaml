@@ -1,106 +1,101 @@
 ---
 # TODO(pbovbel) configure ppa:jonathonf/zfs
 
-- name: install zfs
-  apt:
-    name:
-      - zfs-dkms
-      - zfsutils-linux
-      - zfs-auto-snapshot
-      - zfs-zed
-    state: latest
-    update_cache: true
-    cache_valid_time: 3600
-  become: true
+- block:
+  - name: install zfs
+    apt:
+      name:
+        - zfs-dkms
+        - zfsutils-linux
+        - zfs-auto-snapshot
+        - zfs-zed
+      state: latest
+      update_cache: true
+      cache_valid_time: 3600
+    become: true
+
+  - name: import pool if necessary
+    shell: |
+      zpool status {{ zfs_pool }} || zpool import {{ zfs_pool }}
+    become: true
+
+  - name: configure zed
+    lineinfile:
+      dest: /etc/zfs/zed.d/zed.rc
+      regexp: "ZED_EMAIL_ADDR"
+      line: "ZED_EMAIL_ADDR='{{ ansible_email }}'"
+    become: true
+    notify: restart zed
   when: zfs_pool is defined
 
-- name: import pool if necessary
-  shell: |
-    zpool status {{ zfs_pool }} || zpool import {{ zfs_pool }}
-  become: true
-  when: zfs_pool is defined
+- block:
+  - name: install nfs client
+    apt:
+      pkg: nfs-common
+      state: latest
+      update_cache: true
+      cache_valid_time: 3600
+    become: true
 
-- name: configure zed
-  lineinfile:
-    dest: /etc/zfs/zed.d/zed.rc
-    regexp: "ZED_EMAIL_ADDR"
-    line: "ZED_EMAIL_ADDR='{{ ansible_email }}'"
-  become: true
-  when: zfs_pool is defined
-  notify: restart zed
+  - name: Ensure directory exists
+    file:
+      path: "{{ item.mount }}"
+      state: directory
+    become: true
+    with_items:
+      - "{{ nfs_mounts }}"
 
-- name: install nfs client
-  apt:
-    pkg: nfs-common
-    state: latest
-    update_cache: true
-    cache_valid_time: 3600
-  become: true
+  - name: configure nfs mounts
+    mount:
+      name: "{{ item.mount }}"
+      src: "{{ item.url }}"
+      fstype: nfs
+      opts: "{{ network_mount_options | join(',') }}"
+      state: mounted
+    become: true
+    with_items:
+      - "{{ nfs_mounts }}"
   when: nfs_mounts is defined
 
-- name: Ensure directory exists
-  file:
-    path: "{{ item.mount }}"
-    state: directory
-  become: true
-  with_items:
-    - "{{ nfs_mounts }}"
-  when: nfs_mounts is defined
+- block:
+  - name: install open-iscsi
+    apt:
+      pkg: open-iscsi
+      state: latest
+      update_cache: true
+      cache_valid_time: 3600
+    become: true
 
-- name: configure nfs mounts
-  mount:
-    name: "{{ item.mount }}"
-    src: "{{ item.url }}"
-    fstype: nfs
-    opts: "{{ network_mount_options | join(',') }}"
-    state: mounted
-  become: true
-  with_items:
-    - "{{ nfs_mounts }}"
-  when: nfs_mounts is defined
+  - name: start open-iscsi
+    systemd:
+      name: iscsid.service
+      state: started
+      enabled: true
+    become: true
 
-- name: install open-iscsi
-  apt:
-    pkg: open-iscsi
-    state: latest
-    update_cache: true
-    cache_valid_time: 3600
-  become: true
-  when: iscsi_host is defined
+  - name: discover iscsi
+    open_iscsi:
+      portal: "{{ iscsi_host }}"
+      discover: true
+      show_nodes: true
+    become: true
+    register: iscsi
 
-- name: start open-iscsi
-  systemd:
-    name: iscsid.service
-    state: started
-    enabled: true
-  become: true
-  when: iscsi_host is defined
+  - name: login to iscsi
+    open_iscsi:
+      target: "{{ iscsi.nodes[0] }}"
+      login: true
+      auto_node_startup: true
+    become: true
 
-- name: discover iscsi
-  open_iscsi:
-    portal: "{{ iscsi_host }}"
-    discover: true
-    show_nodes: true
-  become: true
-  when: iscsi_host is defined
-  register: iscsi
-
-- name: login to iscsi
-  open_iscsi:
-    target: "{{ iscsi.nodes[0] }}"
-    login: true
-    auto_node_startup: true
-  become: true
-  when: iscsi_host is defined
-
-- name: configure iscsi mount
-  mount:
-    name: "{{ app_folder }}"
-    src: "/dev/disk/by-path/ip-{{ iscsi_host }}:3260-iscsi-{{ iscsi.nodes[0] }}-{{ iscsi_lun }}-part1"
-    fstype: ext4
-    opts: "{{ network_mount_options | join(',') }}"
-    state: mounted
-  become: true
+  - name: configure iscsi mount
+    mount:
+      name: "{{ app_folder }}"
+      src: "/dev/disk/by-path/ip-{{ iscsi_host }}:3260-iscsi-{{ iscsi.nodes[0] }}-{{ iscsi_lun }}-part1"
+      fstype: ext4
+      opts: "{{ network_mount_options | join(',') }}"
+      state: mounted
+    become: true
   when: iscsi_host is defined
 
 - name: include smartd role
