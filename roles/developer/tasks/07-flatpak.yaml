@@ -1,10 +1,22 @@
 ---
+- name: add flathub
+  flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    method: user
+
 - name: install flatpaks
   flatpak:
     name: "{{ item }}"
     state: present
-    method: system
+    method: user
   with_items: "{{ flatpak_install }}"
+
+- name: create user systemd dir
+  file:
+    path: ~/.config/systemd/user
+    state: directory
 
 - name: setup flatpak update timer
   copy:

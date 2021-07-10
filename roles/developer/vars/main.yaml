@@ -1,85 +1,62 @@
 apt_remove:
-  - packages: ['unity-webapps-common','thunderbird*','pidgin*','rhythmbox*','usb-creator*','ubuntuone*','empathy*']
+  - packages: []
 
 apt_install:
   - packages: []
     repo: "deb http://archive.canonical.com/ubuntu/ {{ ansible_distribution_release }} partner"
     filename: /etc/apt/sources.list
 
-  # - packages: ['oracle-java9-installer']
-  #   repo: ppa:webupd8team/java
-  #   filename: java
-
-  # - packages: ['git']
-  #   repo: ppa:git-core/ppa
-  #   filename: git
-
-  # - packages: ['nvidia-driver-415', 'nvidia-prime']
-  #   repo: ppa:graphics-drivers/ppa
-  #   filename: graphics-drivers
-
-  # - packages: ['prime-indicator']
-  #   repo: ppa:nilarimogard/webupd8
-  #   filename: prime-indicator
-
   # - packages: ['mono-complete']
   #   repo: "deb http://download.mono-project.com/repo/debian wheezy main"
   #   keyid: 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
   #   filename: mono
 
-  - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython','python-pip','vlc','unity-tweak-tool','solaar-gnome3','steam']
+  - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython3','vlc','solaar-gnome3','steam']
 
   - packages: ['pcscd','scdaemon','gnupg2','pcsc-tools']
 
-  # - packages: ['tlp', 'smartmontools', 'ethtool']
-  #   repo: ppa:linrunner/tlp
-  #   filename: tlp
+  - packages: ['tlp', 'smartmontools', 'ethtool']
+    repo: ppa:linrunner/tlp
+    filename: tlp
 
-  # - packages: ['unetbootin']
-  #   repo: ppa:gezakovacs/ppa
-  #   filename: unetbootin
+  - packages: ['unetbootin']
+    repo: ppa:gezakovacs/ppa
+    filename: unetbootin
 
-  # - packages: ['dropbox']
-  #   repo: "deb http://linux.dropbox.com/ubuntu {{ ansible_distribution_release }} main"
-  #   keyid: 5044912E
-
-  # - packages: ['numix-*']
-  #   repo: ppa:numix/ppa
-  #   filename: numix
-
-  # - packages: ['ubuntu-make']
-  #   repo: ppa:ubuntu-desktop/ubuntu-make
-  #   filename: ubuntu-ake
+  - packages: ['numix-*']
+    repo: ppa:numix/ppa
+    filename: numix
 
   - packages: ['wireshark']
     repo: ppa:wireshark-dev/stable
     filename: wireshark
 
-  # - packages: ['remmina']
-  #   repo: ppa:remmina-ppa-team/remmina-next
-  #   filename: remmina
+  - packages: ['remmina']
+    repo: ppa:remmina-ppa-team/remmina-next
+    filename: remmina
 
   # - packages: ['virtualbox-5.1']
   #   repo: "deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
   #   keyurl: http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc
   #   filename: virtualbox
 
-  # - packages: ['google-chrome-stable']
-  #   repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
-  #   keyurl: https://dl-ssl.google.com/linux/linux_signing_key.pub
-  #   filename: google-chrome
+  - packages: ['resilio-sync']
+    repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
+    keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
+    filename: resilio
 
-  # - packages: ['resilio-sync']
-  #   repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
-  #   keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
-  #   filename: resilio
-
-  # - packages: ['code']
-  #   repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-  #   keyurl: https://packages.microsoft.com/keys/microsoft.asc
-  #   filename: vscode
+  - packages: ['code']
+    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
+    keyurl: https://packages.microsoft.com/keys/microsoft.asc
+    filename: code
 
   - packages: ['terminator']
+
+  - packages: ['chrome-gnome-shell', 'libproxy1-plugin-networkmanager', 'gnome-shell-extension-system-monitor']
+
+  - packages: ['gnome-tweak-tool']
+
+  - packages: ['flatpak']
 
 flatpak_install:
   - com.slack.Slack
