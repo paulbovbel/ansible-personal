@@ -1,4 +1,4 @@
 ---
-- hosts: localhost
+- hosts: dell-xps
   roles:
-    - developer
+    - dell-xps

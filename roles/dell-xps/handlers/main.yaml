@@ -1,0 +1,14 @@
+---
+- name: restart tlp
+  service:
+    name: tlp
+    state: restarted
+  become: true
+
+- name: update grub
+  command: /usr/sbin/update-grub
+  become: true
+
+- name: update initramfs
+  command: /usr/sbin/update-initramfs -u
+  become: true

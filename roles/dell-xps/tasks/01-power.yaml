@@ -1,0 +1,41 @@
+---
+- name: add tlp ppa
+  apt_repository:
+    repo: ppa:linrunner/tlp
+  become: true
+
+- name: install tlp packages
+  apt:
+    name:
+      - thermald
+      - tlp
+      - tlp-rdw
+      - powertop
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: fix bluetooth powersave
+  lineinfile:
+    dest: "/etc/tlp.conf"
+    regexp: '^#?\s*RESTORE_DEVICE_STATE_ON_STARTUP.*'
+    value: "RESTORE_DEVICE_STATE_ON_STARTUP=1"
+  become: true
+  notify: restart tlp
+
+
+- name: fix headphone white noise on battery
+  lineinfile:
+    dest: "/etc/tlp.conf"
+    regexp: '^#?\s*SOUND_POWER_SAVE_ON_BAT.*'
+    value: "SOUND_POWER_SAVE_ON_BAT=0"
+  become: true
+  notify: restart tlp
+
+- name: intel powersaving
+  copy:
+    content: |
+      options i915 enable_fbc=1 enable_guc=3 disable_power_well=0 fastboot=1
+    dest: /etc/modprobe.d/i915.conf
+  become: true

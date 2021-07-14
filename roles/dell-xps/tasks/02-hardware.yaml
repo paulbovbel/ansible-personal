@@ -1,0 +1,39 @@
+---
+- name: populate kernel parameters
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=.*$'
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="{{ kernel_options | join(" ") }}"'
+  become: true
+  notify: update grub
+
+- name: dell hwmon config
+  copy:
+    content: |
+      options dell-smm-hwmon restricted=0 force=1
+    dest: /etc/modprobe.d/dell-smm-hwmon.conf
+  become: true
+
+- name: dell hwmon load
+  lineinfile:
+    value: "dell-smm-hwmon"
+    dest: "/etc/modules"
+  become: true
+  notify: update initramfs
+
+- name: disable fingerprint reader
+  copy:
+    content: |
+      # Disable fingerprint reader
+      SUBSYSTEM=="usb", ATTRS{idVendor}=="27c6", ATTRS{idProduct}=="5395", ATTR{authorized}="0"
+    dest: /etc/udev/rules.d/fingerprint.rules
+  become: true
+
+- name: install nvidia prime packages
+  apt:
+    name:
+      - nvidia-prime
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true

@@ -1,0 +1,52 @@
+---
+# pipewire works much better for bluetooth headphones, not default in focal
+- name: add pipewire ppa
+  apt_repository:
+    repo: ppa:pipewire-debian/pipewire-upstream
+  become: true
+
+- name: install pipewire packages
+  apt:
+    name:
+      - gstreamer1.0-pipewire
+      - libspa-0.2-bluetooth
+      - libspa-0.2-jack
+      - pipewire
+      - pipewire-audio-client-libraries
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: symlink pipewire configs
+  file:
+    src: /usr/share/pipewire
+    dest: /etc/pipewire
+    state: link
+  become: true
+
+- name: disable pulseaudio
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+    masked: true
+    scope: user
+    daemon_reload: true
+  loop:
+    - pulseaudio.socket
+    - pulseaudio.service
+
+- name: enable pipewire
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+    scope: user
+    daemon_reload: true
+  loop:
+    - pipewire.socket
+    - pipewire.service
+    - pipewire-pulse.socket
+    - pipewire-pulse.service
+    - pipewire-media-session.service

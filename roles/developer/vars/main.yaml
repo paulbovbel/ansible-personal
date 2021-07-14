@@ -6,18 +6,30 @@ apt_install:
     repo: "deb http://archive.canonical.com/ubuntu/ {{ ansible_distribution_release }} partner"
     filename: /etc/apt/sources.list
 
-  # - packages: ['mono-complete']
-  #   repo: "deb http://download.mono-project.com/repo/debian wheezy main"
-  #   keyid: 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-  #   filename: mono
+  - packages: 
+    # for dev
+    - openssh-server
+    - openssh-client
+    - ubuntu-restricted-extras
+    - ubuntu-restricted-extras
+    - va-driver-all
+    - vainfo
+    - libva2
+    - gstreamer1.0-libav
+    - gstreamer1.0-vaapi
+    - swapspace
+    - iperf
+    - htop
+    - ipython3
+    - vlc
+    - solaar-gnome3
 
-  - packages: ['openssh-server','openssh-client','ubuntu-restricted-extras','swapspace','iperf','htop','ipython3','vlc','solaar-gnome3','steam']
-
-  - packages: ['pcscd','scdaemon','gnupg2','pcsc-tools']
-
-  - packages: ['tlp', 'smartmontools', 'ethtool']
-    repo: ppa:linrunner/tlp
-    filename: tlp
+  - packages: 
+    # for yubikey
+    - pcscd
+    - scdaemon
+    - gnupg2
+    - pcsc-tools
 
   - packages: ['unetbootin']
     repo: ppa:gezakovacs/ppa
@@ -34,11 +46,6 @@ apt_install:
   - packages: ['remmina']
     repo: ppa:remmina-ppa-team/remmina-next
     filename: remmina
-
-  # - packages: ['virtualbox-5.1']
-  #   repo: "deb http://download.virtualbox.org/virtualbox/debian {{ ansible_distribution_release }} contrib"
-  #   keyurl: http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc
-  #   filename: virtualbox
 
   - packages: ['resilio-sync']
     repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"

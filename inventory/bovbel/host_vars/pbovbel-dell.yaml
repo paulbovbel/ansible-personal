@@ -1,3 +1,4 @@
+ansible_connection: local
 ansible_user: pbovbel
 
 pgp_key_id: "0x8D2867DB5A4AA6E6"
