@@ -5,7 +5,7 @@
     repo: ppa:pipewire-debian/pipewire-upstream
   become: true
 
-- name: install pipewire packages
+- name: install pipewire and bluetooth packages
   apt:
     name:
       - gstreamer1.0-pipewire
@@ -13,6 +13,7 @@
       - libspa-0.2-jack
       - pipewire
       - pipewire-audio-client-libraries
+      - libical-dev
     state: latest
     update_cache: true
     cache_valid_time: 3600
@@ -50,3 +51,45 @@
     - pipewire-pulse.socket
     - pipewire-pulse.service
     - pipewire-media-session.service
+
+- name: get bluetoothd version
+  shell: |
+    /usr/local/libexec/bluetooth/bluetoothd --version || echo None
+  register: bluetoothd_version
+
+- name: install bluetoothd from source
+  when: bluez_version != bluetoothd_version.stdout
+  block:
+  - name: temporary bluez directory
+    tempfile:
+      state: directory
+    register: bluez_directory
+
+  - name: download bluez
+    unarchive:
+      src: "http://www.kernel.org/pub/linux/bluetooth/bluez-{{ bluez_version }}.tar.xz"
+      dest: "{{ bluez_directory.path }}"
+      remote_src: yes
+
+  - name: install bluez
+    shell: |
+      cd {{ bluez_directory.path }}/bluez-{{ bluez_version }} &&
+      ./configure &&
+      make &&
+      sudo make install
+    become: true
+
+- name: create service override dir
+  file:
+    path: /etc/systemd/system/bluetooth.service.d/
+    state: directory
+  become: true
+
+- name: override service
+  copy:
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/local/libexec/bluetooth/bluetoothd --experimental
+    dest: /etc/systemd/system/bluetooth.service.d/override.conf
+  become: true
