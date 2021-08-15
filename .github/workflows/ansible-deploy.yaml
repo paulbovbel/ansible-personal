@@ -15,6 +15,7 @@ jobs:
           - media.bovbel.com
           - home.bovbel.com
 
+
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.0
