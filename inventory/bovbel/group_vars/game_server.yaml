@@ -1,0 +1,119 @@
+aws_alias_domains:
+  - minecraft.bovbel.com
+  - cs.bovbel.com
+  - valheim.bovbel.com
+
+docker_extras:
+  services:
+    minecraft:
+      image: itzg/minecraft-server
+      container_name: minecraft
+      networks:
+        - apps
+      ports:
+        - "25565:25565"
+      volumes:
+        - "{{ app_folder }}/minecraft:/data"
+      environment:
+        UID: "{{ uid }}"
+        GID: "{{ gid }}"
+        EULA: "TRUE"
+        MAX_MEMORY: "16G"
+        ENABLE_AUTOPAUSE: "TRUE"
+        WHITELIST: "{{ minecraft_users | join(',') }}"
+        OPS: "{{ minecraft_ops | join(',') }}"
+        ENABLE_RCON: "TRUE"
+        RCON_PASSWORD: "{{ web_password }}"
+        TYPE: PAPER
+      restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
+    csgo:
+      image: kmallea/csgo
+      container_name: csgo
+      networks:
+        - apps
+      ports:
+        - "27015:27015/tcp"
+        - "27015:27015/udp"
+        - "27020:27020/tcp"
+        - "27020:27020/udp"
+      volumes:
+        - type: bind
+          source: "{{ app_folder }}/csgo"
+          target: /home/steam/csgo
+      environment:
+        SERVER_HOSTNAME: cs.bovbel.com
+        SERVER_PASSWORD: "{{ csgo_server_password }}"
+        RCON_PASSWORD: "{{ web_password }}"
+        STEAM_ACCOUNT: "{{ csgo_app_id }}"
+        SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
+      restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
+    valheim:
+      image: mbround18/valheim:latest
+      container_name: valheim
+      ports:
+        - 2456:2456/udp
+        - 2457:2457/udp
+        - 2458:2458/udp
+      environment:
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
+        PORT: 2456
+        NAME: "valheim.bovbel.com"
+        WORLD: "World"
+        PASSWORD: "{{ csgo_server_password }}"
+        PUBLIC: 1
+        AUTO_UPDATE: 1
+        AUTO_UPDATE_SCHEDULE: "0 5 * * *"
+        UPDATE_ON_STARTUP: 1
+        AUTO_BACKUP: 1
+        AUTO_BACKUP_SCHEDULE: "*/15 * * * *"
+        AUTO_BACKUP_REMOVE_OLD: 1
+        AUTO_BACKUP_DAYS_TO_LIVE: 5
+        AUTO_BACKUP_ON_UPDATE: 1
+        AUTO_BACKUP_ON_SHUTDOWN: 1
+      volumes:
+        - "{{ app_folder }}/valheim/saves:/home/steam/.config/unity3d/IronGate/Valheim"
+        - "{{ app_folder }}/valheim/server:/home/steam/valheim"
+        - "{{ app_folder }}/valheim/backups:/home/steam/backups"
+      restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
+
+
+csgo_server_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  39623639626633623466376534303537613431653232613764343239386337386638626162313636
+  3832613261326133393532306438306535643961373166300a613764616135333865393639393137
+  61306666326435653231646634373162393238363162363863666563346233396431636131343435
+  3166393736383761360a346232633439316564653433653230323536323535313665613134383564
+  3832
+csgo_app_id: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  30666361353763396136666231383963613731333266386664386637313736383261383530343561
+  6333383138393932383031646131656434646165393463370a636666386136353537386436633631
+  39653735333636643231623139373038633831653266333630633266346633363732383134386665
+  6330303661316666660a313934393039613833313166373738343961336530623031646637396365
+  32353330373531626330663338636366353832373439643637343365343936376237363830316363
+  3033353437636662633239636462323334393630396239646435
+
+csgo_admins:
+  - STEAM_0:0:33888781  # agentx3r
+  - STEAM_0:0:8806779   # Supernatur4l
+
+minecraft_ops:
+  - agentx3r
+  - LEVI00
+
+minecraft_users:
+  - _rusted_
+  - agentx3r
+  - FeelsKaleMan
+  - landon0909
+  - LEVI00
+  - NovaNoot
+  - rusnconcussion
+  - sufferingtree11
+  - SushiBeyblade85
+  - ur_hot
