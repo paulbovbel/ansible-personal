@@ -19,11 +19,11 @@
     cache_valid_time: 3600
   become: true
 
-- name: symlink pipewire configs
-  file:
-    src: /usr/share/pipewire
+- name: copy pipewire configs
+  copy:
+    src: /usr/share/pipewire/
     dest: /etc/pipewire
-    state: link
+    remote_src: true
   become: true
 
 - name: disable pulseaudio
