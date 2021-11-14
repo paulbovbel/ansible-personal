@@ -23,9 +23,7 @@ zfs_pool: storage
 media_server: true
 
 aws_alias_domains:
-  - minecraft.bovbel.com
-  - cs.bovbel.com
-  - valheim.bovbel.com
+  - tower.bovbel.com
 
 docker_extras:
   services:
@@ -33,6 +31,17 @@ docker_extras:
       volumes:
         - "{{ media_folder }}:/mnt/storage/share:ro"
       x-systemd-requires: ['mnt-storage.mount']
+    unifi:
+      image: linuxserver/unifi-controller
+      container_name: unifi
+      network_mode: host
+      volumes:
+        - "{{ app_folder }}/unifi:/config"
+      restart: "no"
+      environment:
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
     deluge:
       environment:
         VPN_ENABLED: "yes"

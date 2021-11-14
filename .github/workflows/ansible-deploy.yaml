@@ -13,7 +13,7 @@ jobs:
       matrix:
         target:
           - media.bovbel.com
-          - home.bovbel.com
+          # - home.bovbel.com
 
 
     steps:
