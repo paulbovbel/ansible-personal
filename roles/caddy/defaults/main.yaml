@@ -3,7 +3,7 @@ docker_caddy:
   services:
     caddy:
       # TODO(pbovbel): build a caddy image containing jwt and auth_portal on demand
-      image: paulbovbel/caddy:2.2.1
+      image: paulbovbel/caddy:2.4.6
       container_name: caddy
       networks:
         - apps

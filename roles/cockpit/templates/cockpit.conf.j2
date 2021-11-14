@@ -1,5 +1,4 @@
 [WebService]
-Origins = http://{{ inventory_hostname }} https://{{ inventory_hostname }} http://{{ ansible_host }}:9090 https://{{ ansible_host }}:9090
-AllowUnencrypted = true
+Origins = https://{{ inventory_hostname }} wss://{{ inventory_hostname }}
 ProtocolHeader = X-Forwarded-Proto
-UrlRoot=/dashboard/
+UrlRoot=/dashboard

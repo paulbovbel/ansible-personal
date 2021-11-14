@@ -4,9 +4,11 @@
 
 (auth) {
   route /auth* {
-    auth_portal {
-      path /auth
+    authp {
+      crypto default token lifetime 3600
+      crypto key sign-verify {{ caddy.token_secret }}
       context {args.0}
+
       backends {
         google_oauth2_backend {
           method oauth2
@@ -16,19 +18,16 @@
           client_secret {{ google_oauth2_client_secret }}
           # scopes openid email profile
           scopes email
-          {% for user in caddy.users %}
-          user "{{ user.name }}" add roles {{ user.roles | join (" ") }}
-          {% endfor %}
         }
       }
-      jwt {
-        token_name access_token
-        token_secret {{ caddy.token_secret }}
+
+      {% for user in caddy.users %}
+      transform user {
+        match email "{{ user.name }}"
+        action add roles {{ user.roles | join (" ") }}
       }
-      ui {
-        logo_url "https://caddyserver.com/resources/images/caddy-circle-lock.svg"
-        logo_description "Caddy"
-      }
+      {% endfor %}
+
     }
   }
 }
@@ -46,16 +45,12 @@
 {% endif %}
 
   route / {
-    jwt {
+    authorize {
       primary yes
-      auth_url /auth/oauth2/google
-      enable claim headers
-      trusted_tokens {
-        static_secret {
-          token_name access_token
-          token_secret {{ caddy.token_secret }}
-        }
-      }
+      crypto key verify {{ caddy.token_secret }}
+      set auth url /auth/oauth2/google
+      inject headers with claims
+      allow roles superadmin
     }
   }
 
@@ -72,8 +67,7 @@
 
   route {{ endpoint.path }}* {
   {% if endpoint.auth == "oauth" %}
-    jwt {
-      enable claim headers
+    authorize {
       allow roles {{ endpoint.roles | join (' ') }}
     }
   {% endif %}
@@ -84,6 +78,12 @@
 
   {% if endpoint.type == "proxy" %}
     reverse_proxy * {{ endpoint.scheme | default('http') }}://{{ endpoint.host }}:{{ endpoint.port }} {
+
+    {% if endpoint.scheme is defined and endpoint.scheme == 'https' %}
+      transport http {
+          tls_insecure_skip_verify
+      }
+    {% endif %}
 
     {% for header in endpoint.header_up | default ([]) %}
       header_up {{ header }}
