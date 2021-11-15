@@ -15,6 +15,7 @@ docker==5.0.0             # via -r requirements.in
 idna==3.2                 # via requests
 jinja2==3.0.1             # via ansible-core
 markupsafe==2.0.1         # via jinja2
+git+https://github.com/mitogen-hq/mitogen@59e6fe5289625547dc6eb2d4c20e39bc2212be3b  # via -r requirements.in
 netaddr==0.8.0            # via -r requirements.in
 packaging==21.0           # via ansible-core
 passlib==1.7.4            # via -r requirements.in

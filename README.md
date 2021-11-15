@@ -11,6 +11,7 @@ cd ansible-home
 python3 -m venv venv --system-site-packages
 ./venv/bin/pip install -r requirements.txt
 ./venv/bin/ansible-galaxy install -r requirements.yaml
+ln -sfr venv/lib/python3*/site-packages/ansible_mitogen/plugins/strategy/ ~/.ansible/plugins/strategy
 ```
 
 To deploy on the current machine:

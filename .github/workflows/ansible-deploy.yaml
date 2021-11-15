@@ -44,18 +44,20 @@ jobs:
         python-version: '3.x'
 
     - name: Cache pip
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.cache/pip
         key: ${{ hashFiles('requirements.txt') }}
 
-    - name: Install pip
+    - name: Install pip dependencies
       run: |
-        python3 -m venv venv
-        venv/bin/pip install -r requirements.txt
+        python3 -m venv venv &&
+        venv/bin/pip install -r requirements.txt &&
+        mkdir -p ~/.ansible/plugins &&
+        ln -sfr venv/lib/python3*/site-packages/ansible_mitogen/plugins/strategy/ ~/.ansible/plugins/strategy
 
     - name: Cache ansible
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: |
           ~/.ansible/collections

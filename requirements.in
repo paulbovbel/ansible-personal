@@ -3,3 +3,4 @@ bcrypt
 docker
 netaddr
 passlib
+git+https://github.com/mitogen-hq/mitogen@59e6fe5289625547dc6eb2d4c20e39bc2212be3b
