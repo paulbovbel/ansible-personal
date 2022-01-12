@@ -5,7 +5,7 @@
 (auth) {
   route /auth* {
     authp {
-      crypto default token lifetime 3600
+      crypto default token lifetime 86400
       crypto key sign-verify {{ caddy.token_secret }}
       context {args.0}
 
@@ -40,11 +40,13 @@
       }
       output file /data/log/error.log
   }
-{% if caddy.redirect is defined %}
-  redir / {{ caddy.redirect }}
-{% endif %}
 
   route / {
+
+  {% if caddy.redirect is defined %}
+    redir {{ caddy.redirect }} html
+  {% endif %}
+
     authorize {
       primary yes
       crypto key verify {{ caddy.token_secret }}
@@ -52,23 +54,22 @@
       inject headers with claims
       allow roles superadmin
     }
+
   }
 
   import auth
 
 {% for endpoint in caddy.endpoints.values() %}
-  redir {{ endpoint.path }} {{ endpoint.path }}/
-
-  {% if endpoint.auth == "basic" %}
-    basicauth {{ endpoint.path }}* {
-      {{ endpoint.user }} {{ endpoint.password | password_hash('bcrypt') | b64encode }}
-    }
-  {% endif %}
+  redir {{ endpoint.path }} {{ endpoint.path }}/ html
 
   route {{ endpoint.path }}* {
   {% if endpoint.auth == "oauth" %}
     authorize {
       allow roles {{ endpoint.roles | join (' ') }}
+    }
+  {% elif endpoint.auth == "basic" %}
+    basicauth {
+      {{ endpoint.user }} {{ endpoint.password | password_hash('bcrypt') | b64encode }}
     }
   {% endif %}
 
@@ -79,7 +80,7 @@
   {% if endpoint.type == "proxy" %}
     reverse_proxy * {{ endpoint.scheme | default('http') }}://{{ endpoint.host }}:{{ endpoint.port }} {
 
-    {% if endpoint.scheme is defined and endpoint.scheme == 'https' %}
+    {% if endpoint.scheme | default('http') == "https" %}
       transport http {
           tls_insecure_skip_verify
       }
@@ -113,17 +114,13 @@
   route /* {
 
   {% if remote.auth == "oauth" %}
-    jwt {
+
+    authorize {
       primary yes
       context {{ name }}
-      auth_url /auth/oauth2/google
-      enable claim headers
-      trusted_tokens {
-        static_secret {
-          token_name access_token
-          token_secret {{ caddy.token_secret }}
-        }
-      }
+      crypto key verify {{ caddy.token_secret }}
+      set auth url /auth/oauth2/google
+      inject headers with claims
       allow roles {{ remote.roles | join (' ') }}
     }
   {% endif %}

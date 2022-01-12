@@ -11,4 +11,4 @@ kernel_options:
   - nouveau.runpm=0
   - mem_sleep_default=deep
 
-bluez_version: "5.61"
+bluez_version: "5.62"

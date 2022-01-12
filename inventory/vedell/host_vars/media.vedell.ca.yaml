@@ -52,6 +52,8 @@ data_folder: /mnt/nfs
 app_folder: /mnt/app
 movies_folder: "{{ data_folder }}/movies"
 tv_folder: "{{ data_folder }}/tv"
+books_folder: "{{ data_folder }}/books"
+comics_folder: "{{ data_folder }}/comics"
 music_folder: "{{ data_folder }}/music"
 downloads_folder: "/mnt/downloads"
 share_folder: "{{ data_folder }}"

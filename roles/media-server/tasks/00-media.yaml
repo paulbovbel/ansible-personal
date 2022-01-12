@@ -29,6 +29,13 @@
 #     replace: '<UrlBase>radarr</UrlBase>'
 #   notify: restart radarr
 
+# - name: configure readarr basepath
+#   replace:
+#     path: "{{ app_folder }}/readarr/config.xml"
+#     regexp: '<UrlBase>.*</UrlBase>'
+#     replace: '<UrlBase>readarr</UrlBase>'
+#   notify: restart readarr
+
 # - name: configure sonarr basepath
 #   replace:
 #     path: "{{ app_folder }}/sonarr/config.xml"
@@ -46,9 +53,23 @@
 # - name: configure tautulli proxy
 #   replace:
 #     path: "{{ app_folder }}/tautulli/config.ini"
-#     regexp: 'http_proxy = 0'
+#     regexp: 'http_proxy = .*'
 #     replace: 'http_proxy = 1'
 #   notify: restart tautulli
+
+# - name: configure bazarr proxy
+#   replace:
+#     path: "{{ app_folder }}/bazarr/config/config.ini"
+#     regexp: 'base_url = .*'
+#     replace: 'base_url = /bazarr'
+#   notify: restart bazarr
+
+# - name: configure mylar3 proxy
+#   replace:
+#     path: "{{ app_folder }}/mylar3/mylar/config.ini"
+#     regexp: 'http_root = .*'
+#     replace: 'http_root = /mylar'
+#   notify: restart bazarr
 
 # - name: configure deluge thin client auth
 #   lineinfile:
