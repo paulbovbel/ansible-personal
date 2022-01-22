@@ -46,7 +46,7 @@ docker_extras:
         TZ: America/Toronto
     deluge:
       environment:
-        VPN_ENABLED: "yes"
+        VPN_ENABLED: "no"
         VPN_PROV: pia
         VPN_USER: "{{ pia_username }}"
         VPN_PASS: "{{ pia_password }}"
