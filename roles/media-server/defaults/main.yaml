@@ -155,6 +155,18 @@ docker_media_server:
         DEBUG: "true"
         ADDITIONAL_PORTS: 58846
         VPN_ENABLED: "no"
+    flaresolverr:
+      container_name: flaresolverr
+      image: flaresolverr/flaresolverr:latest
+      networks:
+        - apps
+      environment:
+        PUID: "{{ uid }}"
+        PGID: "{{ gid }}"
+        TZ: America/Toronto
+        CAPTCHA_SOLVER: 'none'
+      restart: "no"
+
 
 caddy_media_server:
   endpoints:
