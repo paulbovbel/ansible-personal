@@ -1,0 +1,22 @@
+---
+all:
+  children:
+    server:
+      hosts:
+        home.bovbel.com:
+        media.bovbel.com:
+    dell_xps:
+      hosts:
+        pbovbel-dell:
+
+
+
+
+# [server]
+# home.bovbel.com
+
+# [game_server]
+# media.bovbel.com
+
+# [dell-xps]
+# pbovbel-dell

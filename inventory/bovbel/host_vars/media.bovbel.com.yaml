@@ -26,6 +26,7 @@ media_server: true
 
 aws_alias_domains:
   - tower.bovbel.com
+  - cs.bovbel.com
 
 docker_extras:
   services:
@@ -100,6 +101,126 @@ docker_extras:
         TZ: America/Toronto
       x-systemd-requires:
         - mnt-storage.mount
+    # minecraft:
+    #   image: itzg/minecraft-server
+    #   container_name: minecraft
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - "25565:25565"
+    #   volumes:
+    #     - "{{ app_folder }}/minecraft:/data"
+    #   environment:
+    #     UID: "{{ uid }}"
+    #     GID: "{{ gid }}"
+    #     EULA: "TRUE"
+    #     MAX_MEMORY: "16G"
+    #     ENABLE_AUTOPAUSE: "TRUE"
+    #     WHITELIST: "{{ minecraft_users | join(',') }}"
+    #     OPS: "{{ minecraft_ops | join(',') }}"
+    #     ENABLE_RCON: "TRUE"
+    #     RCON_PASSWORD: "{{ web_password }}"
+    #     TYPE: PAPER
+    #   restart: "no"
+    #   x-systemd-requires: ['mnt-storage.mount']
+    csgo:
+      image: kmallea/csgo
+      container_name: csgo
+      networks:
+        - apps
+      ports:
+        - "27015:27015/tcp"
+        - "27015:27015/udp"
+        - "27020:27020/tcp"
+        - "27020:27020/udp"
+      volumes:
+        - type: bind
+          source: "{{ app_folder }}/csgo"
+          target: /home/steam/csgo
+      environment:
+        SERVER_HOSTNAME: cs.bovbel.com
+        SERVER_PASSWORD: "{{ csgo_server_password }}"
+        RCON_PASSWORD: "{{ web_password }}"
+        STEAM_ACCOUNT: "{{ csgo_app_id }}"
+        SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
+      restart: "no"
+      x-systemd-requires: ['mnt-storage.mount']
+    # 7dtdserver:
+    #   image: vinanrra/7dtd-server
+    #   container_name: 7dtd
+    #   networks:
+    #     - apps
+    #   environment:
+    #     START_MODE: "1" #Change between START MODES
+    #     VERSION: "stable" # Change between 7 days to die versions
+    #     PUID: "{{ uid }}"
+    #     PGID: "{{ gid }}"
+    #     TimeZone: America/Toronto
+    #     TEST_ALERT: "NO" # Optional - Send a test alert
+    #     UPDATE_MODS: "NO" # Optional - This will allow mods to be update on start, each mod also need to have XXXX_UPDATE: YES to update on start
+    #     ALLOC_FIXES: "NO" # Optional - Install ALLOC FIXES
+    #     ALLOC_FIXES_UPDATE: "NO" # Optional - Update Allocs Fixes before server start
+    #     UNDEAD_LEGACY: "NO" # Optional - Install Undead Legacy mod
+    #     UNDEAD_LEGACY_VERSION: stable # Optional - Undead Legacy version
+    #     UNDEAD_LEGACY_UPDATE: "NO" # Optional - Update Undead Legacy mod before server start
+    #     ENZOMBIES: "NO" # Optional - Install EnZombies mod
+    #     ENZOMBIES_ADDON_SNUFKIN: "NO" # Optional - Install EnZombies addon mod
+    #     ENZOMBIES_ADDON_ROBELOTO: "NO" # Optional - Install EnZombies addon mod
+    #     ENZOMBIES_ADDON_"NO"NUDES: "NO" # Optional - Install EnZombies addon mod
+    #     ENZOMBIES_UPDATE: "NO" # Optional - Update EnZombies mod and addons before server start
+    #     CPM: "NO" # Optional - CSMM Patron's Mod (CPM)
+    #     CPM_UPDATE: "NO" # Optional - Update BepInEx before server start
+    #     BEPINEX: "NO" # Optional - BepInEx
+    #     BEPINEX_UPDATE: "NO" # Optional - Update BepInEx before server start
+    #     BACKUP: "NO" # Optional - Backup server at 5 AM
+    #     MONITOR: "NO" # Optional - Keeps server up if crash
+    #   volumes:
+    #     - /path/to/folder/7DaysToDie:/home/sdtdserver/.local/share/7DaysToDie/
+    #     - /path/to/folder/LGSM-Config:/home/sdtdserver/lgsm/config-lgsm/sdtdserver
+    #     - /path/to/folder/ServerFiles:/home/sdtdserver/serverfiles/ # Optional - serverfiles folder
+    #     - /path/to/folder/log:/home/sdtdserver/log/ # Optional - Logs folder
+    #     - /path/to/folder/backups:/home/sdtdserver/lgsm/backup/ # Optional - If BAKCUP=NO, backups folder
+    #   ports:
+    #     - 26900:26900/tcp # Default game ports
+    #     - 26900:26900/udp # Default game ports
+    #     - 26901:26901/udp # Default game ports
+    #     - 26902:26902/udp # Default game ports
+    #     - 8080:8080/tcp # OPTIONAL - WEBADMIN
+    #     - 8081:8081/tcp # OPTIONAL - TELNET
+    #     - 8082:8082/tcp # OPTIONAL - WEBSERVER https://7dtd.illy.bz/wiki/Server%20fixes
+    #   restart: "no" # INFO - NEVER USE WITH START_MODE=4 or START_MODE=0
+    # valheim:
+    #   image: mbround18/valheim:latest
+    #   container_name: valheim
+    #   ports:
+    #     - 2456:2456/udp
+    #     - 2457:2457/udp
+    #     - 2458:2458/udp
+    #   environment:
+    #     PUID: "{{ uid }}"
+    #     PGID: "{{ gid }}"
+    #     TZ: America/Toronto
+    #     PORT: 2456
+    #     NAME: "valheim.bovbel.com"
+    #     WORLD: "World"
+    #     PASSWORD: "{{ csgo_server_password }}"
+    #     PUBLIC: 1
+    #     AUTO_UPDATE: 1
+    #     AUTO_UPDATE_SCHEDULE: "0 5 * * *"
+    #     UPDATE_ON_STARTUP: 1
+    #     AUTO_BACKUP: 1
+    #     AUTO_BACKUP_SCHEDULE: "*/15 * * * *"
+    #     AUTO_BACKUP_REMOVE_OLD: 1
+    #     AUTO_BACKUP_DAYS_TO_LIVE: 5
+    #     AUTO_BACKUP_ON_UPDATE: 1
+    #     AUTO_BACKUP_ON_SHUTDOWN: 1
+    #   volumes:
+    #     - "{{ app_folder }}/valheim/saves:/home/steam/.config/unity3d/IronGate/Valheim"
+    #     - "{{ app_folder }}/valheim/server:/home/steam/valheim"
+    #     - "{{ app_folder }}/valheim/backups:/home/steam/backups"
+    #   restart: "no"
+    #   x-systemd-requires: ['mnt-storage.mount']
+
 
 caddy_extras:
   users:
@@ -134,3 +255,40 @@ caddy_extras:
       host: resilio
       port: 8888
       roles: ['admin']
+
+
+csgo_server_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  39623639626633623466376534303537613431653232613764343239386337386638626162313636
+  3832613261326133393532306438306535643961373166300a613764616135333865393639393137
+  61306666326435653231646634373162393238363162363863666563346233396431636131343435
+  3166393736383761360a346232633439316564653433653230323536323535313665613134383564
+  3832
+csgo_app_id: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  30666361353763396136666231383963613731333266386664386637313736383261383530343561
+  6333383138393932383031646131656434646165393463370a636666386136353537386436633631
+  39653735333636643231623139373038633831653266333630633266346633363732383134386665
+  6330303661316666660a313934393039613833313166373738343961336530623031646637396365
+  32353330373531626330663338636366353832373439643637343365343936376237363830316363
+  3033353437636662633239636462323334393630396239646435
+
+csgo_admins:
+  - STEAM_0:0:33888781  # agentx3r
+  - STEAM_0:0:8806779   # Supernatur4l
+
+minecraft_ops:
+  - agentx3r
+  - LEVI00
+
+minecraft_users:
+  - _rusted_
+  - agentx3r
+  - FeelsKaleMan
+  - landon0909
+  - LEVI00
+  - NovaNoot
+  - rusnconcussion
+  - sufferingtree11
+  - SushiBeyblade85
+  - ur_hot

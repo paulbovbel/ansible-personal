@@ -1,39 +1,39 @@
 aws_alias_domains:
-  - minecraft.bovbel.com
+  # - minecraft.bovbel.com
   - cs.bovbel.com
-  - valheim.bovbel.com
+  # - valheim.bovbel.com
 
 docker_extras:
   services:
-    minecraft:
-      image: itzg/minecraft-server
-      container_name: minecraft
-      networks:
-        - apps
-      ports:
-        - "25565:25565"
-      volumes:
-        - "{{ app_folder }}/minecraft:/data"
-      environment:
-        UID: "{{ uid }}"
-        GID: "{{ gid }}"
-        EULA: "TRUE"
-        MAX_MEMORY: "16G"
-        ENABLE_AUTOPAUSE: "TRUE"
-        WHITELIST: "{{ minecraft_users | join(',') }}"
-        OPS: "{{ minecraft_ops | join(',') }}"
-        ENABLE_RCON: "TRUE"
-        RCON_PASSWORD: "{{ web_password }}"
-        TYPE: PAPER
-      restart: "no"
-      x-systemd-requires: ['mnt-storage.mount']
+    # minecraft:
+    #   image: itzg/minecraft-server
+    #   container_name: minecraft
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - "25565:25565"
+    #   volumes:
+    #     - "{{ app_folder }}/minecraft:/data"
+    #   environment:
+    #     UID: "{{ uid }}"
+    #     GID: "{{ gid }}"
+    #     EULA: "TRUE"
+    #     MAX_MEMORY: "16G"
+    #     ENABLE_AUTOPAUSE: "TRUE"
+    #     WHITELIST: "{{ minecraft_users | join(',') }}"
+    #     OPS: "{{ minecraft_ops | join(',') }}"
+    #     ENABLE_RCON: "TRUE"
+    #     RCON_PASSWORD: "{{ web_password }}"
+    #     TYPE: PAPER
+    #   restart: "no"
+    #   x-systemd-requires: ['mnt-storage.mount']
     csgo:
       image: kmallea/csgo
       container_name: csgo
       networks:
         - apps
       ports:
-        - "27015:27015/tcp"
+        - "27015:s/tcp"
         - "27015:27015/udp"
         - "27020:27020/tcp"
         - "27020:27020/udp"
@@ -49,37 +49,37 @@ docker_extras:
         SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
       restart: "no"
       x-systemd-requires: ['mnt-storage.mount']
-    valheim:
-      image: mbround18/valheim:latest
-      container_name: valheim
-      ports:
-        - 2456:2456/udp
-        - 2457:2457/udp
-        - 2458:2458/udp
-      environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
-        TZ: America/Toronto
-        PORT: 2456
-        NAME: "valheim.bovbel.com"
-        WORLD: "World"
-        PASSWORD: "{{ csgo_server_password }}"
-        PUBLIC: 1
-        AUTO_UPDATE: 1
-        AUTO_UPDATE_SCHEDULE: "0 5 * * *"
-        UPDATE_ON_STARTUP: 1
-        AUTO_BACKUP: 1
-        AUTO_BACKUP_SCHEDULE: "*/15 * * * *"
-        AUTO_BACKUP_REMOVE_OLD: 1
-        AUTO_BACKUP_DAYS_TO_LIVE: 5
-        AUTO_BACKUP_ON_UPDATE: 1
-        AUTO_BACKUP_ON_SHUTDOWN: 1
-      volumes:
-        - "{{ app_folder }}/valheim/saves:/home/steam/.config/unity3d/IronGate/Valheim"
-        - "{{ app_folder }}/valheim/server:/home/steam/valheim"
-        - "{{ app_folder }}/valheim/backups:/home/steam/backups"
-      restart: "no"
-      x-systemd-requires: ['mnt-storage.mount']
+    # valheim:
+    #   image: mbround18/valheim:latest
+    #   container_name: valheim
+    #   ports:
+    #     - 2456:2456/udp
+    #     - 2457:2457/udp
+    #     - 2458:2458/udp
+    #   environment:
+    #     PUID: "{{ uid }}"
+    #     PGID: "{{ gid }}"
+    #     TZ: America/Toronto
+    #     PORT: 2456
+    #     NAME: "valheim.bovbel.com"
+    #     WORLD: "World"
+    #     PASSWORD: "{{ csgo_server_password }}"
+    #     PUBLIC: 1
+    #     AUTO_UPDATE: 1
+    #     AUTO_UPDATE_SCHEDULE: "0 5 * * *"
+    #     UPDATE_ON_STARTUP: 1
+    #     AUTO_BACKUP: 1
+    #     AUTO_BACKUP_SCHEDULE: "*/15 * * * *"
+    #     AUTO_BACKUP_REMOVE_OLD: 1
+    #     AUTO_BACKUP_DAYS_TO_LIVE: 5
+    #     AUTO_BACKUP_ON_UPDATE: 1
+    #     AUTO_BACKUP_ON_SHUTDOWN: 1
+    #   volumes:
+    #     - "{{ app_folder }}/valheim/saves:/home/steam/.config/unity3d/IronGate/Valheim"
+    #     - "{{ app_folder }}/valheim/server:/home/steam/valheim"
+    #     - "{{ app_folder }}/valheim/backups:/home/steam/backups"
+    #   restart: "no"
+    #   x-systemd-requires: ['mnt-storage.mount']
 
 
 csgo_server_password: !vault |

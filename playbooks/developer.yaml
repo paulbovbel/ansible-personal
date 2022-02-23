@@ -1,4 +1,4 @@
 ---
-- hosts: dell-xps
+- hosts: dell_xps
   roles:
     - dell-xps
