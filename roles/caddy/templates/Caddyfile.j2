@@ -93,7 +93,10 @@
 
   {% elif endpoint.type == "share" %}
     root * {{ endpoint.path }}
-    file_server browse
+    file_server {
+        browse
+        hide .*
+    }
   {% endif %}
   }
 

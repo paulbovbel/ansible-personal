@@ -27,6 +27,7 @@ media_server: true
 aws_alias_domains:
   - tower.bovbel.com
   - cs.bovbel.com
+  - tf2.bovbel.com
 
 docker_extras:
   services:
@@ -124,28 +125,82 @@ docker_extras:
     #   restart: "no"
     #   x-systemd-requires: ['mnt-storage.mount']
     csgo:
-      image: kmallea/csgo
+      image: cm2network/csgo:sourcemod
       container_name: csgo
       networks:
         - apps
       ports:
         - "27015:27015/tcp"
         - "27015:27015/udp"
-        - "27020:27020/tcp"
-        - "27020:27020/udp"
       volumes:
         - type: bind
           source: "{{ app_folder }}/csgo"
-          target: /home/steam/csgo
+          target: /home/steam/csgo-dedicated/
       environment:
-        SERVER_HOSTNAME: cs.bovbel.com
-        SERVER_PASSWORD: "{{ csgo_server_password }}"
-        RCON_PASSWORD: "{{ web_password }}"
-        STEAM_ACCOUNT: "{{ csgo_app_id }}"
+        SRCDS_TOKEN: "{{ csgo_app_id }}" # (value is is required to be listed & reachable, retrieve token here: https://steamcommunity.com/dev/managegameservers)
+        SRCDS_RCONPW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
+        SRCDS_PW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
+        SRCDS_FPSMAX: 300
+        SRCDS_TICKRATE: 128
+        SRCDS_MAXPLAYERS: 14
+        SRCDS_STARTMAP: "de_dust2"
+        SRCDS_REGION: 3
+        SRCDS_MAPGROUP: "mg_active"
+        SRCDS_GAMETYPE: 0
+        SRCDS_GAMEMODE: 1
+        SRCDS_HOSTNAME: "cs.bovbel.com" # (first launch only)
+        # SRCDS_WORKSHOP_START_MAP: 0
+        # SRCDS_HOST_WORKSHOP_COLLECTION: 0
+        # SRCDS_WORKSHOP_AUTHKEY: "" # (required to use host_workshop_map)
+        # ADDITIONAL_ARGS: "" # (Pass additional arguments to srcds. Make sure to escape correctly!)
         SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
       restart: "no"
       x-systemd-requires: ['mnt-storage.mount']
-    # 7dtdserver:
+    # tf2:
+    #   image: cm2network/tf2:sourcemod
+    #   container_name: tf2
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - "27016:27016/tcp"
+    #     - "27016:27016/udp"
+    #   volumes:
+    #     - type: bind
+    #       source: "{{ app_folder }}/tf2"
+    #       target: /home/steam/tf-dedicated/
+    #   environment:
+    #     SRCDS_TOKEN: !vault |
+    #       $ANSIBLE_VAULT;1.1;AES256
+    #       31306665316239303438653034626235656466393536383737343666313833353334643235396434
+    #       3130386662316564383966356163626630653764323464360a633839366262643064326537303733
+    #       66316530666162366239353438663663636431393630396438376238373362363261653061363636
+    #       6535383062373964360a366132323563393836393764386530326464303763326435636662333666
+    #       39353238343436393464313831323265373662656135323063373635376432373563656539383961
+    #       3630366262303239323035323135346364396265633639363134
+    #     SRCDS_RCONPW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
+    #     SRCDS_PW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
+    #     SRCDS_PORT: 27016
+    #     # SRCDS_TV_PORT: 27020
+    #     # SRCDS_NET_PUBLIC_ADDRESS: "0" # (public facing ip, useful for local network setups)
+    #     # SRCDS_IP: "0" # (local ip to bind)
+    #     # SRCDS_LAN: "0"
+    #     SRCDS_FPSMAX: 300
+    #     SRCDS_TICKRATE: 128
+    #     SRCDS_MAXPLAYERS: 14
+    #     SRCDS_STARTMAP: "cp_badlands"
+    #     # SRCDS_REGION: 3
+    #     # SRCDS_MAPGROUP: "mg_active"
+    #     # SRCDS_GAMETYPE: 0
+    #     # SRCDS_GAMEMODE: 1
+    #     SRCDS_HOSTNAME: "tf2.bovbel.com" # (first launch only)
+    #     # SRCDS_WORKSHOP_START_MAP: 0
+    #     # SRCDS_HOST_WORKSHOP_COLLECTION: 0
+    #     # SRCDS_WORKSHOP_AUTHKEY: "" # (required to use host_workshop_map)
+    #     # ADDITIONAL_ARGS: "" # (Pass additional arguments to srcds. Make sure to escape correctly!)
+    #     SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
+    #   restart: "no"
+    #   x-systemd-requires: ['mnt-storage.mount']
+    # 7dtd:
     #   image: vinanrra/7dtd-server
     #   container_name: 7dtd
     #   networks:
@@ -175,17 +230,17 @@ docker_extras:
     #     BACKUP: "NO" # Optional - Backup server at 5 AM
     #     MONITOR: "NO" # Optional - Keeps server up if crash
     #   volumes:
-    #     - /path/to/folder/7DaysToDie:/home/sdtdserver/.local/share/7DaysToDie/
-    #     - /path/to/folder/LGSM-Config:/home/sdtdserver/lgsm/config-lgsm/sdtdserver
-    #     - /path/to/folder/ServerFiles:/home/sdtdserver/serverfiles/ # Optional - serverfiles folder
-    #     - /path/to/folder/log:/home/sdtdserver/log/ # Optional - Logs folder
-    #     - /path/to/folder/backups:/home/sdtdserver/lgsm/backup/ # Optional - If BAKCUP=NO, backups folder
+    #     - "{{ app_folder }}/7dtd/7DaysToDie:/home/sdtdserver/.local/share/7DaysToDie/"
+    #     - "{{ app_folder }}/7dtd/LGSM-Config:/home/sdtdserver/lgsm/config-lgsm/sdtdserver"
+    #     - "{{ app_folder }}/7dtd/ServerFiles:/home/sdtdserver/serverfiles/" # Optional - serverfiles folder
+    #     - "{{ app_folder }}/7dtd/log:/home/sdtdserver/log/" # Optional - Logs folder
+    #     - "{{ app_folder }}/7dtd/backups:/home/sdtdserver/lgsm/backup/" # Optional - If BAKCUP=NO, backups folder
     #   ports:
     #     - 26900:26900/tcp # Default game ports
     #     - 26900:26900/udp # Default game ports
     #     - 26901:26901/udp # Default game ports
     #     - 26902:26902/udp # Default game ports
-    #     - 8080:8080/tcp # OPTIONAL - WEBADMIN
+    #     - 8083:8080/tcp # OPTIONAL - WEBADMIN
     #     - 8081:8081/tcp # OPTIONAL - TELNET
     #     - 8082:8082/tcp # OPTIONAL - WEBSERVER https://7dtd.illy.bz/wiki/Server%20fixes
     #   restart: "no" # INFO - NEVER USE WITH START_MODE=4 or START_MODE=0
@@ -266,12 +321,12 @@ csgo_server_password: !vault |
   3832
 csgo_app_id: !vault |
   $ANSIBLE_VAULT;1.1;AES256
-  30666361353763396136666231383963613731333266386664386637313736383261383530343561
-  6333383138393932383031646131656434646165393463370a636666386136353537386436633631
-  39653735333636643231623139373038633831653266333630633266346633363732383134386665
-  6330303661316666660a313934393039613833313166373738343961336530623031646637396365
-  32353330373531626330663338636366353832373439643637343365343936376237363830316363
-  3033353437636662633239636462323334393630396239646435
+  33613339643761323130633564656238636561313866353131326437346661356538303264326235
+  3564376331373261366130386433666263623639636539630a633438306266656566336232393163
+  61653666376234306334666366333862353432656564376630383038323734323938396265383161
+  3366353032663833660a306661623136333933396261643336346162396436333961643535303733
+  36393330353634333334316136623465336563323663323662336332383936613333353538663631
+  3238646331343066623332613231303364353832373137376132
 
 csgo_admins:
   - STEAM_0:0:33888781  # agentx3r
