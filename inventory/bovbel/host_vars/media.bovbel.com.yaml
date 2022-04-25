@@ -287,10 +287,6 @@ caddy_extras:
       roles: ['share']
     - name: igorlitvinov@gmail.com
       roles: ['share']
-    - name: garyservin@gmail.com
-      roles: ['share']
-    - name: ablakey@gmail.com
-      roles: ['share']
     - name: eugene.tkach@gmail.com
       roles: ['share']
 
