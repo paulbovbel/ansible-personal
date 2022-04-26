@@ -22,7 +22,7 @@
     record: "{{ item }}"
     type: "A"
     value: "{{ inventory_hostname }}"
-    alias: True
+    alias: true
     alias_hosted_zone_id: "{{ aws_ddns_hosted_zone }}"
     aws_access_key: "{{ aws_access_key_id }}"
     aws_secret_key: "{{ aws_secret_access_key }}"

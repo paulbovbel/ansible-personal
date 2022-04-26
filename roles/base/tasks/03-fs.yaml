@@ -29,73 +29,73 @@
   when: zfs_pool is defined
 
 - block:
-  - name: install nfs client
-    apt:
-      pkg: nfs-common
-      state: latest
-      update_cache: true
-      cache_valid_time: 3600
-    become: true
+    - name: install nfs client
+      apt:
+        pkg: nfs-common
+        state: latest
+        update_cache: true
+        cache_valid_time: 3600
+      become: true
 
-  - name: Ensure directory exists
-    file:
-      path: "{{ item.mount }}"
-      state: directory
-    become: true
-    with_items:
-      - "{{ nfs_mounts }}"
+    - name: Ensure directory exists
+      file:
+        path: "{{ item.mount }}"
+        state: directory
+      become: true
+      with_items:
+        - "{{ nfs_mounts }}"
 
-  - name: configure nfs mounts
-    mount:
-      name: "{{ item.mount }}"
-      src: "{{ item.url }}"
-      fstype: nfs
-      opts: "{{ network_mount_options | join(',') }}"
-      state: mounted
-    become: true
-    with_items:
-      - "{{ nfs_mounts }}"
+    - name: configure nfs mounts
+      mount:
+        name: "{{ item.mount }}"
+        src: "{{ item.url }}"
+        fstype: nfs
+        opts: "{{ network_mount_options | join(',') }}"
+        state: mounted
+      become: true
+      with_items:
+        - "{{ nfs_mounts }}"
   when: nfs_mounts is defined
 
 - block:
-  - name: install open-iscsi
-    apt:
-      pkg: open-iscsi
-      state: latest
-      update_cache: true
-      cache_valid_time: 3600
-    become: true
+    - name: install open-iscsi
+      apt:
+        pkg: open-iscsi
+        state: latest
+        update_cache: true
+        cache_valid_time: 3600
+      become: true
 
-  - name: start open-iscsi
-    systemd:
-      name: iscsid.service
-      state: started
-      enabled: true
-    become: true
+    - name: start open-iscsi
+      systemd:
+        name: iscsid.service
+        state: started
+        enabled: true
+      become: true
 
-  - name: discover iscsi
-    open_iscsi:
-      portal: "{{ iscsi_host }}"
-      discover: true
-      show_nodes: true
-    become: true
-    register: iscsi
+    - name: discover iscsi
+      open_iscsi:
+        portal: "{{ iscsi_host }}"
+        discover: true
+        show_nodes: true
+      become: true
+      register: iscsi
 
-  - name: login to iscsi
-    open_iscsi:
-      target: "{{ iscsi.nodes[0] }}"
-      login: true
-      auto_node_startup: true
-    become: true
+    - name: login to iscsi
+      open_iscsi:
+        target: "{{ iscsi.nodes[0] }}"
+        login: true
+        auto_node_startup: true
+      become: true
 
-  - name: configure iscsi mount
-    mount:
-      name: "{{ app_folder }}"
-      src: "/dev/disk/by-path/ip-{{ iscsi_host }}:3260-iscsi-{{ iscsi.nodes[0] }}-{{ iscsi_lun }}-part1"
-      fstype: ext4
-      opts: "{{ network_mount_options | join(',') }}"
-      state: mounted
-    become: true
+    - name: configure iscsi mount
+      mount:
+        name: "{{ app_folder }}"
+        src: "/dev/disk/by-path/ip-{{ iscsi_host }}:3260-iscsi-{{ iscsi.nodes[0] }}-{{ iscsi_lun }}-part1"
+        fstype: ext4
+        opts: "{{ network_mount_options | join(',') }}"
+        state: mounted
+      become: true
   when: iscsi_host is defined
 
 - name: include smartd role

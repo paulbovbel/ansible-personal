@@ -1,7 +1,7 @@
 skip_list:
-  - '701'  # don't care about galaxy
-  - '403'  # grabbing latest apt packages is fine
-  - '106'  # don't care about role names
-  - '208'  # default file permissions are fine
-  - '305'  # shell is fine sometimes
-  - '301'  # don't care about command idempotency
+  - no-changed-when
+  - risky-file-permissions
+  - package-latest
+  - role-name
+  - command-instead-of-shell
+  - fqcn-builtins

@@ -1,4 +1,4 @@
-
+---
 docker_caddy:
   services:
     caddy:

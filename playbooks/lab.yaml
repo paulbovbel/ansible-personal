@@ -6,7 +6,6 @@
     - cockpit
     - caddy
     - media-server
-    # - nextcloud
 
 - hosts:
     - server

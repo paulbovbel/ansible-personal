@@ -60,24 +60,24 @@
 - name: install bluetoothd from source
   when: bluez_version != bluetoothd_version.stdout
   block:
-  - name: temporary bluez directory
-    tempfile:
-      state: directory
-    register: bluez_directory
+    - name: temporary bluez directory
+      tempfile:
+        state: directory
+      register: bluez_directory
 
-  - name: download bluez
-    unarchive:
-      src: "http://www.kernel.org/pub/linux/bluetooth/bluez-{{ bluez_version }}.tar.xz"
-      dest: "{{ bluez_directory.path }}"
-      remote_src: yes
+    - name: download bluez
+      unarchive:
+        src: "http://www.kernel.org/pub/linux/bluetooth/bluez-{{ bluez_version }}.tar.xz"
+        dest: "{{ bluez_directory.path }}"
+        remote_src: true
 
-  - name: install bluez
-    shell: |
-      cd {{ bluez_directory.path }}/bluez-{{ bluez_version }} &&
-      ./configure &&
-      make &&
-      sudo make install
-    become: true
+    - name: install bluez
+      shell: |
+        cd {{ bluez_directory.path }}/bluez-{{ bluez_version }} &&
+        ./configure &&
+        make &&
+        sudo make install
+      become: true
 
 - name: create service override dir
   file:

@@ -6,30 +6,30 @@ apt_install:
     repo: "deb http://archive.canonical.com/ubuntu/ {{ ansible_distribution_release }} partner"
     filename: /etc/apt/sources.list
 
-  - packages: 
-    # for dev
-    - openssh-server
-    - openssh-client
-    - ubuntu-restricted-extras
-    - ubuntu-restricted-extras
-    - va-driver-all
-    - vainfo
-    - libva2
-    - gstreamer1.0-libav
-    - gstreamer1.0-vaapi
-    - swapspace
-    - iperf
-    - htop
-    - ipython3
-    - vlc
-    - solaar-gnome3
+  - packages:
+      # for dev
+      - openssh-server
+      - openssh-client
+      - ubuntu-restricted-extras
+      - ubuntu-restricted-extras
+      - va-driver-all
+      - vainfo
+      - libva2
+      - gstreamer1.0-libav
+      - gstreamer1.0-vaapi
+      - swapspace
+      - iperf
+      - htop
+      - ipython3
+      - vlc
+      - solaar-gnome3
 
-  - packages: 
-    # for yubikey
-    - pcscd
-    - scdaemon
-    - gnupg2
-    - pcsc-tools
+  - packages:
+      # for yubikey
+      - pcscd
+      - scdaemon
+      - gnupg2
+      - pcsc-tools
 
   - packages: ['unetbootin']
     repo: ppa:gezakovacs/ppa

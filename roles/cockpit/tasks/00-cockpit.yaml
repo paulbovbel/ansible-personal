@@ -2,13 +2,13 @@
 - name: install cockpit packages
   apt:
     name:
-    - cockpit
-    - cockpit-bridge
-    - cockpit-packagekit
-    - cockpit-pcp
-    - cockpit-storaged
-    - cockpit-system
-    - cockpit-ws
+      - cockpit
+      - cockpit-bridge
+      - cockpit-packagekit
+      - cockpit-pcp
+      - cockpit-storaged
+      - cockpit-system
+      - cockpit-ws
     default_release: "{{ ansible_distribution_release }}-backports"
     state: latest
     update_cache: true
