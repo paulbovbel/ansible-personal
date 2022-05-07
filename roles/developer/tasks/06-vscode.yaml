@@ -1,3 +1,5 @@
-- name: install vscode extensions
-  shell: code --install-extension {{ item }}
-  with_items: "{{ vscode.extensions }}"
+# - name: install vscode extensions
+#   shell: code --install-extension {{ item }}
+#   with_items: "{{ vscode.extensions }}"
+
+# TODO(pbovbel) configure vscode shortcuts (copy up/down)

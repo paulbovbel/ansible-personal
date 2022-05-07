@@ -24,7 +24,6 @@
   become: true
   notify: restart tlp
 
-
 - name: fix headphone white noise on battery
   lineinfile:
     dest: "/etc/tlp.conf"
@@ -33,9 +32,10 @@
   become: true
   notify: restart tlp
 
-- name: intel powersaving
-  copy:
-    content: |
-      options i915 enable_fbc=1 enable_guc=3 disable_power_well=0 fastboot=1
-    dest: /etc/modprobe.d/i915.conf
-  become: true
+# TODO(pbovbel) what does this do
+# - name: intel powersaving
+#   copy:
+#     content: |
+#       options i915 enable_fbc=1 enable_guc=3 disable_power_well=0 fastboot=1
+#     dest: /etc/modprobe.d/i915.conf
+#   become: true

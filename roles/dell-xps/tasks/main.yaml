@@ -1,5 +1,5 @@
 ---
-- import_tasks: 00-pipewire.yaml
-  when: ansible_distribution_release == 'focal'
+# - import_tasks: 00-pipewire.yaml
+#   when: ansible_distribution_release == 'focal'
 - import_tasks: 01-power.yaml
 - import_tasks: 02-hardware.yaml

@@ -11,7 +11,6 @@ apt_install:
       - openssh-server
       - openssh-client
       - ubuntu-restricted-extras
-      - ubuntu-restricted-extras
       - va-driver-all
       - vainfo
       - libva2
@@ -23,56 +22,66 @@ apt_install:
       - ipython3
       - vlc
       - solaar-gnome3
+      - net-tools
+      - remmina
+      - wireshark-qt
+      - tcpdump
+      - terminator
+      - gnome-tweaks
+      - flatpak
 
-  - packages:
-      # for yubikey
-      - pcscd
-      - scdaemon
-      - gnupg2
-      - pcsc-tools
+  # - packages:
+  #     # for yubikey
+  #     - pcscd
+  #     - scdaemon
+  #     - gnupg2
+  #     - pcsc-tools
 
-  - packages: ['unetbootin']
-    repo: ppa:gezakovacs/ppa
-    filename: unetbootin
+  # - packages: ['unetbootin']
+  #   repo: ppa:gezakovacs/ppa
+  #   filename: unetbootin
 
-  - packages: ['numix-*']
-    repo: ppa:numix/ppa
-    filename: numix
+  # - packages: ['numix-*']
+  #   repo: ppa:numix/ppa
+  #   filename: numix
 
-  - packages: ['wireshark']
-    repo: ppa:wireshark-dev/stable
-    filename: wireshark
+  # - packages: ['wireshark']
+  #   repo: ppa:wireshark-dev/stable
+  #   filename: wireshark
 
-  - packages: ['remmina']
-    repo: ppa:remmina-ppa-team/remmina-next
-    filename: remmina
+  # - packages: ['remmina']
+  #   repo: ppa:remmina-ppa-team/remmina-next
+  #   filename: remmina
 
-  - packages: ['resilio-sync']
-    repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
-    keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
-    filename: resilio
+  # - packages: ['resilio-sync']
+  #   repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
+  #   keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
+  #   filename: resilio
 
-  - packages: ['code']
-    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
-    keyurl: https://packages.microsoft.com/keys/microsoft.asc
-    filename: code
+  # - packages: ['code']
+  #   repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
+  #   keyurl: https://packages.microsoft.com/keys/microsoft.asc
+  #   filename: code
 
-  - packages: ['terminator']
+  # - packages: ['terminator']
 
-  - packages: ['chrome-gnome-shell', 'libproxy1-plugin-networkmanager', 'gnome-shell-extension-system-monitor']
+  # # - packages: ['chrome-gnome-shell', 'libproxy1-plugin-networkmanager', 'gnome-shell-extension-system-monitor']
 
-  - packages: ['gnome-tweak-tool']
+  # - packages: ['gnome-tweak-tool']
 
-  - packages: ['flatpak']
+  # - packages: ['flatpak']
 
 flatpak_install:
   - com.slack.Slack
+  - org.mozilla.firefox
+  - org.freedesktop.Platform.ffmpeg-full/x86_64/21.08
+  - org.gtk.Gtk3theme.Yaru-dark
   - com.spotify.Client
   - org.gimp.GIMP
   - org.inkscape.Inkscape
   - org.signal.Signal
   - us.zoom.Zoom
 
-vscode:
-  extensions:
-    - akamud.vscode-theme-onedark
+# vscode:
+#   extensions:
+#     - akamud.vscode-theme-onedark

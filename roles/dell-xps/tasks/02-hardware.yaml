@@ -21,13 +21,13 @@
   become: true
   notify: update initramfs
 
-- name: disable fingerprint reader
-  copy:
-    content: |
-      # Disable fingerprint reader
-      SUBSYSTEM=="usb", ATTRS{idVendor}=="27c6", ATTRS{idProduct}=="5395", ATTR{authorized}="0"
-    dest: /etc/udev/rules.d/fingerprint.rules
-  become: true
+# - name: disable fingerprint reader
+#   copy:
+#     content: |
+#       # Disable fingerprint reader
+#       SUBSYSTEM=="usb", ATTRS{idVendor}=="27c6", ATTRS{idProduct}=="5395", ATTR{authorized}="0"
+#     dest: /etc/udev/rules.d/fingerprint.rules
+#   become: true
 
 - name: install nvidia prime packages
   apt:

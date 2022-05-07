@@ -4,6 +4,8 @@
 - import_tasks: 02-apt.yaml
 # - import_tasks: 04-jupyter.yaml
 #   tags: jupyter
+
+# TODO(pbovbel) replace with syncthing
 # - import_tasks: 05-resilio.yaml
 - import_tasks: 06-vscode.yaml
 - import_tasks: 07-flatpak.yaml
