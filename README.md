@@ -8,7 +8,7 @@ sudo apt install -y git python3-pip python3-venv python3-wheel
 git clone https://github.com/paulbovbel/ansible-personal.git
 cd ansible-personal
 
-python3 -m venv venv --system-site-packages
+python3 -m venv venv
 ./venv/bin/pip install -r requirements.txt
 ./venv/bin/ansible-galaxy install -r requirements.yaml
 ```

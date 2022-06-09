@@ -5,7 +5,6 @@
     state: present
     flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
   become: true
-    # method: user
 
 - name: install flatpaks
   flatpak:
@@ -14,37 +13,33 @@
   with_items: "{{ flatpak_install }}"
   become: true
 
-# TODO(pbovbel) switch to system
-# - name: create user systemd dir
-#   file:
-#     path: ~/.config/systemd/user
-#     state: directory
+- name: setup flatpak update timer
+  copy:
+    content: |
+      [Unit]
+      Description=Flatpak update
 
-# - name: setup flatpak update timer
-#   copy:
-#     content: |
-#       [Unit]
-#       Description=Flatpak update
+      [Timer]
+      OnCalendar=7:00
+      Persistent=true
 
-#       [Timer]
-#       OnCalendar=7:00
-#       Persistent=true
+      [Install]
+      WantedBy=timers.target
+    dest: /etc/systemd/system/flatpak-update.timer
+  become: true
+  notify: enable flatpak update
 
-#       [Install]
-#       WantedBy=timers.target
-#     dest: ~/.config/systemd/user/flatpak-update.timer
-#   notify: enable flatpak update
+- name: setup flatpak update service
+  copy:
+    content: |
+      [Unit]
+      Description=Flatpak update
 
-# - name: setup flatpak update service
-#   copy:
-#     content: |
-#       [Unit]
-#       Description=Flatpak update
-
-#       [Service]
-#       Type=oneshot
-#       ExecStart=/usr/bin/flatpak update -y
-#     dest: ~/.config/systemd/user/flatpak-update.service
-#   notify: enable flatpak update
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/flatpak --system update -y
+    dest: /etc/systemd/system/flatpak-update.service
+  become: true
+  notify: enable flatpak update
 
 # TODO(pbovbel) set flatpak dark theme

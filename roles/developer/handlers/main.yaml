@@ -5,7 +5,7 @@
     enabled: true
     state: "started"
     daemon_reload: true
-    user: true
+  become: true
   with_items:
     - flatpak-update.timer
     - flatpak-update.service
