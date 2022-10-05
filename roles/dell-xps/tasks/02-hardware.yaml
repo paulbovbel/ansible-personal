@@ -33,6 +33,7 @@
   apt:
     name:
       - nvidia-prime
+      - nvidia-driver-515
     state: latest
     update_cache: true
     cache_valid_time: 3600
