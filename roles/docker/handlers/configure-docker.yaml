@@ -48,7 +48,7 @@
 - name: "install container services"
   template:
     src: container.service.j2
-    dest: "{{ docker_systemd_dir }}/docker-{{ service.key }}.service"
+    dest: "{{ docker_systemd_dir }}/{{ service.key }}.service"
   become: true
   no_log: true
   loop: "{{ docker.services | dict2items }}"
@@ -57,8 +57,8 @@
 
 - name: "start container services"  # noqa 303
   shell: |
-    systemctl enable {{ docker_systemd_dir }}/docker-{{ service.key }}.service && \
-    systemctl start docker-{{ service.key }}.service --no-block
+    systemctl enable {{ docker_systemd_dir }}/{{ service.key }}.service && \
+    systemctl start {{ service.key }}.service --no-block
   # (pbovbel): systemd module doesn't behave for units outside of /etc/systemd
   # systemd:
   #   name: "{{ docker_systemd_dir }}/{{ service.key }}.service"

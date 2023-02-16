@@ -34,7 +34,7 @@ docker_extras:
     plex:
       volumes:
         - "{{ media_folder }}:/mnt/storage/share:ro"
-      x-systemd-requires: ['mnt-storage.mount']
+      x-systemd-requires: ['storage.mount']
     unifi:
       image: linuxserver/unifi-controller
       container_name: unifi
@@ -57,33 +57,33 @@ docker_extras:
         # deluge thin client iptable rule to allow external access
         # https://github.com/binhex/arch-delugevpn/issues/139
         - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
-      x-systemd-requires: ['mnt-storage.mount']
-    jellyfin:
-      image: linuxserver/jellyfin
-      container_name: jellyfin
-      networks:
-        - apps
-      ports:
-        - 8096:8096
-      environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
-        TZ: America/Toronto
-      volumes:
-        - "{{ app_folder }}/jellyfin:/config"
-        - "{{ media_folder }}:/data:ro"
-      devices:
-        - /dev/dri:/dev/dri
-      restart: "no"
-      x-systemd-requires: ['mnt-storage.mount']
+      x-systemd-requires: ['storage.mount']
+    # jellyfin:
+    #   image: linuxserver/jellyfin
+    #   container_name: jellyfin
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - 8096:8096
+    #   environment:
+    #     PUID: "{{ uid }}"
+    #     PGID: "{{ gid }}"
+    #     TZ: America/Toronto
+    #   volumes:
+    #     - "{{ app_folder }}/jellyfin:/config"
+    #     - "{{ media_folder }}:/data:ro"
+    #   devices:
+    #     - /dev/dri:/dev/dri
+    #   restart: "no"
+    #   x-systemd-requires: ['storage.mount']
     tautulli:
-      x-systemd-requires: ['mnt-storage.mount']
+      x-systemd-requires: ['storage.mount']
     sonarr:
-      x-systemd-requires: ['mnt-storage.mount']
+      x-systemd-requires: ['storage.mount']
     radarr:
-      x-systemd-requires: ['mnt-storage.mount']
+      x-systemd-requires: ['storage.mount']
     jackett:
-      x-systemd-requires: ['mnt-storage.mount']
+      x-systemd-requires: ['storage.mount']
     resilio:
       image: linuxserver/resilio-sync
       container_name: resilio
@@ -101,7 +101,7 @@ docker_extras:
         PGID: "{{ gid }}"
         TZ: America/Toronto
       x-systemd-requires:
-        - mnt-storage.mount
+        - storage.mount
     # minecraft:
     #   image: itzg/minecraft-server
     #   container_name: minecraft
@@ -123,39 +123,35 @@ docker_extras:
     #     RCON_PASSWORD: "{{ web_password }}"
     #     TYPE: PAPER
     #   restart: "no"
-    #   x-systemd-requires: ['mnt-storage.mount']
-    csgo:
-      image: cm2network/csgo:sourcemod
-      container_name: csgo
-      networks:
-        - apps
-      ports:
-        - "27015:27015/tcp"
-        - "27015:27015/udp"
-      volumes:
-        - type: bind
-          source: "{{ app_folder }}/csgo"
-          target: /home/steam/csgo-dedicated/
-      environment:
-        SRCDS_TOKEN: "{{ csgo_app_id }}" # (from: https://steamcommunity.com/dev/managegameservers)
-        SRCDS_RCONPW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
-        SRCDS_PW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
-        SRCDS_FPSMAX: 300
-        SRCDS_TICKRATE: 128
-        SRCDS_MAXPLAYERS: 14
-        SRCDS_STARTMAP: "de_dust2"
-        SRCDS_REGION: 3
-        SRCDS_MAPGROUP: "mg_active"
-        SRCDS_GAMETYPE: 0
-        SRCDS_GAMEMODE: 1
-        SRCDS_HOSTNAME: "cs.bovbel.com" # (first launch only)
-        # SRCDS_WORKSHOP_START_MAP: 0
-        # SRCDS_HOST_WORKSHOP_COLLECTION: 0
-        # SRCDS_WORKSHOP_AUTHKEY: "" # (required to use host_workshop_map)
-        # ADDITIONAL_ARGS: "" # (Pass additional arguments to srcds. Make sure to escape correctly!)
-        SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
-      restart: "no"
-      x-systemd-requires: ['mnt-storage.mount']
+    #   x-systemd-requires: ['storage.mount']
+    # csgo:
+    #   image: cm2network/csgo:sourcemod
+    #   container_name: csgo
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - "27015:27015/tcp"
+    #     - "27015:27015/udp"
+    #   volumes:
+    #     - type: bind
+    #       source: "{{ app_folder }}/csgo"
+    #       target: /home/steam/csgo-dedicated/
+    #   environment:
+    #     SRCDS_TOKEN: "{{ csgo_app_id }}" # (from: https://steamcommunity.com/dev/managegameservers)
+    #     SRCDS_RCONPW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
+    #     SRCDS_PW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
+    #     SRCDS_FPSMAX: 300
+    #     SRCDS_TICKRATE: 128
+    #     SRCDS_MAXPLAYERS: 14
+    #     SRCDS_STARTMAP: "de_dust2"
+    #     SRCDS_REGION: 3
+    #     SRCDS_MAPGROUP: "mg_active"
+    #     SRCDS_GAMETYPE: 0
+    #     SRCDS_GAMEMODE: 1
+    #     SRCDS_HOSTNAME: "cs.bovbel.com" # (first launch only)
+    #     SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
+    #   restart: "no"
+    #   x-systemd-requires: ['storage.mount']
     # tf2:
     #   image: cm2network/tf2:sourcemod
     #   container_name: tf2
@@ -199,7 +195,7 @@ docker_extras:
     #     # ADDITIONAL_ARGS: "" # (Pass additional arguments to srcds. Make sure to escape correctly!)
     #     SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
     #   restart: "no"
-    #   x-systemd-requires: ['mnt-storage.mount']
+    #   x-systemd-requires: ['storage.mount']
     # valheim:
     #   image: mbround18/valheim:latest
     #   container_name: valheim
@@ -230,7 +226,7 @@ docker_extras:
     #     - "{{ app_folder }}/valheim/server:/home/steam/valheim"
     #     - "{{ app_folder }}/valheim/backups:/home/steam/backups"
     #   restart: "no"
-    #   x-systemd-requires: ['mnt-storage.mount']
+    #   x-systemd-requires: ['storage.mount']
 
 
 caddy_extras:

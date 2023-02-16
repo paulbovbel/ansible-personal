@@ -26,51 +26,17 @@ apt_install:
       - remmina
       - wireshark-qt
       - tcpdump
-      # - terminator
-      - kitty
       - gnome-tweaks
       - flatpak
 
-  # - packages:
-  #     # for yubikey
-  #     - pcscd
-  #     - scdaemon
-  #     - gnupg2
-  #     - pcsc-tools
+  - packages: ['kitty']
+    repo: "ppa:yurivkhan/kitty"
+    filename: kitty
 
-  # - packages: ['unetbootin']
-  #   repo: ppa:gezakovacs/ppa
-  #   filename: unetbootin
-
-  # - packages: ['numix-*']
-  #   repo: ppa:numix/ppa
-  #   filename: numix
-
-  # - packages: ['wireshark']
-  #   repo: ppa:wireshark-dev/stable
-  #   filename: wireshark
-
-  # - packages: ['remmina']
-  #   repo: ppa:remmina-ppa-team/remmina-next
-  #   filename: remmina
-
-  # - packages: ['resilio-sync']
-  #   repo: "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free"
-  #   keyurl: https://linux-packages.resilio.com/resilio-sync/key.asc
-  #   filename: resilio
-
-  # - packages: ['code']
-  #   repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
-  #   keyurl: https://packages.microsoft.com/keys/microsoft.asc
-  #   filename: code
-
-  # - packages: ['terminator']
-
-  # # - packages: ['chrome-gnome-shell', 'libproxy1-plugin-networkmanager', 'gnome-shell-extension-system-monitor']
-
-  # - packages: ['gnome-tweak-tool']
-
-  # - packages: ['flatpak']
+  - packages: ['code']
+    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
+    keyurl: https://packages.microsoft.com/keys/microsoft.asc
+    filename: code
 
 flatpak_install:
   - com.slack.Slack
