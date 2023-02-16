@@ -9,7 +9,7 @@ pia_password: !vault |
   6136
 
 # Useful paths
-data_folder: /mnt/storage
+data_folder: "/storage"
 app_folder: "{{ data_folder }}/app"
 media_folder: "{{ data_folder }}/media"
 backup_folder: "{{ data_folder }}/backup"
