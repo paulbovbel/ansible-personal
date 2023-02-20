@@ -1,35 +1,42 @@
 {
-    email {{ ansible_email }}
-}
+  email {{ ansible_email }}
 
-(auth) {
-  route /auth* {
-    authp {
-      crypto default token lifetime 86400
-      crypto key sign-verify {{ caddy.token_secret }}
-      context {args.0}
+	security {
+		oauth identity provider google {
+			realm google
+			driver google
+			client_id {{ google_oauth2_client_id }}
+			client_secret {{ google_oauth2_client_secret }}
+			scopes openid email profile
+		}
 
-      backends {
-        google_oauth2_backend {
-          method oauth2
-          realm google
-          provider google
-          client_id {{ google_oauth2_client_id }}
-          client_secret {{ google_oauth2_client_secret }}
-          # scopes openid email profile
-          scopes email
-        }
-      }
+		authentication portal myportal {
+			crypto default token lifetime 3600
+			crypto key sign-verify {{ caddy.token_secret }}
+			enable identity provider google
+			cookie domain bovbel.com
 
-      {% for user in caddy.users %}
-      transform user {
-        match email "{{ user.name }}"
-        action add roles {{ user.roles | join (" ") }}
-      }
-      {% endfor %}
+			transform user {
+				match realm google
+				action add role authp/user
+			}
 
-    }
-  }
+			transform user {
+				match realm google
+				match email paul@bovbel.com
+				action add role authp/admin
+			}
+		}
+
+    # TODO(pbovbel) fix multiple users for auth
+		authorization policy mypolicy {
+			set auth url https://{{ inventory_hostname }}/oauth2/google
+			crypto key verify {{ caddy.token_secret }}
+			allow roles authp/admin
+			validate bearer header
+			inject headers with claims
+		}
+	}
 }
 
 127.0.0.1, localhost, {{ inventory_hostname }} {
@@ -47,26 +54,18 @@
     redir {{ caddy.redirect }} html
   {% endif %}
 
-    authorize {
-      primary yes
-      crypto key verify {{ caddy.token_secret }}
-      set auth url /auth/oauth2/google
-      inject headers with claims
-      allow roles superadmin
-    }
-
   }
 
-  import auth
+  route /auth* {
+    authenticate with myportal
+  }
 
 {% for endpoint in caddy.endpoints.values() %}
   redir {{ endpoint.path }} {{ endpoint.path }}/ html
 
   route {{ endpoint.path }}* {
   {% if endpoint.auth == "oauth" %}
-    authorize {
-      allow roles {{ endpoint.roles | join (' ') }}
-    }
+    authorize with mypolicy
   {% elif endpoint.auth == "basic" %}
     basicauth {
       {{ endpoint.user }} {{ endpoint.password | password_hash('bcrypt') | b64encode }}
@@ -103,40 +102,3 @@
 {% endfor %}
 
 }
-
-{% for name, remote in caddy.remotes.items() %}
-
-{{ name }}.{{ remote.domain }} {
-
-  {% if remote.auth == "basic" %}
-  basicauth /* {
-    {{ remote.user }} {{ remote.password | password_hash('bcrypt') | b64encode }}
-  }
-  {% endif %}
-
-  route /* {
-
-  {% if remote.auth == "oauth" %}
-
-    authorize {
-      primary yes
-      context {{ name }}
-      crypto key verify {{ caddy.token_secret }}
-      set auth url /auth/oauth2/google
-      inject headers with claims
-      allow roles {{ remote.roles | join (' ') }}
-    }
-  {% endif %}
-    reverse_proxy * {{ remote.scheme | default('http') }}://{{ remote.host }}:{{ remote.port | default('80') }} {
-      {% if remote.scheme | default('http') == "https" %}
-      transport http {
-        tls_insecure_skip_verify
-      }
-      {% endif %}
-    }
-  }
-
-  import auth {{ name }}
-}
-
-{% endfor %}

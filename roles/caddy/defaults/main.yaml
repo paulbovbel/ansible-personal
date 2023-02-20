@@ -1,5 +1,7 @@
 ---
 caddy_version: 2.6.4
+caddy_plugins:
+  - github.com/greenpau/caddy-security@v1.1.18
 
 docker_caddy:
   services:
@@ -47,11 +49,4 @@ caddy_defaults:
       host: filebrowser
       port: 80
       roles: ['admin']
-  remotes: {}
   token_secret: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') | to_uuid }}"
-
-# TODO(pbovbel)
-# caddy_version: 2.2.1
-# caddy_plugins:
-#   - github.com/greenpau/caddy-auth-portal@v1.2.19
-#   - github.com/greenpau/caddy-auth-jwt@v1.1.9
