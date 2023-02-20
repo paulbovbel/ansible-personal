@@ -2,8 +2,8 @@
 docker_caddy:
   services:
     caddy:
-      # TODO(pbovbel): build a caddy image containing jwt and auth_portal on demand
-      image: paulbovbel/caddy:2.4.6
+      build:
+        context: /etc/caddy/
       container_name: caddy
       networks:
         - apps
@@ -12,7 +12,7 @@ docker_caddy:
         - 443:443
       restart: "no"
       volumes:
-        - /etc/docker/Caddyfile:/etc/caddy/Caddyfile:ro
+        - /etc/caddy:/etc/caddy:ro
         - "{{ app_folder }}/caddy/data:/data"
         - "{{ app_folder }}/caddy/config:/config"
         - "{{ share_folder }}:/share:ro"

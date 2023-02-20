@@ -41,6 +41,19 @@
   become: true
   notify: restart fail2ban
 
+- name: create caddy directory
+  file:
+    path: /etc/caddy/
+    state: directory
+  become: true
+
+- name: create dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: /etc/caddy/Dockerfile
+  become: true
+  tags: docker
+
 - name: configure caddy defaults
   set_fact:
     caddy: "{{ caddy | combine(caddy_defaults, recursive=True, list_merge='append') }}"
