@@ -58,24 +58,24 @@ docker_extras:
         # https://github.com/binhex/arch-delugevpn/issues/139
         - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
       x-systemd-requires: ['storage.mount']
-    jellyfin:
-      image: linuxserver/jellyfin
-      container_name: jellyfin
-      networks:
-        - apps
-      ports:
-        - 8096:8096
-      environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
-        TZ: America/Toronto
-      volumes:
-        - "{{ app_folder }}/jellyfin:/config"
-        - "{{ media_folder }}:/data:ro"
-      devices:
-        - /dev/dri:/dev/dri
-      restart: "no"
-      x-systemd-requires: ['storage.mount']
+    # jellyfin:
+    #   image: linuxserver/jellyfin
+    #   container_name: jellyfin
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - 8096:8096
+    #   environment:
+    #     PUID: "{{ uid }}"
+    #     PGID: "{{ gid }}"
+    #     TZ: America/Toronto
+    #   volumes:
+    #     - "{{ app_folder }}/jellyfin:/config"
+    #     - "{{ media_folder }}:/data:ro"
+    #   devices:
+    #     - /dev/dri:/dev/dri
+    #   restart: "no"
+    #   x-systemd-requires: ['storage.mount']
     tautulli:
       x-systemd-requires: ['storage.mount']
     sonarr:
@@ -84,24 +84,24 @@ docker_extras:
       x-systemd-requires: ['storage.mount']
     jackett:
       x-systemd-requires: ['storage.mount']
-    resilio:
-      image: linuxserver/resilio-sync
-      container_name: resilio
-      networks:
-        - apps
-      ports:
-        - 55555:55555
-        - 55555:55555/udp
-      volumes:
-        - "{{ app_folder }}/resilio:/config"
-        - "{{ data_folder }}:/sync"
-      restart: "no"
-      environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
-        TZ: America/Toronto
-      x-systemd-requires:
-        - storage.mount
+    # resilio:
+    #   image: linuxserver/resilio-sync
+    #   container_name: resilio
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - 55555:55555
+    #     - 55555:55555/udp
+    #   volumes:
+    #     - "{{ app_folder }}/resilio:/config"
+    #     - "{{ data_folder }}:/sync"
+    #   restart: "no"
+    #   environment:
+    #     PUID: "{{ uid }}"
+    #     PGID: "{{ gid }}"
+    #     TZ: America/Toronto
+    #   x-systemd-requires:
+    #     - storage.mount
     # minecraft:
     #   image: itzg/minecraft-server
     #   container_name: minecraft
