@@ -35,21 +35,6 @@
     cache_valid_time: 3600
   become: true
 
-- name: install docker-compose
-  pip:
-    name: docker-compose==1.27.4
-    virtualenv: "/opt/virtualenv"
-    virtualenv_command: /usr/bin/python3 -m venv
-  become: true
-
-- name: symlink docker-compose
-  file:
-    src: "/opt/virtualenv/bin/docker-compose"
-    dest: "/usr/local/bin/docker-compose"
-    state: link
-    force: true
-  become: true
-
 - name: configure docker group
   group:
     name: docker
@@ -86,11 +71,6 @@
     value: "1048576"
     state: present
   become: true
-
-# - name: docker login
-#   docker_login:
-#     username: "{{ docker_username }}"
-#     password: "{{ docker_password }}"
 
 - name: configure docker defaults
   set_fact:
