@@ -12,18 +12,22 @@
     update_cache: true
   become: true
 
-- name: install docker packages
-  apt:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-    # - cockpit-docker  # removed in 20.04
-      - python3-docker
-    state: latest
-    update_cache: true
-    cache_valid_time: 3600
-  become: true
+# - name: install docker packages
+#   apt:
+#     name:
+#       - docker-ce
+#       - docker-ce-cli
+#       - containerd.io
+#     # - cockpit-docker  # removed in 20.04
+#       - python3-docker
+#     state: latest
+#     update_cache: true
+#     cache_valid_time: 3600
+#   become: true
+
+# TODO install podman and podman-docker
+
+# TODO configure docker.io registry
 
 - name: install python3 venv and pip
   apt:
@@ -33,6 +37,29 @@
     state: latest
     update_cache: true
     cache_valid_time: 3600
+  become: true
+
+- name: remove virtualenv folder for podman-compose
+  file:
+    path: "{{ virtualenv_path }}/podman-compose"
+    state: absent
+  become: true
+
+- name: install podman-compose
+  pip:
+    name:
+      - podman-compose
+    state: latest
+    virtualenv: "{{ virtualenv_path }}/podman-compose"
+    virtualenv_command: /usr/bin/python3 -m venv
+  become: true
+
+- name: Create symbolic link to podman-compose
+  file:
+    src: "{{ virtualenv_path }}/podman-compose/bin/podman-compose"
+    dest: "/usr/local/bin/podman-compose"
+    state: link
+    force: true
   become: true
 
 - name: configure docker group

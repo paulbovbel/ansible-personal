@@ -2,21 +2,21 @@
 
 [Unit]
 Description=Start docker container {{ service.key }}
-Before=multi-user.target
-BindsTo=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
-After=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
+Wants=network-online.target
+BindsTo={{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
+After=network-online.target {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
+RequiresMountsFor=/run/containers/storage
 
 [Service]
-ExecStart=/usr/bin/docker start {{ service.key }} -a
+Environment=PODMAN_SYSTEMD_UNIT=%n
+ExecStart=/usr/bin/podman start {{ service.key }} -a
 {% for cmd in service.value['x-systemd-start-post'] | default([]) %}
 ExecStartPost={{ cmd }}
 {% endfor %}
 Type=simple
-RestartSec=5s
-Restart=always
+Restart=on-failure
 SyslogIdentifier={{ service.key }}
-TimeoutStartSec=600s
-TimeoutStopSec=5s
+TimeoutStopSec=10s
 
 [Install]
-WantedBy=multi-user.target docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
+WantedBy=default.target

@@ -14,20 +14,14 @@
 - name: configure containers
   shell: |
     cd /etc/docker &&
-    docker login -u {{ docker_username }} -p {{ docker_password }} &&
-    docker compose pull && docker compose up --no-deps --no-start --remove-orphans --build
-  # docker:  # Can't run docker_compose ansible task from virtualenv
-  #   project_src: /etc/docker
-  #   build: true
-  #   pull: true
-  #   dependencies: false
-  #   remove_orphans: true
+    podman login -u {{ docker_username }} -p {{ docker_password }} &&
+    podman-compose pull && podman-compose up --force-recreate --no-start --remove-orphans --build
   become: true
   no_log: true
 
 - name: prune docker images
   shell: |
-    docker image prune -af --filter="until=24h"
+    podman image prune -af --filter="until=24h"
   become: true
 
 - name: clean system directory
@@ -46,7 +40,7 @@
   command: /usr/bin/find -L /etc/systemd/system -type l -delete
   become: true
 
-- name: "install container services"
+- name: "create container services"
   template:
     src: container.service.j2
     dest: "{{ docker_systemd_dir }}/{{ service.key }}.service"
@@ -56,15 +50,11 @@
   loop_control:
     loop_var: service
 
-- name: "start container services"  # noqa 303
-  shell: |
-    systemctl enable {{ docker_systemd_dir }}/{{ service.key }}.service && \
-    systemctl start {{ service.key }}.service --no-block
-  # (pbovbel): systemd module doesn't behave for units outside of /etc/systemd
-  # systemd:
-  #   name: "{{ docker_systemd_dir }}/{{ service.key }}.service"
-  #   enabled: true
-  #   state: started
+- name: "install container services"  # noqa 303
+  systemd:
+    name: "{{ docker_systemd_dir }}/{{ service.key }}.service"
+    enabled: true
+    state: started
   become: true
   no_log: true
   loop: "{{ docker.services | dict2items }}"

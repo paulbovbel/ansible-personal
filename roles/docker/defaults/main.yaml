@@ -31,3 +31,5 @@ docker_systemd_dir: /etc/docker/systemd
 
 net_mask: "{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}"
 lan_network: "{{ net_mask | ipaddr('net') }}"
+
+virtualenv_path: /opt/virtualenv
