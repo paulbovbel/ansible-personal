@@ -1,0 +1,3 @@
+---
+- name: configure containers
+  include_tasks: handlers/configure-containers.yaml

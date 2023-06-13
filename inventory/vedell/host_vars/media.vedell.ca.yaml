@@ -73,7 +73,7 @@ nfs_mounts:
     url: "{{ nfs_host }}:/volume1/Music"
 
 
-docker_extras:
+container_extras:
   services:
     ddclient:
       container_name: ddclient

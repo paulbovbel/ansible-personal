@@ -6,21 +6,21 @@
   become: true
 
 - name: restart sonarr
-  shell: docker restart sonarr
+  shell: systemctl restart sonarr
   become: true
 
 - name: restart radarr
-  shell: docker restart radarr
+  shell: systemctl restart radarr
   become: true
 
 - name: restart jackett
-  shell: docker restart jackett
+  shell: systemctl restart jackett
   become: true
 
 - name: restart deluge
-  shell: docker restart deluge
+  shell: systemctl restart deluge
   become: true
 
 - name: restart tautulli
-  shell: docker restart tautulli
+  shell: systemctl restart tautulli
   become: true

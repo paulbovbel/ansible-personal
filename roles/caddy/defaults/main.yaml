@@ -1,5 +1,5 @@
 ---
-docker_caddy:
+container_caddy:
   services:
     caddy:
       build:
@@ -18,15 +18,16 @@ docker_caddy:
         - "{{ share_folder }}:/share:ro"
       environment:
         TZ: America/Toronto  # TODO(pbovbel) not working https://github.com/caddyserver/caddy-docker/issues/58
-    filebrowser:
-      image: filebrowser/filebrowser
-      container_name: filebrowser
-      networks:
-        - apps
-      volumes:
-        - "{{ share_folder }}:/srv"
-        - "{{ app_folder }}/filebrowser/filebrowser.db:/database.db"
-      command: "-b /browser"
+    # TODO(pbovbel) fix filebrowser
+    # filebrowser:
+    #   image: filebrowser/filebrowser
+    #   container_name: filebrowser
+    #   networks:
+    #     - apps
+    #   volumes:
+    #     - "{{ share_folder }}:/srv"
+    #     - "{{ app_folder }}/filebrowser/filebrowser.db:/database.db"
+    #   command: "-b /browser"
 
 caddy: {}
 

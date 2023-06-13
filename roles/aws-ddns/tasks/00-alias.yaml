@@ -1,11 +1,11 @@
 ---
 - name: configure ddns services
   set_fact:
-    docker: "{{ docker | combine(docker_aws_ddns, recursive=True, list_merge='append') }}"
+    containers: "{{ containers | combine(container_aws_ddns, recursive=True, list_merge='append') }}"
     cacheable: true
   changed_when: true
-  notify: configure docker
-  tags: docker
+  notify: configure containers
+  tags: containers
 
 - name: install boto3
   apt:

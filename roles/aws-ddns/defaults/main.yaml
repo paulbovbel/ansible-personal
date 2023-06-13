@@ -1,6 +1,6 @@
 aws_ddns: false
 
-docker_aws_ddns:
+container_aws_ddns:
   services:
     ddns-route53:
       container_name: ddns-route53

@@ -1,5 +1,5 @@
 ---
-docker_cockpit:
+container_cockpit:
   services:
     smokeping:
       image: ghcr.io/linuxserver/smokeping

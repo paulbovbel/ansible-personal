@@ -1,6 +1,6 @@
 media_server: false
 
-docker_media_server:
+containers_media_server:
   services:
     plex:
       image: plexinc/pms-docker:plexpass

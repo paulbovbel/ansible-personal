@@ -52,7 +52,7 @@
     src: Dockerfile.j2
     dest: /etc/caddy/Dockerfile
   become: true
-  tags: docker
+  tags: containers
 
 - name: configure caddy defaults
   set_fact:
@@ -62,10 +62,10 @@
   notify: configure caddy
   tags: caddy
 
-- name: configure caddy docker
+- name: configure caddy container
   set_fact:
-    docker: "{{ docker | combine(docker_caddy, recursive=True, list_merge='append') }}"
+    containers: "{{ containers | combine(container_caddy, recursive=True, list_merge='append') }}"
     cacheable: true
   changed_when: true
-  notify: configure docker
-  tags: docker
+  notify: configure containers
+  tags: containers

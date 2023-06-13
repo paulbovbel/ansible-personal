@@ -7,13 +7,13 @@
   notify: configure caddy
   tags: caddy
 
-- name: configure media server docker
+- name: configure media server containers
   set_fact:
-    docker: "{{ docker | combine(docker_media_server, recursive=True, list_merge='append') }}"
+    containers: "{{ containers | combine(containers_media_server, recursive=True, list_merge='append') }}"
     cacheable: true
   changed_when: true
-  notify: configure docker
-  tags: docker
+  notify: configure containers
+  tags: containers
 
 # - name: configure jackett basepath
 #   replace:

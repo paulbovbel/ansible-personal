@@ -1,6 +1,5 @@
 ansible
 ansible-lint
 bcrypt
-docker
 netaddr
 passlib

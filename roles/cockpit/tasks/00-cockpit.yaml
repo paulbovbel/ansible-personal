@@ -40,8 +40,8 @@
 
 - name: configure cockpit docker
   set_fact:
-    docker: "{{ docker | combine(docker_cockpit, recursive=True, list_merge='append') }}"
+    containers: "{{ containers | combine(container_cockpit, recursive=True, list_merge='append') }}"
     cacheable: true
   changed_when: true
-  notify: configure docker
-  tags: docker
+  notify: configure containers
+  tags: containers

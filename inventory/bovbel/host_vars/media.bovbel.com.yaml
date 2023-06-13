@@ -29,12 +29,12 @@ aws_alias_domains:
   - cs.bovbel.com
   - tf2.bovbel.com
 
-docker_extras:
+container_extras:
   services:
     plex:
       volumes:
         - "{{ media_folder }}:/mnt/storage/share:ro"
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ['zfs-mount.service']
     unifi:
       image: linuxserver/unifi-controller
       container_name: unifi
@@ -57,7 +57,7 @@ docker_extras:
         # deluge thin client iptable rule to allow external access
         # https://github.com/binhex/arch-delugevpn/issues/139
         - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ['zfs-mount.service']
     # jellyfin:
     #   image: linuxserver/jellyfin
     #   container_name: jellyfin
@@ -75,15 +75,15 @@ docker_extras:
     #   devices:
     #     - /dev/dri:/dev/dri
     #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    #   x-systemd-requires: ['zfs-mount.service']
     tautulli:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ['zfs-mount.service']
     sonarr:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ['zfs-mount.service']
     radarr:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ['zfs-mount.service']
     jackett:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ['zfs-mount.service']
     # resilio:
     #   image: linuxserver/resilio-sync
     #   container_name: resilio
@@ -101,7 +101,7 @@ docker_extras:
     #     PGID: "{{ gid }}"
     #     TZ: America/Toronto
     #   x-systemd-requires:
-    #     - storage.mount
+    #     - zfs-mount.service
     # minecraft:
     #   image: itzg/minecraft-server
     #   container_name: minecraft
@@ -123,7 +123,7 @@ docker_extras:
     #     RCON_PASSWORD: "{{ web_password }}"
     #     TYPE: PAPER
     #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    #   x-systemd-requires: ['zfs-mount.service']
     # csgo:
     #   image: cm2network/csgo:sourcemod
     #   container_name: csgo
@@ -151,7 +151,7 @@ docker_extras:
     #     SRCDS_HOSTNAME: "cs.bovbel.com" # (first launch only)
     #     SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
     #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    #   x-systemd-requires: ['zfs-mount.service']
     # tf2:
     #   image: cm2network/tf2:sourcemod
     #   container_name: tf2
@@ -195,7 +195,7 @@ docker_extras:
     #     # ADDITIONAL_ARGS: "" # (Pass additional arguments to srcds. Make sure to escape correctly!)
     #     SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
     #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    #   x-systemd-requires: ['zfs-mount.service']
     # valheim:
     #   image: mbround18/valheim:latest
     #   container_name: valheim
@@ -226,7 +226,7 @@ docker_extras:
     #     - "{{ app_folder }}/valheim/server:/home/steam/valheim"
     #     - "{{ app_folder }}/valheim/backups:/home/steam/backups"
     #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    #   x-systemd-requires: ['zfs-mount.service']
 
 
 caddy_extras:

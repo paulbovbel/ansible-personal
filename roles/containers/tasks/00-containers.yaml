@@ -1,33 +1,11 @@
 ---
-- name: install docker repo key
-  apt_key:
-    url: https://download.docker.com/linux/ubuntu/gpg
-    state: present
+- name: configure podman registry
+  copy:
+    content: |
+      [registries.search]
+      registries = ['docker.io']
+    dest: /etc/containers/registries.conf
   become: true
-
-- name: add docker apt repo
-  apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-    state: present
-    update_cache: true
-  become: true
-
-# - name: install docker packages
-#   apt:
-#     name:
-#       - docker-ce
-#       - docker-ce-cli
-#       - containerd.io
-#     # - cockpit-docker  # removed in 20.04
-#       - python3-docker
-#     state: latest
-#     update_cache: true
-#     cache_valid_time: 3600
-#   become: true
-
-# TODO install podman and podman-docker
-
-# TODO configure docker.io registry
 
 - name: install python3 venv and pip
   apt:
@@ -62,35 +40,21 @@
     force: true
   become: true
 
-- name: configure docker group
-  group:
-    name: docker
-    state: present
-  become: true
-
-- name: add user to docker group
-  user:
-    name: "{{ ansible_user }}"
-    groups: docker
-    append: true
-  become: true
-  notify: restart docker
-
 - name: determine uid
   command: "id -u {{ ansible_user }}"
   register: uid
-  tags: docker
+  tags: containers
 
 - name: determine gid
   command: "id -g {{ ansible_user }}"
   register: gid
-  tags: docker
+  tags: containers
 
 - name: bind uid and gid to variables
   set_fact:
     uid: "{{ uid.stdout }}"
     gid: "{{ gid.stdout }}"
-  tags: docker
+  tags: containers
 
 - name: increase number of watches
   sysctl:
@@ -99,10 +63,10 @@
     state: present
   become: true
 
-- name: configure docker defaults
+- name: configure container defaults
   set_fact:
-    docker: "{{ docker | combine(docker_defaults, recursive=True, list_merge='append') }}"
+    containers: "{{ containers | combine(container_defaults, recursive=True, list_merge='append') }}"
     cacheable: true
   changed_when: true
-  notify: configure docker
-  tags: docker
+  notify: configure containers
+  tags: containers

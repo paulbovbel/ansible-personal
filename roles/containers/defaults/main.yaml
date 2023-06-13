@@ -1,6 +1,6 @@
-docker: {}
+containers: {}
 
-docker_defaults:
+container_defaults:
   version: '3.7'
   networks:
     apps:
@@ -18,16 +18,19 @@ docker_defaults:
     #     RELAY_NETWORKS: ":10.0.0.0/8:172.16.0.0/12:192.168.0.0/16"
     #     GMAIL_USER: "{{ ansible_email }}"
     #     GMAIL_PASSWORD: "{{ gmail_access_key }}"
-    watchtower:
-      image: containrrr/watchtower
-      container_name: watchtower
-      networks:
-        - apps
-      volumes:
-        - /var/run/docker.sock:/var/run/docker.sock
-      restart: "no"
 
-docker_systemd_dir: /etc/docker/systemd
+    # TODO(pbovbel) watchtower for podman? https://github.com/containrrr/watchtower/issues/1060
+    # watchtower:
+    #   image: containrrr/watchtower
+    #   container_name: watchtower
+    #   networks:
+    #     - apps
+    #   volumes:
+    #     - /var/run/docker.sock:/var/run/docker.sock
+    #   restart: "no"
+
+container_dir: /etc/containers
+container_systemd_dir: "{{ container_dir }}/systemd"
 
 net_mask: "{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}"
 lan_network: "{{ net_mask | ipaddr('net') }}"

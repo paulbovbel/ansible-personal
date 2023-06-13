@@ -1,38 +1,38 @@
 ---
-- name: include docker extras
+- name: include extra containers
   set_fact:
-    docker: "{{ docker | combine(docker_extras, recursive=True, list_merge='append') }}"
+    containers: "{{ containers | combine(container_extras, recursive=True, list_merge='append') }}"
     cacheable: true
   changed_when: true
 
 - name: create docker-compose file
   copy:
-    content: "{{ docker | to_nice_yaml }}"
-    dest: /etc/docker/docker-compose.yaml
+    content: "{{ containers | to_nice_yaml }}"
+    dest: "{{ container_dir }}/docker-compose.yaml"
   become: true
 
 - name: configure containers
   shell: |
-    cd /etc/docker &&
+    cd {{ container_dir }} &&
     podman login -u {{ docker_username }} -p {{ docker_password }} &&
     podman-compose pull && podman-compose up --force-recreate --no-start --remove-orphans --build
   become: true
   no_log: true
 
-- name: prune docker images
+- name: prune container images
   shell: |
     podman image prune -af --filter="until=24h"
   become: true
 
 - name: clean system directory
   file:
-    path: "{{ docker_systemd_dir }}"
+    path: "{{ container_systemd_dir }}"
     state: absent
   become: true
 
 - name: create system directory
   file:
-    path: "{{ docker_systemd_dir }}"
+    path: "{{ container_systemd_dir }}"
     state: directory
   become: true
 
@@ -43,21 +43,25 @@
 - name: "create container services"
   template:
     src: container.service.j2
-    dest: "{{ docker_systemd_dir }}/{{ service.key }}.service"
+    dest: "{{ container_systemd_dir }}/{{ service.key }}.service"
   become: true
   no_log: true
-  loop: "{{ docker.services | dict2items }}"
+  loop: "{{ containers.services | dict2items }}"
   loop_control:
     loop_var: service
 
 - name: "install container services"  # noqa 303
-  systemd:
-    name: "{{ docker_systemd_dir }}/{{ service.key }}.service"
-    enabled: true
-    state: started
+  shell: |
+    systemctl enable {{ container_systemd_dir }}/{{ service.key }}.service && \
+    systemctl start {{ service.key }}.service --no-block
+  # (pbovbel): systemd module doesn't behave for units outside of /etc/systemd
+  # systemd:
+  #   name: "{{ container_systemd_dir }}/{{ service.key }}.service"
+  #   enabled: true
+  #   state: started
   become: true
   no_log: true
-  loop: "{{ docker.services | dict2items }}"
+  loop: "{{ containers.services | dict2items }}"
   loop_control:
     loop_var: service
   async: 10

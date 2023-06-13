@@ -3,7 +3,7 @@ aws_alias_domains:
   - cs.bovbel.com
   # - valheim.bovbel.com
 
-docker_extras:
+container_extras:
   services:
     # minecraft:
     #   image: itzg/minecraft-server
@@ -26,7 +26,7 @@ docker_extras:
     #     RCON_PASSWORD: "{{ web_password }}"
     #     TYPE: PAPER
     #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    #   x-systemd-requires: ['zfs-mount.service']
     csgo:
       image: kmallea/csgo
       container_name: csgo
@@ -48,7 +48,7 @@ docker_extras:
         STEAM_ACCOUNT: "{{ csgo_app_id }}"
         SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
       restart: "no"
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ['zfs-mount.service']
     # valheim:
     #   image: mbround18/valheim:latest
     #   container_name: valheim
@@ -79,7 +79,7 @@ docker_extras:
     #     - "{{ app_folder }}/valheim/server:/home/steam/valheim"
     #     - "{{ app_folder }}/valheim/backups:/home/steam/backups"
     #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    #   x-systemd-requires: ['zfs-mount.service']
 
 
 csgo_server_password: !vault |

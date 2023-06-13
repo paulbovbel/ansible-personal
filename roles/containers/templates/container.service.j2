@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Start docker container {{ service.key }}
+Description=Start container {{ service.key }}
 Wants=network-online.target
 BindsTo={{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
 After=network-online.target {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
