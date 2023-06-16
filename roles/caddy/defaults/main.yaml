@@ -1,4 +1,6 @@
 ---
+caddy_version: 2.6.4
+
 docker_caddy:
   services:
     caddy:

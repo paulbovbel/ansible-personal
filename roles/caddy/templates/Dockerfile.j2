@@ -1,10 +1,10 @@
-FROM caddy:2.6.4-builder AS builder
+FROM caddy:{{ caddy_version }}-builder AS builder
 
 RUN xcaddy build \
     --with github.com/greenpau/caddy-auth-portal@v1.4.39 \
     --with github.com/greenpau/caddy-authorize@v1.3.24
 
-FROM caddy:2.6.4
+FROM caddy:{{ caddy_version }}
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 
