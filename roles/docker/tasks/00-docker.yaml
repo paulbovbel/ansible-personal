@@ -2,12 +2,13 @@
 - name: install docker repo key
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
+    keyring: /etc/apt/trusted.gpg.d/docker.gpg
     state: present
   become: true
 
 - name: add docker apt repo
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
     update_cache: true
   become: true
@@ -25,16 +26,6 @@
     cache_valid_time: 3600
   become: true
 
-- name: install python3 venv and pip
-  apt:
-    name:
-      - python3-pip
-      - python3-venv
-    state: latest
-    update_cache: true
-    cache_valid_time: 3600
-  become: true
-
 - name: configure docker group
   group:
     name: docker
@@ -43,11 +34,14 @@
 
 - name: add user to docker group
   user:
-    name: "{{ ansible_user }}"
+    name: "{{ item }}"
     groups: docker
     append: true
   become: true
   notify: restart docker
+  with_items:
+    - "{{ ansible_user }}"
+    - grafana-agent
 
 - name: determine uid
   command: "id -u {{ ansible_user }}"

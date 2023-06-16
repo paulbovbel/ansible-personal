@@ -25,3 +25,139 @@ sshd_config:
   IgnoreRhosts: 'yes'
   UsePAM: 'yes'
   X11Forwarding: 'no'
+
+grafana_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  38653432383430643265333737356334646332386438383133353439636630666334393130366430
+  6438623265346430393163363233633762346562613961350a633265323635363133333133303730
+  34316665343535376632353737313663663062373533616432666137366537336635306462633663
+  3635613634323366620a613134363462353765303636333264643265306562613030343161323935
+  62306233306531613331373463663765623261363637646366376266613138313565613666653535
+  34623334326531646339316637346337393034313031306666336431323763613164323064316439
+  64383830346530666166643335333163613231636231353762393166306638303962323665376333
+  31396638356238613138356337346635303036656532666435653934383533643333353366663662
+  61613136303430356237336437383264336661383735313263383561343135613436
+
+grafana:
+  integrations:
+    prometheus_remote_write:
+    - basic_auth:
+        password: "{{ grafana_password }}"
+        username: 711583
+      url: https://prometheus-us-central1.grafana.net/api/prom/push
+    agent:
+      enabled: true
+      relabel_configs:
+      - action: replace
+        source_labels:
+        - agent_hostname
+        target_label: instance
+      - action: replace
+        target_label: job
+        replacement: "integrations/agent-check"
+      metric_relabel_configs:
+      - action: keep
+        regex: (prometheus_target_.*|prometheus_sd_discovered_targets|agent_build.*|agent_wal_samples_appended_total|process_start_time_seconds)
+        source_labels:
+        - __name__
+    node_exporter:
+      enabled: true
+      # disable unused collectors
+      disable_collectors:
+        - ipvs #high cardinality on kubelet
+        - btrfs
+        - infiniband
+        - xfs
+      # exclude dynamic interfaces
+      netclass_ignored_devices: "^(veth.*|cali.*|[a-f0-9]{15})$"
+      netdev_device_exclude: "^(veth.*|cali.*|[a-f0-9]{15})$"
+      # disable tmpfs
+      filesystem_fs_types_exclude: "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+      # drop extensive scrape statistics
+      metric_relabel_configs:
+      - action: drop
+        regex: node_scrape_collector_.+
+        source_labels: [__name__]
+      relabel_configs:
+      - replacement: media.bovbel.com
+        target_label: instance
+    cadvisor:
+      enabled: true
+      docker_only: true
+      instance: hostname
+      relabel_configs:
+        - action: replace
+          replacement: integrations/docker
+          target_label: job
+  logs:
+    configs:
+    - clients:
+      - basic_auth:
+          password: "{{ grafana_password }}"
+          username: 354761
+        url: https://logs-prod-017.grafana.net/loki/api/v1/push
+      name: integrations
+      positions:
+        filename: /tmp/positions.yaml
+      scrape_configs:
+          - job_name: integrations/docker
+            docker_sd_configs:
+              - host: unix:///var/run/docker.sock
+                refresh_interval: 5s
+            relabel_configs:
+              - action: replace
+                replacement: integrations/docker
+                source_labels:
+                  - __meta_docker_container_id
+                target_label: job
+              - action: replace
+                replacement: localhost:9090
+                source_labels:
+                  - __meta_docker_container_id
+                target_label: instance
+              - source_labels:
+                  - __meta_docker_container_name
+                regex: '/(.*)'
+                target_label: container
+              - source_labels:
+                  - __meta_docker_container_log_stream
+                target_label: stream
+          - job_name: integrations/node_exporter_journal_scrape
+            journal:
+              max_age: 24h
+              labels:
+                instance: media.bovbel.com
+                job: integrations/node_exporter
+            relabel_configs:
+            - source_labels: ['__journal__systemd_unit']
+              target_label: 'unit'
+            - source_labels: ['__journal__boot_id']
+              target_label: 'boot_id'
+            - source_labels: ['__journal__transport']
+              target_label: 'transport'
+            - source_labels: ['__journal_priority_keyword']
+              target_label: 'level'
+          - job_name: integrations/node_exporter_direct_scrape
+            static_configs:
+            - targets:
+              - localhost
+              labels:
+                instance: media.bovbel.com
+                __path__: /var/log/{syslog,messages,*.log}
+                job: integrations/node_exporter
+        # Add here any snippet that belongs to the `logs.configs.scrape_configs` section.
+        # For a correct indentation, paste snippets copied from Grafana Cloud at the beginning of the line.
+  metrics:
+    configs:
+    - name: integrations
+      remote_write:
+      - basic_auth:
+          password: "{{ grafana_password }}"
+          username: 711583
+        url: https://prometheus-us-central1.grafana.net/api/prom/push
+      scrape_configs:
+        # Add here any snippet that belongs to the `metrics.configs.scrape_configs` section.
+        # For a correct indentation, paste snippets copied from Grafana Cloud at the beginning of the line.
+    global:
+      scrape_interval: 60s
+    wal_directory: /tmp/grafana-agent-wal

@@ -1,0 +1,56 @@
+# sudo mkdir -p /etc/apt/keyrings/
+# wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+# echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee /etc/apt/sources.list.d/grafana.list
+
+- name: add grafana apt key
+  apt_key:
+    url: https://apt.grafana.com/gpg.key
+    keyring: /etc/apt/trusted.gpg.d/grafana.gpg
+    state: present
+  become: true
+
+- name: add grafana apt repo
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/grafana.gpg] https://apt.grafana.com stable main"
+    state: present
+    update_cache: true
+  become: true
+
+- name: install grafana agent
+  apt:
+    name:
+      - grafana-agent
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: configure grafana
+  copy:
+    content: "{{ grafana | to_nice_yaml }}"
+    dest: /etc/grafana-agent.yaml
+  become: true
+
+- name: create service override dir
+  file:
+    path: /etc/systemd/system/grafana-agent.service.d/
+    state: directory
+  become: true
+
+- name: override service
+  copy:
+    content: |
+      [Service]
+      User=root
+    dest: /etc/systemd/system/grafana-agent.service.d/override.conf
+  become: true
+
+- name: start grafana agent
+  systemd:
+    name: grafana-agent.service
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  become: true
+
+
