@@ -2,7 +2,8 @@
 
 [Unit]
 Description=Start docker container {{ service.key }}
-Before=multi-user.target
+Wants=network-online.target
+Before=default.target
 BindsTo=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
 After=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
 
@@ -12,11 +13,10 @@ ExecStart=/usr/bin/docker start {{ service.key }} -a
 ExecStartPost={{ cmd }}
 {% endfor %}
 Type=simple
-RestartSec=5s
-Restart=always
 SyslogIdentifier={{ service.key }}
-TimeoutStartSec=600s
-TimeoutStopSec=5s
+Restart=on-failure
+RestartSec=10s
+TimeoutStopSec=10s
 
 [Install]
-WantedBy=multi-user.target docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
+WantedBy=default.target
