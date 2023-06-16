@@ -4,3 +4,4 @@ bcrypt
 docker
 netaddr
 passlib
+pip-tools
