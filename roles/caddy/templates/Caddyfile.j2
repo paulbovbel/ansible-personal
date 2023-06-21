@@ -10,7 +10,7 @@
 			scopes openid email profile
 		}
 
-		authentication portal myportal {
+		authentication portal defaultportal {
 			crypto default token lifetime 3600
 			crypto key sign-verify {{ caddy.token_secret }}
 			enable identity provider google
@@ -29,12 +29,13 @@
 		}
 
     # TODO(pbovbel) fix multiple users for auth
-		authorization policy mypolicy {
-			set auth url https://{{ inventory_hostname }}/oauth2/google
+		authorization policy defaultpolicy {
+			set auth url https://{{ inventory_hostname }}/auth/login
 			crypto key verify {{ caddy.token_secret }}
 			allow roles authp/admin
 			validate bearer header
 			inject headers with claims
+      enable js redirect
 		}
 	}
 }
@@ -57,15 +58,15 @@
   }
 
   route /auth* {
-    authenticate with myportal
+    authenticate with defaultportal
   }
 
 {% for endpoint in caddy.endpoints.values() %}
-  redir {{ endpoint.path }} {{ endpoint.path }}/ html
+  redir {{ endpoint.path }} {{ endpoint.path }}/
 
   route {{ endpoint.path }}* {
   {% if endpoint.auth == "oauth" %}
-    authorize with mypolicy
+    authorize with defaultpolicy
   {% elif endpoint.auth == "basic" %}
     basicauth {
       {{ endpoint.user }} {{ endpoint.password | password_hash('bcrypt') | b64encode }}
