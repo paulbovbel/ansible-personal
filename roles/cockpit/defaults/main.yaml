@@ -25,7 +25,7 @@ caddy_cockpit:
       path: /smokeping
       host: smokeping
       port: 80
-      roles: ['admin']
+      role: admin
 
     dashboard:
       type: proxy
@@ -33,4 +33,4 @@ caddy_cockpit:
       path: /dashboard
       host: "{{ ansible_default_ipv4.address }}"
       port: 9090
-      roles: ['admin']
+      role: admin

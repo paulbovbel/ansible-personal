@@ -231,15 +231,15 @@ docker_extras:
 
 caddy_extras:
   users:
-    - name: paul@bovbel.com
+    - email: paul@bovbel.com
       roles: ['admin', 'share']
-    - name: rebecca@bovbel.com
+    - email: rebecca@bovbel.com
       roles: ['admin', 'share']
-    - name: andrew@bovbel.com
+    - email: andrew@bovbel.com
       roles: ['share']
-    - name: igorlitvinov@gmail.com
+    - email: igorlitvinov@gmail.com
       roles: ['share']
-    - name: eugene.tkach@gmail.com
+    - email: eugene.tkach@gmail.com
       roles: ['share']
 
 
@@ -250,14 +250,14 @@ caddy_extras:
       path: /jellyfin
       host: jellyfin
       port: 8096
-      roles: ['admin']
+      role: admin
     resilio:
       type: proxy
       auth: oauth
       path: /gui
       host: resilio
       port: 8888
-      roles: ['admin']
+      role: admin
 
 
 csgo_server_password: !vault |

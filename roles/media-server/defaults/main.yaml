@@ -176,7 +176,7 @@ caddy_media_server:
       path: /radarr
       host: radarr
       port: 7878
-      roles: ['admin']
+      role: admin
 
     sonarr:
       type: proxy
@@ -184,7 +184,7 @@ caddy_media_server:
       path: /sonarr
       host: sonarr
       port: 8989
-      roles: ['admin']
+      role: admin
 
     bazarr:
       type: proxy
@@ -192,7 +192,7 @@ caddy_media_server:
       path: /bazarr
       host: bazarr
       port: 6767
-      roles: ['admin']
+      role: admin
 
     readarr:
       type: proxy
@@ -200,7 +200,7 @@ caddy_media_server:
       path: /readarr
       host: readarr
       port: 8787
-      roles: ['admin']
+      role: admin
 
     mylar3:
       type: proxy
@@ -208,7 +208,7 @@ caddy_media_server:
       path: /mylar
       host: mylar3
       port: 8090
-      roles: ['admin']
+      role: admin
 
     tautulli:
       type: proxy
@@ -216,7 +216,7 @@ caddy_media_server:
       path: /tautulli
       host: tautulli
       port: 8181
-      roles: ['admin']
+      role: admin
 
     jackett:
       type: proxy
@@ -224,7 +224,7 @@ caddy_media_server:
       path: /jackett
       host: jackett
       port: 9117
-      roles: ['admin']
+      role: admin
 
     deluge:
       type: proxy

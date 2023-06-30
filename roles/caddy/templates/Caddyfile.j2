@@ -16,22 +16,28 @@
 			enable identity provider google
 			cookie domain bovbel.com
 
+{% for user in caddy.users %}
 			transform user {
 				match realm google
-				match email paul@bovbel.com
-				action add role authp/admin
+				match email {{ user.email }}
+  {% for role in user.roles %}
+				action add role auth/{{ role }}
+  {% endfor %}
 			}
-		}
+{% endfor %}
 
-    # TODO(pbovbel) fix multiple users for auth
-		authorization policy defaultpolicy {
+    }
+
+{% for role in caddy.roles %}
+		authorization policy {{ role }} {
 			set auth url https://{{ inventory_hostname }}/auth/oauth2/google
 			crypto key verify {{ caddy.token_secret }}
-			allow roles authp/admin
+			allow roles auth/{{ role }}
 			validate bearer header
 			inject headers with claims
       enable js redirect
 		}
+{% endfor %}
 	}
 }
 
@@ -61,7 +67,7 @@
 
   route {{ endpoint.path }}* {
   {% if endpoint.auth == "oauth" %}
-    authorize with defaultpolicy
+    authorize with {{ endpoint.role }}
   {% elif endpoint.auth == "basic" %}
     basicauth {
       {{ endpoint.user }} {{ endpoint.password | password_hash('bcrypt') | b64encode }}

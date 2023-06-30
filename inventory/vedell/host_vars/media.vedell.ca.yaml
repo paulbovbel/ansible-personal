@@ -122,7 +122,7 @@ docker_extras:
 
 caddy_extras:
   users:
-    - name: paul@bovbel.com
+    - email: paul@bovbel.com
       roles: ['admin', 'share']
-    - name: sean.vedell@gmail.com
+    - email: sean.vedell@gmail.com
       roles: ['admin', 'share']

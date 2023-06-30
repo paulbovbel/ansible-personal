@@ -36,17 +36,20 @@ caddy: {}
 
 caddy_defaults:
   users: []
+  roles:
+    - admin
+    - share
   endpoints:
     share:
       type: share
       auth: oauth
       path: /share
-      roles: ['share']
+      role: share
     browser:
       type: proxy
       auth: oauth
       path: /browser
       host: filebrowser
       port: 80
-      roles: ['admin']
+      role: admin
   token_secret: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') | to_uuid }}"

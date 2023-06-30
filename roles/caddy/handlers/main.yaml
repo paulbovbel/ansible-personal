@@ -1,6 +1,6 @@
 ---
 - name: restart caddy
-  shell: docker restart caddy
+  shell: sudo systemctl restart caddy
   become: true
 
 - name: restart fail2ban
