@@ -18,11 +18,6 @@
 
 			transform user {
 				match realm google
-				action add role authp/user
-			}
-
-			transform user {
-				match realm google
 				match email paul@bovbel.com
 				action add role authp/admin
 			}
@@ -30,7 +25,7 @@
 
     # TODO(pbovbel) fix multiple users for auth
 		authorization policy defaultpolicy {
-			set auth url https://{{ inventory_hostname }}/auth/login
+			set auth url https://{{ inventory_hostname }}/auth/oauth2/google
 			crypto key verify {{ caddy.token_secret }}
 			allow roles authp/admin
 			validate bearer header
