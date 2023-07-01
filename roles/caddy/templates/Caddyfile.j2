@@ -53,7 +53,7 @@
   route / {
 
   {% if caddy.redirect is defined %}
-    redir {{ caddy.redirect }} html
+    redir / {{ caddy.redirect }}
   {% endif %}
 
   }
