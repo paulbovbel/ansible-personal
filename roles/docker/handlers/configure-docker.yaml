@@ -57,14 +57,11 @@
     loop_var: service
 
 - name: "start container services"  # noqa 303
-  shell: |
-    systemctl enable {{ docker_systemd_dir }}/{{ service.key }}.service && \
-    systemctl start {{ service.key }}.service --no-block
-  # (pbovbel): systemd module doesn't behave for units outside of /etc/systemd
-  # systemd:
-  #   name: "{{ docker_systemd_dir }}/{{ service.key }}.service"
-  #   enabled: true
-  #   state: started
+  systemd:
+    name: "{{ docker_systemd_dir }}/{{ service.key }}.service"
+    enabled: true
+    state: started
+    daemon_reload: true
   become: true
   no_log: true
   loop: "{{ docker.services | dict2items }}"

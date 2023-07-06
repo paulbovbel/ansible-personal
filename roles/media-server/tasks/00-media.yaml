@@ -15,6 +15,35 @@
   notify: configure docker
   tags: docker
 
+- name: setup cleanup downloads timer
+  copy:
+    content: |
+      [Unit]
+      Description=Cleanup old downloads from {{ downloads_folder }}
+
+      [Timer]
+      OnCalendar=04:30
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    dest: /etc/systemd/system/cleanup-downloads.timer
+  become: true
+  notify: enable cleanup-downloads
+
+- name: setup cleanup downloads service
+  copy:
+    content: |
+      [Unit]
+      Description=Cleanup old downloads from {{ downloads_folder }}
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/find {{ downloads_folder }} -maxdepth 1 -mtime +{{ cleanup_downloads_age }} -exec rm -rf {} \;
+    dest: /etc/systemd/system/cleanup-downloads.service
+  become: true
+  notify: enable cleanup-downloads
+
 # - name: configure jackett basepath
 #   replace:
 #     path: "{{ app_folder }}/jackett/Jackett/ServerConfig.json"

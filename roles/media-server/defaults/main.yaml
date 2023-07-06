@@ -1,4 +1,5 @@
 media_server: false
+cleanup_downloads_age: 60
 
 docker_media_server:
   services:
