@@ -84,24 +84,7 @@ docker_extras:
       x-systemd-requires: ['storage.mount']
     jackett:
       x-systemd-requires: ['storage.mount']
-    # resilio:
-    #   image: linuxserver/resilio-sync
-    #   container_name: resilio
-    #   networks:
-    #     - apps
-    #   ports:
-    #     - 55555:55555
-    #     - 55555:55555/udp
-    #   volumes:
-    #     - "{{ app_folder }}/resilio:/config"
-    #     - "{{ data_folder }}:/sync"
-    #   restart: "no"
-    #   environment:
-    #     PUID: "{{ uid }}"
-    #     PGID: "{{ gid }}"
-    #     TZ: America/Toronto
-    #   x-systemd-requires:
-    #     - storage.mount
+
     # minecraft:
     #   image: itzg/minecraft-server
     #   container_name: minecraft
@@ -250,13 +233,6 @@ caddy_extras:
       path: /jellyfin
       host: jellyfin
       port: 8096
-      role: admin
-    resilio:
-      type: proxy
-      auth: oauth
-      path: /gui
-      host: resilio
-      port: 8888
       role: admin
 
 

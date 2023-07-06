@@ -1,0 +1,16 @@
+---
+- name: configure sync webui
+  set_fact:
+    caddy: "{{ caddy | combine(caddy_sync, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure caddy
+  tags: caddy
+
+- name: configure sync docker
+  set_fact:
+    docker: "{{ docker | combine(docker_sync, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker
