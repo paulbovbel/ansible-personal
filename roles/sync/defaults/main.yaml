@@ -27,7 +27,7 @@ docker_sync:
       networks:
         - apps
       ports:
-        - 55555:55555
+        - 55555:55555/tcp
         - 55555:55555/udp
       volumes:
         - "{{ app_folder }}/resilio:/config"
@@ -57,3 +57,10 @@ caddy_sync:
       host: resilio
       port: 8888
       role: admin
+
+upnp_forwards_sync:
+  syncthing1: {from: 22000, to: 22000, proto: tcp}
+  syncthing2: {from: 22000, to: 22000, proto: udp}
+  syncthing3: {from: 21027, to: 21027, proto: udp}
+  resilio1: {from: 55555, to: 55555, proto: tcp}
+  resilio2: {from: 55555, to: 55555, proto: udp}

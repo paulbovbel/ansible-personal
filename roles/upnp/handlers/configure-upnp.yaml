@@ -1,0 +1,31 @@
+---
+- name: setup upnp update timer
+  copy:
+    content: |
+      [Unit]
+      Description=UPNP port forward update
+
+      [Timer]
+      OnCalendar=hourly
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    dest: /etc/systemd/system/upnp-update.timer
+  become: true
+  notify: enable upnp update
+
+- name: setup upnp update service
+  copy:
+    content: |
+      [Unit]
+      Description=UPNP port forward update
+
+      [Service]
+      Type=oneshot
+      {% for forward in upnp_forwards.values() %}
+      ExecStart=/usr/bin/upnpc -a {{ ansible_default_ipv4.address }} {{ forward.from }} {{ forward.to }} {{ forward.proto }} 7200
+      {% endfor %}
+    dest: /etc/systemd/system/upnp-update.service
+  become: true
+  notify: enable upnp update

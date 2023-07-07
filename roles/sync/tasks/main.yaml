@@ -14,3 +14,11 @@
   changed_when: true
   notify: configure docker
   tags: docker
+
+- name: configure sync upnp
+  set_fact:
+    upnp_forwards: "{{ upnp_forwards | combine(upnp_forwards_sync, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure upnp
+  tags: upnp

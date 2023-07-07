@@ -15,6 +15,14 @@
   notify: configure docker
   tags: docker
 
+- name: configure media server upnp
+  set_fact:
+    upnp_forwards: "{{ upnp_forwards | combine(upnp_forwards_media_server, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure upnp
+  tags: upnp
+
 - name: setup cleanup downloads timer
   copy:
     content: |

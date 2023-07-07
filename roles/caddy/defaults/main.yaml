@@ -32,6 +32,10 @@ docker_caddy:
         - "{{ app_folder }}/filebrowser/filebrowser.db:/database.db"
       command: "-b /browser"
 
+upnp_forwards_caddy:
+  http: {from: 80, to: 80, proto: tcp}
+  https: {from: 443, to: 443, proto: tcp}
+
 caddy: {}
 
 caddy_defaults:

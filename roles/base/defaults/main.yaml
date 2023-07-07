@@ -26,6 +26,9 @@ sshd_config:
   UsePAM: 'yes'
   X11Forwarding: 'no'
 
+upnp_forwards_base:
+  ssh: {from: 22, to: 22, proto: tcp}
+
 grafana_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   38653432383430643265333737356334646332386438383133353439636630666334393130366430

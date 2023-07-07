@@ -31,6 +31,7 @@
     enabled: true
     state: "started"
     daemon_reload: true
+    no_block: true
   become: true
   with_items:
     - cleanup-downloads.timer

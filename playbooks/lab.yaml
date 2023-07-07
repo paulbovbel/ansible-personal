@@ -6,6 +6,7 @@
     - cockpit
     - caddy
     - sync
+    - upnp
     - media-server
 
 - hosts:

@@ -38,3 +38,11 @@
   loop: "{{ sshd_config | dict2items }}"
   become: true
   notify: reload sshd
+
+- name: configure ssh upnp
+  set_fact:
+    upnp_forwards: "{{ upnp_forwards | combine(upnp_forwards_base, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure upnp
+  tags: upnp
