@@ -143,7 +143,6 @@ docker_media_server:
         - "{{ downloads_folder }}:/downloads"
       ports:
         - 58846:58846
-        - 30034:30034
       environment:
         PUID: "{{ uid }}"
         PGID: "{{ gid }}"
@@ -153,8 +152,8 @@ docker_media_server:
         NAME_SERVERS: "8.8.8.8,8.8.4.4"
         DELUGE_DAEMON_LOG_LEVEL: info
         DELUGE_WEB_LOG_LEVEL: info
+        DELUGE_ENABLE_WEBUI_PASSWORD: no
         # DEBUG: "true"
-        ADDITIONAL_PORTS: 58846
         VPN_ENABLED: "no"
     flaresolverr:
       container_name: flaresolverr
