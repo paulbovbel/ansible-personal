@@ -1,7 +1,6 @@
 ---
 docker_sync:
   services:
-    # TODO (pbovbel) compare syncthing and resilio, for now run both
     syncthing:
       image: linuxserver/syncthing
       container_name: syncthing
@@ -21,24 +20,6 @@ docker_sync:
         TZ: America/Toronto
       x-systemd-requires:
         - storage.mount
-    resilio:
-      image: linuxserver/resilio-sync
-      container_name: resilio
-      networks:
-        - apps
-      ports:
-        - 55555:55555/tcp
-        - 55555:55555/udp
-      volumes:
-        - "{{ app_folder }}/resilio:/config"
-        - "{{ data_folder }}:/sync"
-      restart: "no"
-      environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
-        TZ: America/Toronto
-      x-systemd-requires:
-        - storage.mount
 
 caddy_sync:
   endpoints:
@@ -50,17 +31,8 @@ caddy_sync:
       port: 8384
       role: admin
       strip_prefix: true
-    resilio:
-      type: proxy
-      auth: oauth
-      path: /gui
-      host: resilio
-      port: 8888
-      role: admin
 
 upnp_forwards_sync:
   syncthing1: {from: 22000, to: 22000, proto: tcp}
   syncthing2: {from: 22000, to: 22000, proto: udp}
   syncthing3: {from: 21027, to: 21027, proto: udp}
-  resilio1: {from: 55555, to: 55555, proto: tcp}
-  resilio2: {from: 55555, to: 55555, proto: udp}
