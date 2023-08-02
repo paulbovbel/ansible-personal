@@ -52,5 +52,3 @@
     daemon_reload: true
     state: restarted
   become: true
-
-

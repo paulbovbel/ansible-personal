@@ -34,3 +34,6 @@ caddy_cockpit:
       host: "{{ ansible_default_ipv4.address }}"
       port: 9090
       role: admin
+
+plugin_docker_version: v2.0.3
+plugin_zfs_version: e4b4496d63260466045260a924d5d456aaf10bda

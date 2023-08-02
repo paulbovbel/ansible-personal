@@ -1,6 +1,4 @@
 ---
-# TODO(pbovbel) configure ppa:jonathonf/zfs
-
 - block:
   - name: install zfs
     apt:
@@ -9,6 +7,7 @@
         - zfsutils-linux
         - zfs-auto-snapshot
         - zfs-zed
+        - sendemail
       state: latest
       update_cache: true
       cache_valid_time: 3600
@@ -22,10 +21,18 @@
   - name: configure zed
     lineinfile:
       dest: /etc/zfs/zed.d/zed.rc
-      regexp: "ZED_EMAIL_ADDR"
-      line: "ZED_EMAIL_ADDR='{{ ansible_email }}'"
+      regexp: "^#?\\s*{{ item.key }}.*"
+      line: "{{ item.key }}='{{ item.value }}'"
     become: true
     notify: restart zed
+    loop:
+    - key: ZED_EMAIL_PROG
+      value: sendemail
+    - key: ZED_EMAIL_ADDR
+      value: paul@bovbel.com
+    - key: ZED_EMAIL_OPTS
+      value: -f @ADDRESS@ -t @ADDRESS@ -u "@SUBJECT@"
+
   when: zfs_pool is defined
 
 - block:
