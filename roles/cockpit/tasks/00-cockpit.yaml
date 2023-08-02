@@ -30,6 +30,42 @@
     enabled: true
   become: true
 
+- name: create service override dir
+  file:
+    path: /etc/systemd/system/cockpit.service.d
+    state: directory
+  become: true
+
+- name: override service
+  copy:
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/lib/cockpit/cockpit-tls --no-tls
+    dest: /etc/systemd/system/cockpit.service.d/override.conf
+  become: true
+  notify: restart cockpit
+
+- name: install docker plugin
+  unarchive:
+    src: "https://github.com/mrevjd/cockpit-docker/releases/download/{{ plugin_docker_version }}/cockpit-docker.tar.gz"
+    dest: /usr/share/cockpit
+    remote_src: true
+  become: true
+
+- name: download zfs plugin
+  unarchive:
+    src: "https://github.com/45Drives/cockpit-zfs-manager/tarball/{{ plugin_zfs_version}}"
+    dest: /tmp
+    remote_src: true
+
+- name: install zfs plugin
+  copy:
+    src: "/tmp/45Drives-cockpit-zfs-manager-{{ plugin_zfs_version[:7] }}/zfs"
+    dest: /usr/share/cockpit
+    remote_src: true
+  become: true
+
 - name: configure cockpit caddy
   set_fact:
     caddy: "{{ caddy | combine(caddy_cockpit, recursive=True, list_merge='append') }}"

@@ -2,6 +2,7 @@
 caddy_version: 2.6.4
 caddy_plugins:
   - github.com/greenpau/caddy-security@v1.1.18
+  - github.com/caddy-dns/route53@v1.3.3
 
 docker_caddy:
   services:
@@ -20,8 +21,9 @@ docker_caddy:
         - "{{ app_folder }}/caddy/data:/data"
         - "{{ app_folder }}/caddy/config:/config"
         - "{{ share_folder }}:/share:ro"
+        - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock
       environment:
-        TZ: America/Toronto  # TODO(pbovbel) not working https://github.com/caddyserver/caddy-docker/issues/58
+        TZ: America/Toronto
     filebrowser:
       image: filebrowser/filebrowser
       container_name: filebrowser
@@ -32,9 +34,10 @@ docker_caddy:
         - "{{ app_folder }}/filebrowser/filebrowser.db:/database.db"
       command: "-b /browser"
 
-upnp_forwards_caddy:
-  http: {from: 80, to: 80, proto: tcp}
-  https: {from: 443, to: 443, proto: tcp}
+# Disable port forwards. HTTP(S) should work over tailscale.
+upnp_forwards_caddy: {}
+  # http: {from: 80, to: 80, proto: tcp}
+  # https: {from: 443, to: 443, proto: tcp}
 
 caddy: {}
 

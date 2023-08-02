@@ -26,8 +26,9 @@ sshd_config:
   UsePAM: 'yes'
   X11Forwarding: 'no'
 
-upnp_forwards_base:
-  ssh: {from: 22, to: 22, proto: tcp}
+# Disable port forwards. SSH should work over tailscale or LAN.
+upnp_forwards_base: {}
+  # ssh: {from: 22, to: 22, proto: tcp}
 
 grafana_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256

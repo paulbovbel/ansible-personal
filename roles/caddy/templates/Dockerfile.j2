@@ -2,12 +2,12 @@ FROM caddy:{{ caddy_version }}-builder AS builder
 
 RUN xcaddy build \
 {% for plugin in caddy_plugins %}
-    --with {{ plugin }}
+    --with {{ plugin }} {{ '\\' if not loop.last }}
 {% endfor %}
-
 
 FROM caddy:{{ caddy_version }}
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 
+# see https://github.com/caddyserver/caddy-docker/issues/58
 RUN apk add --no-cache tzdata

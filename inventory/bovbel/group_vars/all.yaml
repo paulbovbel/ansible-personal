@@ -1,0 +1,3 @@
+tailscale_tailnet: bovbel.com
+ansible_user: pbovbel
+ansible_email: paul@bovbel.com

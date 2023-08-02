@@ -1,7 +1,8 @@
 ---
 - name: restart cockpit
-  service:
+  systemd:
     name: cockpit
     state: restarted
+    daemon_reload: true
     enabled: true
   become: true

@@ -15,7 +15,6 @@ jobs:
           - media.bovbel.com
           # - home.bovbel.com
 
-
     steps:
     - name: Cancel Previous Runs
       uses: styfle/cancel-workflow-action@0.9.0
@@ -25,6 +24,13 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Join tailnet
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+        oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+        tags: tag:server
+
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
       with:
@@ -32,46 +38,32 @@ jobs:
         name: id_rsa
         known_hosts: unnecessary
 
-    - name: Write secrets
-      shell: bash
-      env:
-        VAULT_PASS: ${{ secrets.VAULT_PASS }}
-      run: echo $VAULT_PASS >> vault_pass.txt
-
     - name: Setup Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-
-    - name: Cache pip
-      uses: actions/cache@v2
-      with:
-        path: ~/.cache/pip
-        key: ${{ hashFiles('requirements.txt') }}
+        cache: 'pip'
 
     - name: Install pip dependencies
-      run: |
-        python3 -m venv venv &&
-        venv/bin/pip install -r requirements.txt
+      run: pip install -r requirements.txt
 
     - name: Cache ansible
       uses: actions/cache@v2
       with:
-        path: |
-          ~/.ansible/collections
+        path: ~/.ansible/collections
         key: ${{ hashFiles('requirements.yaml') }}
 
     - name: Install ansible galaxy
       shell: bash
       env:
         VAULT_PASS : ${{ secrets.VAULT_PASS }}
-      run: |
-        venv/bin/ansible-galaxy install -r requirements.yaml
+      run:  ansible-galaxy install -r requirements.yaml
 
     - name: Run ansible
       shell: bash
       env:
         TARGET : ${{ matrix.target }}
+        VAULT_PASS : ${{ secrets.VAULT_PASS }}
       run: |
         ssh-keyscan -H $TARGET >> ~/.ssh/known_hosts &&
-        venv/bin/ansible-playbook -i inventory/bovbel --limit $TARGET playbooks/lab.yaml
+        ansible-playbook -i inventory/bovbel --limit $TARGET playbooks/lab.yaml --vault-password-file <(cat <<<"$VAULT_PASS")

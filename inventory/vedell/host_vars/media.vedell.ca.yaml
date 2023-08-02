@@ -83,8 +83,8 @@ docker_extras:
       volumes:
         - "{{ app_folder }}/ddclient:/config"
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
       x-systemd-requires:
         - mnt-app.mount

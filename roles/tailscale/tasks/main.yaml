@@ -1,0 +1,3 @@
+---
+- import_tasks: 00-tailscale.yaml
+  tags: tailscale
