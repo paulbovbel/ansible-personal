@@ -271,3 +271,5 @@ minecraft_users:
   - sufferingtree11
   - SushiBeyblade85
   - ur_hot
+
+tailscale_exit_node: true

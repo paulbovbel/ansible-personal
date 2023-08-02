@@ -11,3 +11,4 @@ tailscale_authkey: !vault |
 tailscale_auth_needed: false
 
 tailscale_tailnet: bovbel.com
+tailscale_exit_node: false

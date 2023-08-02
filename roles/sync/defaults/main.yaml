@@ -32,7 +32,8 @@ caddy_sync:
       role: admin
       strip_prefix: true
 
-upnp_forwards_sync:
-  syncthing1: {from: 22000, to: 22000, proto: tcp}
-  syncthing2: {from: 22000, to: 22000, proto: udp}
-  syncthing3: {from: 21027, to: 21027, proto: udp}
+# Disable port forwards. Sync should work over tailscale or LAN.
+upnp_forwards_sync: {}
+  # syncthing1: {from: 22000, to: 22000, proto: tcp}
+  # syncthing2: {from: 22000, to: 22000, proto: udp}
+  # syncthing3: {from: 21027, to: 21027, proto: udp}

@@ -30,7 +30,7 @@
 
   - set_fact:
       tailscale_auth_needed: true
-    when: _fields.BackendState == "NeedsLogin" or _fields.CurrentTailnet.Name != tailscale_tailnet
+    when: _fields.BackendState != "Running" or _fields.CurrentTailnet.Name != tailscale_tailnet
     vars:
       _fields: "{{ tailscale_status.stdout | from_json }}"
 
@@ -49,7 +49,7 @@
     when: tailscale_authkey is not defined
 
   - name: authorize machine
-    shell: "tailscale up --authkey {{ tailscale_authkey }}"
+    shell: "tailscale up --authkey {{ tailscale_authkey }} {{ '--advertise-exit-node' if tailscale_exit_node }}"
     become: true
 
 - set_fact:
