@@ -59,7 +59,6 @@ jobs:
       with:
         path: |
           ~/.ansible/collections
-          roles/stuvusit.smartd
         key: ${{ hashFiles('requirements.yaml') }}
 
     - name: Install ansible galaxy

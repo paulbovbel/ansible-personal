@@ -98,12 +98,35 @@
       become: true
   when: iscsi_host is defined
 
-- name: include smartd role
-  include_role:
-    name: stuvusit.smartd
-    apply:
-      become: true
-  vars:
-    smartd_default_mail_recipients:
-      - "{{ ansible_email }}"
-  when: ansible_virtualization_role != "guest"
+- name: install smartmontools
+  apt:
+    name:
+      - smartmontools
+      - sendemail
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: create smartd configuration
+  template:
+    src: smartd.conf.j2
+    dest: /etc/smartd.conf
+    validate: smartd -q onecheck -c %s
+  notify: restart smartd
+  become: true
+
+- name: configure custom email sender
+  template:
+    src: smartd_warning.sh.j2
+    dest: /usr/share/smartmontools/smartd_warning.sh
+    mode: 755
+  notify: restart smartd
+  become: true
+
+- name: enable smartd
+  service:
+    name: smartd
+    state: started
+    enabled: yes
+  become: true

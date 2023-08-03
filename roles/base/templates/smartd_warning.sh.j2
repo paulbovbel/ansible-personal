@@ -1,0 +1,18 @@
+#!/bin/bash
+
+read -r -d '' SMARTD_FULL << EOF
+Smartd error details:
+Host:                {{ ansible_fqdn }}
+Error type:          $SMARTD_FAILTYPE
+Device node:         $SMARTD_DEVICESTRING
+Date occurred:       $SMARTD_TFIRST
+------------------------------------------------------------------------------------------
+The following warning/error was logged by the smartd daemon:
+
+${SMARTD_MESSAGE-[SMARTD_MESSAGE]}
+Device info:
+${SMARTD_DEVICEINFO-[SMARTD_DEVICEINFO]}
+------------------------------------------------------------------------------------------
+EOF
+
+sendemail -f $SMARTD_ADDRESS -t $SMARTD_ADDRESS -u "$SMARTD_SUBJECT" -m "$SMARTD_FULL"

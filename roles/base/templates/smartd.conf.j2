@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+
+DEVICESCAN -n standby,15,q -S on -H -l error \
+ -l xerror \
+ -l selftest \
+ -l offlinests \
+ -l scterc,0,0 \
+ -e lookahead,on \
+ -s (L/../../6/01|S/../.././02) \
+ -m {{ ansible_email }} \
+ -M diminishing \
+ -f -p -C 197+ -U 198+ -W 10,45,50
