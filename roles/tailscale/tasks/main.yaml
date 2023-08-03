@@ -53,6 +53,8 @@
     become: true
 
 - set_fact:
-    tailscale_dns_suffix: _fields.MagicDNSSuffix
+    tailscale_dns_suffix: "{{ _fields.MagicDNSSuffix }}"
+    tailscale_dns_name: "{{ _fields.Self.DNSName }}"
+    tailscale_ip: "{{ _fields.TailscaleIPs[0] }}"
   vars:
     _fields: "{{ tailscale_status.stdout | from_json }}"

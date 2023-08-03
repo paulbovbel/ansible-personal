@@ -1,3 +1,2 @@
 ---
-- import_tasks: 00-alias.yaml
-  when: aws_ddns
+- import_tasks: 00-ddns.yaml

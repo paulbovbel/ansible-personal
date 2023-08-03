@@ -1,7 +1,9 @@
 ---
 collections:
   - name: community.general
-    version: 7.1.0
+    version: 7.2.1
+  - name: amazon.aws
+    version: 6.2.0
 roles:
   - src: stuvusit.smartd
     version: 3bc09cc981507b39e4773b15e11cd8812508f96b
