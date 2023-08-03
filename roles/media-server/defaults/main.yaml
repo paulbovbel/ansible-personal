@@ -15,8 +15,8 @@ docker_media_server:
       tmpfs:
         - "/transcode"
       environment:
-        PLEX_UID: "{{ uid }}"
-        PLEX_GID: "{{ gid }}"
+        PLEX_UID: "{{ ansible_user_uid }}"
+        PLEX_GID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
         ADVERTISE_IP: "http://{{ ansible_default_ipv4.address }}:32400/"
       devices:
@@ -34,8 +34,8 @@ docker_media_server:
         - "{{ app_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
       restart: "no"
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
     sonarr:
       image: linuxserver/sonarr:latest
@@ -51,8 +51,8 @@ docker_media_server:
         - "{{ downloads_folder }}:/downloads"
       restart: "no"
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
     radarr:
       image: linuxserver/radarr
@@ -68,8 +68,8 @@ docker_media_server:
         - "{{ downloads_folder }}:/downloads"
       restart: "no"
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
     bazarr:
       container_name: bazarr
@@ -77,8 +77,8 @@ docker_media_server:
       networks:
         - apps
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
       volumes:
         - "{{ app_folder }}/bazarr:/config"
@@ -91,8 +91,8 @@ docker_media_server:
       networks:
         - apps
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
       volumes:
         - "{{ app_folder }}/readarr:/config"
@@ -105,8 +105,8 @@ docker_media_server:
       networks:
         - apps
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
       volumes:
         - "{{ app_folder }}/mylar3:/config"
@@ -124,8 +124,8 @@ docker_media_server:
         - "{{ app_folder }}/jackett:/config"
       restart: "no"
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
     deluge:
       container_name: deluge
@@ -144,8 +144,8 @@ docker_media_server:
       ports:
         - 58846:58846
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
         STRICT_PORT_FORWARD: "yes"
         LAN_NETWORK: "{{ lan_network }}"
@@ -161,8 +161,8 @@ docker_media_server:
       networks:
         - apps
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
         CAPTCHA_SOLVER: 'none'
       restart: "no"

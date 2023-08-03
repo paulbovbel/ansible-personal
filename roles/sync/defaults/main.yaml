@@ -15,8 +15,8 @@ docker_sync:
         - "{{ data_folder }}:/sync"
       restart: "no"
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
       x-systemd-requires:
         - storage.mount

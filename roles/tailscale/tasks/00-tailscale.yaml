@@ -1,0 +1,74 @@
+---
+- name: add tailscale apt key
+  apt_key:
+    url: https://pkgs.tailscale.com/stable/ubuntu/jammy.gpg
+    keyring: /etc/apt/trusted.gpg.d/tailscale.gpg
+    state: present
+  become: true
+
+- name: add tailscale apt repo
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/trusted.gpg.d/tailscale.gpg] https://pkgs.tailscale.com/stable/ubuntu {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: true
+  become: true
+
+- name: install tailscale agent
+  apt:
+    name:
+      - tailscale
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: allow caddy access to tailscale agent
+  lineinfile:
+    dest: /etc/default/tailscaled
+    regexp: '^TS_PERMIT_CERT_UID=.*$'
+    line: 'TS_PERMIT_CERT_UID=caddy'
+  become: true
+  notify:
+    - restart tailscale
+
+- name: check authentication status
+  block:
+  - register: tailscale_status
+    changed_when: false
+    shell: tailscale status --json
+
+  - set_fact:
+      tailscale_auth_needed: true
+    when: _fields.BackendState != "Running" or _fields.CurrentTailnet.Name != tailscale_tailnet
+    vars:
+      _fields: "{{ tailscale_status.stdout | from_json }}"
+
+- name: authenticate if needed
+  when: tailscale_auth_needed
+  block:
+  - name: get authorization key
+    register: tailscale_authkey_input
+    pause:
+      prompt: "Enter Tailscale authorization key"
+      echo: yes
+    when: tailscale_authkey is not defined
+
+  - set_fact:
+      tailscale_authkey: "{{ tailscale_authkey_input.user_input }}"
+    when: tailscale_authkey is not defined
+
+  - name: authorize machine
+    shell: "tailscale up --authkey {{ tailscale_authkey }} {{ '--advertise-exit-node' if tailscale_exit_node }}"
+    become: true
+
+- register: tailscale_status
+  changed_when: false
+  shell: tailscale status --json
+  tags: always
+
+- set_fact:
+    tailscale_hostname: "{{ _fields.Self.HostName }}.{{ _fields.MagicDNSSuffix }}"
+    tailscale_ip: "{{ _fields.TailscaleIPs[0] }}"
+  vars:
+    _fields: "{{ tailscale_status.stdout | from_json }}"
+  tags: always

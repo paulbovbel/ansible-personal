@@ -7,8 +7,8 @@ docker_cockpit:
       networks:
         - apps
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
       volumes:
         - "{{ app_folder }}/smokeping/config:/config"

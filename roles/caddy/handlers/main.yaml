@@ -1,6 +1,8 @@
 ---
 - name: restart caddy
-  shell: sudo systemctl restart caddy
+  service:
+    name: caddy
+    state: restarted
   become: true
 
 - name: restart fail2ban

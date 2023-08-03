@@ -43,8 +43,8 @@ docker_extras:
         - "{{ app_folder }}/unifi:/config"
       restart: "no"
       environment:
-        PUID: "{{ uid }}"
-        PGID: "{{ gid }}"
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
     deluge:
       environment:
@@ -66,8 +66,8 @@ docker_extras:
     #   ports:
     #     - 8096:8096
     #   environment:
-    #     PUID: "{{ uid }}"
-    #     PGID: "{{ gid }}"
+    #     PUID: "{{ ansible_user_uid }}"
+    #     PGID: "{{ ansible_user_gid }}"
     #     TZ: America/Toronto
     #   volumes:
     #     - "{{ app_folder }}/jellyfin:/config"
@@ -95,8 +95,8 @@ docker_extras:
     #   volumes:
     #     - "{{ app_folder }}/minecraft:/data"
     #   environment:
-    #     UID: "{{ uid }}"
-    #     GID: "{{ gid }}"
+    #     UID: "{{ ansible_user_uid }}"
+    #     GID: "{{ ansible_user_gid }}"
     #     EULA: "TRUE"
     #     MAX_MEMORY: "16G"
     #     ENABLE_AUTOPAUSE: "TRUE"
@@ -187,8 +187,8 @@ docker_extras:
     #     - 2457:2457/udp
     #     - 2458:2458/udp
     #   environment:
-    #     PUID: "{{ uid }}"
-    #     PGID: "{{ gid }}"
+    #     PUID: "{{ ansible_user_uid }}"
+    #     PGID: "{{ ansible_user_gid }}"
     #     TZ: America/Toronto
     #     PORT: 2456
     #     NAME: "valheim.bovbel.com"

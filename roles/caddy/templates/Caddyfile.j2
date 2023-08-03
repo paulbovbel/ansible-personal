@@ -30,7 +30,7 @@
 
 {% for role in caddy.roles %}
 		authorization policy {{ role }} {
-			set auth url https://{{ inventory_hostname }}/auth/oauth2/google
+			set auth url /auth/oauth2/google
 			crypto key verify {{ caddy.token_secret }}
 			allow roles auth/{{ role }}
 			validate bearer header
@@ -41,7 +41,7 @@
 	}
 }
 
-127.0.0.1, localhost, {{ inventory_hostname }} {
+127.0.0.1, localhost, {{ tailscale_ip }}, {{ tailscale_hostname }}, {{ inventory_hostname }} {
   log {
       level ERROR
       format console {

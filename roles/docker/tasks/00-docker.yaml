@@ -43,22 +43,6 @@
     - "{{ ansible_user }}"
     - grafana-agent
 
-- name: determine uid
-  command: "id -u {{ ansible_user }}"
-  register: uid
-  tags: docker
-
-- name: determine gid
-  command: "id -g {{ ansible_user }}"
-  register: gid
-  tags: docker
-
-- name: bind uid and gid to variables
-  set_fact:
-    uid: "{{ uid.stdout }}"
-    gid: "{{ gid.stdout }}"
-  tags: docker
-
 - name: increase number of watches
   sysctl:
     name: fs.inotify.max_user_watches

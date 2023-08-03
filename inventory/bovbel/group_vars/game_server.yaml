@@ -15,8 +15,8 @@ docker_extras:
     #   volumes:
     #     - "{{ app_folder }}/minecraft:/data"
     #   environment:
-    #     UID: "{{ uid }}"
-    #     GID: "{{ gid }}"
+    #     UID: "{{ ansible_user_uid }}"
+    #     GID: "{{ ansible_user_gid }}"
     #     EULA: "TRUE"
     #     MAX_MEMORY: "16G"
     #     ENABLE_AUTOPAUSE: "TRUE"
@@ -57,8 +57,8 @@ docker_extras:
     #     - 2457:2457/udp
     #     - 2458:2458/udp
     #   environment:
-    #     PUID: "{{ uid }}"
-    #     PGID: "{{ gid }}"
+    #     PUID: "{{ ansible_user_uid }}"
+    #     PGID: "{{ ansible_user_gid }}"
     #     TZ: America/Toronto
     #     PORT: 2456
     #     NAME: "valheim.bovbel.com"

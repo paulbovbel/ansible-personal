@@ -1,0 +1,45 @@
+---
+- name: configure ddns services
+  set_fact:
+    docker: "{{ docker | combine(docker_aws_ddns, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker
+  when: aws_ddns is true
+
+- name: install boto3
+  apt:
+    name: python3-boto3
+    state: latest
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: "configure {{ inventory_hostname }} to point to tailnet"
+  amazon.aws.route53:
+    state: present
+    zone: bovbel.com
+    record: "{{ inventory_hostname }}"
+    type: "A"
+    value: "{{ tailscale_ip }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
+    overwrite: true
+  tags: ddns
+  when: aws_tailscale is true
+
+- name: "alias against {{ inventory_hostname }}"
+  amazon.aws.route53:
+    state: present
+    zone: bovbel.com
+    record: "{{ item }}"
+    type: "A"
+    value: "{{ inventory_hostname }}"
+    alias: true
+    alias_hosted_zone_id: "{{ aws_hosted_zone }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
+    overwrite: true
+  with_items: "{{ aws_alias_domains }}"
+  tags: ddns

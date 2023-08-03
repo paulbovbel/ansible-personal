@@ -1,5 +1,5 @@
 [WebService]
-Origins = https://{{ inventory_hostname }} wss://{{ inventory_hostname }}
+Origins = https://{{ inventory_hostname }} wss://{{ inventory_hostname }} https://{{ tailscale_hostname }} wss://{{ tailscale_hostname }}
 ProtocolHeader = X-Forwarded-Proto
 UrlRoot=/dashboard
 AllowUnencrypted = true
