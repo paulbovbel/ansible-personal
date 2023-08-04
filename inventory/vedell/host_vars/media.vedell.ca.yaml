@@ -61,8 +61,6 @@ share_folder: "{{ data_folder }}"
 iscsi_host: 192.168.50.203
 iscsi_lun: lun-1
 
-media_server: true
-
 nfs_host: 192.168.50.203
 nfs_mounts:
   - mount: "{{ movies_folder }}"
