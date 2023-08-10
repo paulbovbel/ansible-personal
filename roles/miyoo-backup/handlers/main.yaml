@@ -1,0 +1,11 @@
+---
+- name: enable miyoo backup
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: "started"
+    daemon_reload: true
+  become: true
+  with_items:
+    - miyoo-backup.timer
+    - miyoo-backup.service

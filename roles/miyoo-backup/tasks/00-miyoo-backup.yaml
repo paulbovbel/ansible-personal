@@ -1,0 +1,35 @@
+---
+- name: setup miyoo-backup timer
+  copy:
+    content: |
+      [Unit]
+      Description=Miyoo Backup
+
+      [Timer]
+      OnUnitInactiveSec=1day
+
+      [Install]
+      WantedBy=timers.target
+    dest: /etc/systemd/system/miyoo-backup.timer
+  become: true
+  notify: enable miyoo backup
+
+- name: setup miyoo-backup service
+  copy:
+    content: |
+      [Unit]
+      Description=Miyoo Backup
+
+      [Service]
+      Type=oneshot
+      {% for dir in backup_dirs %}
+      ExecStart=/usr/bin/wget -r -nH -nv ftp://{{ miyoo_ip }}/{{ dir }}
+      {% endfor %}
+      WorkingDirectory={{ backup_folder }}/miyoo
+      User={{ ansible_user }}
+      Restart=on-failure
+      RestartSec=10m
+
+    dest: /etc/systemd/system/miyoo-backup.service
+  become: true
+  notify: enable miyoo backup

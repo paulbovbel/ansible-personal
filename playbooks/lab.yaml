@@ -8,6 +8,7 @@
     - sync
     - upnp
     - media-server
+    - miyoo-backup
 
 - hosts:
     - server
