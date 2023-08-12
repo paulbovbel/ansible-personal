@@ -1,53 +1,60 @@
 {
   email {{ ansible_email }}
 
-	security {
-		oauth identity provider google {
-			realm google
-			driver google
-			client_id {{ google_oauth2_client_id }}
-			client_secret {{ google_oauth2_client_secret }}
-			scopes openid email profile
-		}
+  security {
+    oauth identity provider google {
+      realm google
+      driver google
+      client_id {{ google_oauth2_client_id }}
+      client_secret {{ google_oauth2_client_secret }}
+      scopes openid email profile
+    }
 
-		authentication portal defaultportal {
-			crypto default token lifetime 3600
-			crypto key sign-verify {{ caddy.token_secret }}
-			enable identity provider google
-			cookie domain bovbel.com
+    authentication portal defaultportal {
+      crypto default token lifetime 3600
+      crypto key sign-verify {{ caddy.token_secret }}
+      enable identity provider google
+      cookie domain bovbel.com
 
 {% for user in caddy.users %}
-			transform user {
-				match realm google
-				match email {{ user.email }}
+      transform user {
+        match realm google
+        match email {{ user.email }}
   {% for role in user.roles %}
-				action add role auth/{{ role }}
+        action add role auth/{{ role }}
   {% endfor %}
-			}
+      }
 {% endfor %}
 
     }
 
 {% for role in caddy.roles %}
-		authorization policy {{ role }} {
-			set auth url /auth/oauth2/google
-			crypto key verify {{ caddy.token_secret }}
-			allow roles auth/{{ role }}
-			validate bearer header
-			inject headers with claims
+    authorization policy {{ role }} {
+      set auth url /auth/oauth2/google
+      crypto key verify {{ caddy.token_secret }}
+      allow roles auth/{{ role }}
+      validate bearer header
+      inject headers with claims
       enable js redirect
-		}
+    }
 {% endfor %}
-	}
+  }
 }
 
-127.0.0.1, localhost, {{ tailscale.TailscaleIPs[0] }}, {{ ansible_hostname }}.{{ tailscale.MagicDNSSuffix }}, {{ inventory_hostname }} {
+{{ ansible_hostname }}.{{ tailscale.MagicDNSSuffix }}, {{ inventory_hostname }} {
   log {
       level ERROR
       format console {
         time_format wall
       }
       output file /data/log/error.log
+  }
+
+  tls {
+    dns route53 {
+      access_key_id "{{ aws_access_key_id }}"
+      secret_access_key "{{ aws_secret_access_key }}"
+    }
   }
 
   route / {
