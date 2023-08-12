@@ -1,5 +1,6 @@
 #!/bin/bash
 
+SMARTD_SUBJECT="$hostname: SMART error $SMARTD_FAILTYPE detected on $SMARTD_DEVICESTRING"
 read -r -d '' SMARTD_FULL << EOF
 Smartd error details:
 Host:                {{ ansible_fqdn }}
