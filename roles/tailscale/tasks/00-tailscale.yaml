@@ -23,15 +23,6 @@
     cache_valid_time: 3600
   become: true
 
-- name: allow caddy access to tailscale agent
-  lineinfile:
-    dest: /etc/default/tailscaled
-    regexp: '^TS_PERMIT_CERT_UID=.*$'
-    line: 'TS_PERMIT_CERT_UID=caddy'
-  become: true
-  notify:
-    - restart tailscale
-
 - name: start tailscale
   systemd:
     name: tailscaled
@@ -48,3 +39,11 @@
   - name: re-gather tailscale facts
     setup:
   when: tailscale is not defined or tailscale.BackendState != "Running" or tailscale.CurrentTailnet.Name != tailscale_tailnet
+
+- name: configure tailscale upnp
+  set_fact:
+    upnp_forwards: "{{ upnp_forwards | combine(upnp_forwards_tailscale, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure upnp
+  tags: upnp

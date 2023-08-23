@@ -77,3 +77,12 @@
   changed_when: true
   notify: configure upnp
   tags: upnp
+
+- name: allow caddy access to tailscale agent
+  lineinfile:
+    dest: /etc/default/tailscaled
+    regexp: '^TS_PERMIT_CERT_UID=.*$'
+    line: 'TS_PERMIT_CERT_UID=caddy'
+  become: true
+  notify:
+    - restart tailscale

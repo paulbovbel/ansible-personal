@@ -10,3 +10,6 @@ tailscale_authkey: !vault |
 
 tailscale_tailnet: bovbel.com
 tailscale_exit_node: false
+
+upnp_forwards_tailscale:
+  tailscale: {from: 41641, to: 41641, proto: udp}
