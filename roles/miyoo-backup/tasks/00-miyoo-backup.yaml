@@ -1,4 +1,11 @@
 ---
+- name: copy miyoo-backup script
+  template:
+    src: miyoo-backup.j2
+    dest: /usr/local/bin/miyoo-backup
+    mode: 0777
+  become: true
+
 - name: setup miyoo-backup timer
   copy:
     content: |
@@ -21,14 +28,11 @@
       Description=Miyoo Backup
 
       [Service]
-      Type=oneshot
-      {% for dir in backup_dirs %}
-      ExecStart=/usr/bin/wget -r -nH -nv ftp://{{ miyoo_ip }}/{{ dir }}
-      {% endfor %}
+      Type=exec
+      ExecStart=/usr/local/bin/miyoo-backup
       WorkingDirectory={{ backup_folder }}/miyoo
       User={{ ansible_user }}
       Restart=on-failure
-      RestartSec=10m
 
     dest: /etc/systemd/system/miyoo-backup.service
   become: true

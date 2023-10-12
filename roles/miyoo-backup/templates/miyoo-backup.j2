@@ -1,0 +1,13 @@
+#!/bin/bash
+set -o errexit   # abort on nonzero exitstatus
+set -o nounset   # abort on unbound variable
+set -o pipefail  # don't hide errors within pipes
+
+until ping -c 1 {{ miyoo_ip }} &> /dev/null; do sleep 30; done
+
+cd {{ backup_folder }}/miyoo
+
+{% for dir in backup_dirs %}
+echo "Syncing {{ miyoo_ip }}/{{ dir }}"
+/usr/bin/wget -r -nH -nv ftp://{{ miyoo_ip }}/{{ dir }}
+{% endfor %}
