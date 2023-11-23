@@ -9,6 +9,7 @@ share_folder: "{{ media_folder }}"
 movies_folder: "{{ media_folder }}/movies"
 tv_folder: "{{ media_folder }}/tv"
 books_folder: "{{ media_folder }}/books"
+audiobooks_folder: "{{ media_folder }}/audiobooks"
 comics_folder: "{{ media_folder }}/comics"
 
 zfs_pool: storage

@@ -36,3 +36,14 @@
   with_items:
     - cleanup-downloads.timer
     - cleanup-downloads.service
+
+- name: enable myanonamouse
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    state: "started"
+    daemon_reload: true
+  become: true
+  with_items:
+    - myanonamouse.timer
+    - myanonamouse.service

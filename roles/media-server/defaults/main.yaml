@@ -70,6 +70,26 @@ docker_media_server:
         PUID: "{{ ansible_user_uid }}"
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
+        TZ: America/Toronto
+    readarr:
+      image: linuxserver/readarr:nightly
+      container_name: readarr
+      networks:
+        - apps
+      depends_on:
+        - jackett
+        - calibre
+      volumes:
+        - /etc/localtime:/etc/localtime:ro
+        - "{{ app_folder }}/readarr:/config"
+        - "{{ downloads_folder }}:/downloads"
+        - "{{ books_folder }}:/books"
+        - "{{ audiobooks_folder }}:/audiobooks"
+      restart: "no"
+      environment:
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
+        TZ: America/Toronto
     bazarr:
       container_name: bazarr
       image: linuxserver/bazarr
@@ -83,20 +103,6 @@ docker_media_server:
         - "{{ app_folder }}/bazarr:/config"
         - "{{ tv_folder }}:/tv"
         - "{{ movies_folder }}:/movies"
-      restart: "no"
-    readarr:
-      image: linuxserver/readarr:nightly
-      container_name: readarr
-      networks:
-        - apps
-      environment:
-        PUID: "{{ ansible_user_uid }}"
-        PGID: "{{ ansible_user_gid }}"
-        TZ: America/Toronto
-      volumes:
-        - "{{ app_folder }}/readarr:/config"
-        - "{{ books_folder }}:/books"
-        - "{{ downloads_folder }}:/downloads"
       restart: "no"
     mylar3:
       image: linuxserver/mylar3
@@ -151,8 +157,7 @@ docker_media_server:
         NAME_SERVERS: "8.8.8.8,8.8.4.4"
         DELUGE_DAEMON_LOG_LEVEL: info
         DELUGE_WEB_LOG_LEVEL: info
-        DELUGE_ENABLE_WEBUI_PASSWORD: no
-        # DEBUG: "true"
+        DELUGE_ENABLE_WEBUI_PASSWORD: "no"
         VPN_ENABLED: "no"
     flaresolverr:
       container_name: flaresolverr
@@ -177,6 +182,14 @@ caddy_media_server:
       path: /radarr
       host: radarr
       port: 7878
+      role: admin
+
+    readarr:
+      type: proxy
+      auth: oauth
+      path: /readarr
+      host: readarr
+      port: 8787
       role: admin
 
     sonarr:

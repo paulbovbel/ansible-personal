@@ -52,6 +52,39 @@
   become: true
   notify: enable cleanup-downloads
 
+- name: setup myanonamouse timer
+  copy:
+    content: |
+      [Unit]
+      Description=Update myanonamouse
+
+      [Timer]
+      OnCalendar=hourly
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    dest: /etc/systemd/system/myanonamouse.timer
+  become: true
+  notify: enable myanonamouse
+
+# TODO(pbovbel) Update VPN IP with tracker. Ideally need a way to run this after container interface wg0 comes up, maybe hack the supervisord config in the container?
+- name: setup myanonamouse service
+  copy:
+    content: |
+      [Unit]
+      Description=Update myanonamouse
+
+      [Service]
+      Type=exec
+      ExecStart=/bin/bash -c "docker exec deluge curl --interface wg0 -c /config/mam.cookies -b /config/mam.cookies https://t.myanonamouse.net/json/dynamicSeedbox.php"
+      User={{ ansible_user }}
+      Restart=no
+
+    dest: /etc/systemd/system/myanonamouse.service
+  become: true
+  notify: enable myanonamouse
+
 # - name: configure jackett basepath
 #   replace:
 #     path: "{{ app_folder }}/jackett/Jackett/ServerConfig.json"
