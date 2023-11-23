@@ -179,75 +179,86 @@ caddy_media_server:
     radarr:
       type: proxy
       auth: oauth
+      role: admin
       path: /radarr
       host: radarr
       port: 7878
-      role: admin
 
     readarr:
       type: proxy
       auth: oauth
+      role: admin
       path: /readarr
       host: readarr
       port: 8787
-      role: admin
 
     sonarr:
       type: proxy
       auth: oauth
+      role: admin
       path: /sonarr
       host: sonarr
       port: 8989
-      role: admin
 
     bazarr:
       type: proxy
       auth: oauth
+      role: admin
       path: /bazarr
       host: bazarr
       port: 6767
-      role: admin
 
     readarr:
       type: proxy
       auth: oauth
+      role: admin
       path: /readarr
       host: readarr
       port: 8787
-      role: admin
 
     mylar3:
       type: proxy
       auth: oauth
+      role: admin
       path: /mylar
       host: mylar3
       port: 8090
-      role: admin
 
     tautulli:
       type: proxy
       auth: oauth
+      role: admin
       path: /tautulli
       host: tautulli
       port: 8181
-      role: admin
 
     jackett:
       type: proxy
       auth: oauth
+      role: admin
       path: /jackett
       host: jackett
       port: 9117
-      role: admin
 
     deluge:
       type: proxy
-      auth: basic
-      user: "{{ web_user }}"
-      password: "{{ web_password }}"
+      auth: oauth
+      role: admin
       path: /deluge
       host: deluge
       port: 8112
       strip_prefix: true
       header_up:
         - X-Deluge-Base "/deluge"
+
+    deluge-basic:
+      type: proxy
+      auth: basic
+      user: "{{ web_user }}"
+      password: "{{ web_password }}"
+      path: /deluge-basic
+      host: deluge
+      port: 8112
+      strip_prefix: true
+      header_up:
+        - X-Deluge-Base "/deluge-basic"
