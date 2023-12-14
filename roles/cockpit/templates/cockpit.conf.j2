@@ -1,5 +1,5 @@
 [WebService]
 Origins = https://{{ inventory_hostname }} wss://{{ inventory_hostname }} https://{{ ansible_hostname }}.{{ tailscale.MagicDNSSuffix }} wss://{{ ansible_hostname }}.{{ tailscale.MagicDNSSuffix }}
 ProtocolHeader = X-Forwarded-Proto
-UrlRoot=/dashboard
+UrlRoot=/cockpit
 AllowUnencrypted = true

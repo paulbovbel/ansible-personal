@@ -66,6 +66,7 @@
       WantedBy=timers.target
     dest: /etc/systemd/system/myanonamouse.timer
   become: true
+  when: mam_id is defined
   notify: enable myanonamouse
 
 # TODO(pbovbel) Update VPN IP with tracker. Ideally need a way to run this after container interface wg0 comes up, maybe hack the supervisord config in the container?
@@ -83,6 +84,7 @@
 
     dest: /etc/systemd/system/myanonamouse.service
   become: true
+  when: mam_id is defined
   notify: enable myanonamouse
 
 # - name: configure jackett basepath

@@ -19,7 +19,7 @@ caddy_cockpit:
   redirect: /dashboard/
 
   endpoints:
-    smokeping:
+    cockpit:
       type: proxy
       auth: oauth
       path: /smokeping
@@ -27,10 +27,12 @@ caddy_cockpit:
       port: 80
       role: admin
 
-    dashboard:
+    cockpit:
       type: proxy
       auth: oauth
-      path: /dashboard
+      # bypass internal login by passing down basic auth headers
+      spoof_basic: true
+      path: /cockpit
       host: "{{ ansible_default_ipv4.address }}"
       port: 9090
       role: admin

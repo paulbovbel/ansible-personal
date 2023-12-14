@@ -97,6 +97,9 @@
     {% for header in endpoint.header_up | default ([]) %}
       header_up {{ header }}
     {% endfor %}
+    {% if endpoint.spoof_basic | default(false) %}
+      header_up +Authorization "Basic {{ (web_user + ":" + web_password) | b64encode }}"
+    {% endif %}
     }
 
   {% elif endpoint.type == "share" %}
