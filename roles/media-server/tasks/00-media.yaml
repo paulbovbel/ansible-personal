@@ -77,7 +77,7 @@
 
       [Service]
       Type=exec
-      ExecStart=/bin/bash -c "docker exec deluge curl --interface wg0 -c /config/mam.cookies -b /config/mam.cookies https://t.myanonamouse.net/json/dynamicSeedbox.php"
+      ExecStart=/bin/bash -c "docker exec deluge curl --interface wg0 -b 'mam_id={{ mam_id }}' https://t.myanonamouse.net/json/dynamicSeedbox.php"
       User={{ ansible_user }}
       Restart=no
 
