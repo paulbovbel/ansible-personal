@@ -19,7 +19,7 @@ caddy_cockpit:
   redirect: /dashboard/
 
   endpoints:
-    cockpit:
+    smokeping:
       type: proxy
       auth: oauth
       path: /smokeping
