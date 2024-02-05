@@ -1,4 +1,10 @@
 ---
+- name: include upnp extras
+  set_fact:
+    upnp_forwards: "{{ upnp_forwards | combine(upnp_forwards_extras, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+
 - name: setup upnp update timer
   copy:
     content: |

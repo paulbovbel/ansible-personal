@@ -23,7 +23,7 @@
   #   dependencies: false
   #   remove_orphans: true
   become: true
-  no_log: true
+  no_log: "{{ docker_no_log }}"
 
 - name: prune docker images
   shell: |
@@ -51,7 +51,7 @@
     src: container.service.j2
     dest: "{{ docker_systemd_dir }}/{{ service.key }}.service"
   become: true
-  no_log: true
+  no_log: "{{ docker_no_log }}"
   loop: "{{ docker.services | dict2items }}"
   loop_control:
     loop_var: service
@@ -71,7 +71,7 @@
   #   enabled: true
   #   state: started
   become: true
-  no_log: true
+  no_log: "{{ docker_no_log }}"
   loop: "{{ docker.services | dict2items }}"
   loop_control:
     loop_var: service

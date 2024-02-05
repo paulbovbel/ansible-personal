@@ -1,5 +1,7 @@
 docker: {}
 
+docker_no_log: true
+
 docker_defaults:
   version: '3.7'
   networks:

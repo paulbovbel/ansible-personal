@@ -74,7 +74,54 @@ docker_extras:
       x-systemd-requires: ['storage.mount']
     jackett:
       x-systemd-requires: ['storage.mount']
+    enshrouded:
+      image: mbround18/enshrouded-docker:latest
+      container_name: enshrouded
+      networks:
+        - apps
+      environment:
+        SERVER_NAME: "{{ inventory_hostname }}"
+        PASSWORD: "{{ enshrouded_server_password }}"
+      ports:
+        - "15636:15636/udp"
+        - "15636:15636/tcp"
+        - "15637:15637/udp"
+        - "15637:15637/tcp"
+      volumes:
+        - "{{ app_folder }}/enshrouded:/home/steam/enshrouded"
+      restart: "no"
+      x-systemd-requires: ['storage.mount']
+    enshrouded-backups:
+      image: mbround18/backup-cron:latest
+      container_name: enshrouded-backups
+      networks:
+        - apps
+      environment:
+        SCHEDULE: "*/15 * * * *"
+        INPUT_FOLDER: /home/steam/enshrouded/savegame
+        OUTPUT_FOLDER: /home/steam/backups
+        OUTPUT_USER: "{{ ansible_user_uid }}"
+        OUTPUT_GROUP: "{{ ansible_user_gid }}"
+        RETAIN_N_DAYS: 5
+      volumes:
+        - "{{ app_folder }}/enshrouded:/home/steam/enshrouded"
+        - "{{ backup_folder }}/enshrouded:/home/steam/backups"
+      restart: "no"
+      x-systemd-requires: ['storage.mount']
 
+upnp_forwards_extras:
+  enshrouded1: {from: 15636, to: 15636, proto: tcp}
+  enshrouded2: {from: 15636, to: 15636, proto: udp}
+  enshrouded3: {from: 15637, to: 15637, proto: tcp}
+  enshrouded4: {from: 15637, to: 15637, proto: udp}
+
+enshrouded_server_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  35623830653934623634353863353134386531613638316633353233663861376265653835343265
+  3965663735653263346137393931366239363930333564650a383764383564633761666531396630
+  62336134363635623765353266323732346261356437363835663662373232303264346464633964
+  3637396338643166390a636633613930386338623335616635393636366666356338633530626364
+  3563
 
 caddy_extras:
   users:
