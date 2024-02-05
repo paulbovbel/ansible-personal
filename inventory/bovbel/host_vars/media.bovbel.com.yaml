@@ -15,10 +15,9 @@ comics_folder: "{{ media_folder }}/comics"
 zfs_pool: storage
 
 # TODO(pbovbel) expose RDP over tailnet, and game server over WAN
-# aws_alias_domains:
-#   - tower.bovbel.com
-#   - cs.bovbel.com
-#   - tf2.bovbel.com
+aws_alias_domains:
+  - tower.bovbel.com
+  - homeassistant.bovbel.com
 
 docker_extras:
   services:
@@ -27,7 +26,7 @@ docker_extras:
         - "{{ media_folder }}:/mnt/storage/share:ro"
       x-systemd-requires: ['storage.mount']
     unifi:
-      image: linuxserver/unifi-controller
+      image: lscr.io/linuxserver/unifi-controller:latest
       container_name: unifi
       network_mode: host
       volumes:
@@ -49,24 +48,24 @@ docker_extras:
         # https://github.com/binhex/arch-delugevpn/issues/139
         - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
       x-systemd-requires: ['storage.mount']
-    # jellyfin:
-    #   image: linuxserver/jellyfin
-    #   container_name: jellyfin
-    #   networks:
-    #     - apps
-    #   ports:
-    #     - 8096:8096
-    #   environment:
-    #     PUID: "{{ ansible_user_uid }}"
-    #     PGID: "{{ ansible_user_gid }}"
-    #     TZ: America/Toronto
-    #   volumes:
-    #     - "{{ app_folder }}/jellyfin:/config"
-    #     - "{{ media_folder }}:/data:ro"
-    #   devices:
-    #     - /dev/dri:/dev/dri
-    #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
+    jellyfin:
+      image: lscr.io/linuxserver/jellyfin:latest
+      container_name: jellyfin
+      networks:
+        - apps
+      ports:
+        - 8096:8096
+      environment:
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
+        TZ: America/Toronto
+      volumes:
+        - "{{ app_folder }}/jellyfin:/config"
+        - "{{ media_folder }}:/data:ro"
+      devices:
+        - /dev/dri:/dev/dri
+      restart: "no"
+      x-systemd-requires: ['storage.mount']
     tautulli:
       x-systemd-requires: ['storage.mount']
     sonarr:
@@ -76,131 +75,6 @@ docker_extras:
     jackett:
       x-systemd-requires: ['storage.mount']
 
-    # minecraft:
-    #   image: itzg/minecraft-server
-    #   container_name: minecraft
-    #   networks:
-    #     - apps
-    #   ports:
-    #     - "25565:25565"
-    #   volumes:
-    #     - "{{ app_folder }}/minecraft:/data"
-    #   environment:
-    #     UID: "{{ ansible_user_uid }}"
-    #     GID: "{{ ansible_user_gid }}"
-    #     EULA: "TRUE"
-    #     MAX_MEMORY: "16G"
-    #     ENABLE_AUTOPAUSE: "TRUE"
-    #     WHITELIST: "{{ minecraft_users | join(',') }}"
-    #     OPS: "{{ minecraft_ops | join(',') }}"
-    #     ENABLE_RCON: "TRUE"
-    #     RCON_PASSWORD: "{{ web_password }}"
-    #     TYPE: PAPER
-    #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
-    # csgo:
-    #   image: cm2network/csgo:sourcemod
-    #   container_name: csgo
-    #   networks:
-    #     - apps
-    #   ports:
-    #     - "27015:27015/tcp"
-    #     - "27015:27015/udp"
-    #   volumes:
-    #     - type: bind
-    #       source: "{{ app_folder }}/csgo"
-    #       target: /home/steam/csgo-dedicated/
-    #   environment:
-    #     SRCDS_TOKEN: "{{ csgo_app_id }}" # (from: https://steamcommunity.com/dev/managegameservers)
-    #     SRCDS_RCONPW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
-    #     SRCDS_PW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
-    #     SRCDS_FPSMAX: 300
-    #     SRCDS_TICKRATE: 128
-    #     SRCDS_MAXPLAYERS: 14
-    #     SRCDS_STARTMAP: "de_dust2"
-    #     SRCDS_REGION: 3
-    #     SRCDS_MAPGROUP: "mg_active"
-    #     SRCDS_GAMETYPE: 0
-    #     SRCDS_GAMEMODE: 1
-    #     SRCDS_HOSTNAME: "cs.bovbel.com" # (first launch only)
-    #     SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
-    #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
-    # tf2:
-    #   image: cm2network/tf2:sourcemod
-    #   container_name: tf2
-    #   networks:
-    #     - apps
-    #   ports:
-    #     - "27016:27016/tcp"
-    #     - "27016:27016/udp"
-    #   volumes:
-    #     - type: bind
-    #       source: "{{ app_folder }}/tf2"
-    #       target: /home/steam/tf-dedicated/
-    #   environment:
-    #     SRCDS_TOKEN: !vault |
-    #       $ANSIBLE_VAULT;1.1;AES256
-    #       31306665316239303438653034626235656466393536383737343666313833353334643235396434
-    #       3130386662316564383966356163626630653764323464360a633839366262643064326537303733
-    #       66316530666162366239353438663663636431393630396438376238373362363261653061363636
-    #       6535383062373964360a366132323563393836393764386530326464303763326435636662333666
-    #       39353238343436393464313831323265373662656135323063373635376432373563656539383961
-    #       3630366262303239323035323135346364396265633639363134
-    #     SRCDS_RCONPW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
-    #     SRCDS_PW: "{{ csgo_server_password }}" # (value can be overwritten by csgo/cfg/server.cfg)
-    #     SRCDS_PORT: 27016
-    #     # SRCDS_TV_PORT: 27020
-    #     # SRCDS_NET_PUBLIC_ADDRESS: "0" # (public facing ip, useful for local network setups)
-    #     # SRCDS_IP: "0" # (local ip to bind)
-    #     # SRCDS_LAN: "0"
-    #     SRCDS_FPSMAX: 300
-    #     SRCDS_TICKRATE: 128
-    #     SRCDS_MAXPLAYERS: 14
-    #     SRCDS_STARTMAP: "cp_badlands"
-    #     # SRCDS_REGION: 3
-    #     # SRCDS_MAPGROUP: "mg_active"
-    #     # SRCDS_GAMETYPE: 0
-    #     # SRCDS_GAMEMODE: 1
-    #     SRCDS_HOSTNAME: "tf2.bovbel.com" # (first launch only)
-    #     # SRCDS_WORKSHOP_START_MAP: 0
-    #     # SRCDS_HOST_WORKSHOP_COLLECTION: 0
-    #     # SRCDS_WORKSHOP_AUTHKEY: "" # (required to use host_workshop_map)
-    #     # ADDITIONAL_ARGS: "" # (Pass additional arguments to srcds. Make sure to escape correctly!)
-    #     SOURCEMOD_ADMINS: "{{ csgo_admins | join(',') }}"
-    #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
-    # valheim:
-    #   image: mbround18/valheim:latest
-    #   container_name: valheim
-    #   ports:
-    #     - 2456:2456/udp
-    #     - 2457:2457/udp
-    #     - 2458:2458/udp
-    #   environment:
-    #     PUID: "{{ ansible_user_uid }}"
-    #     PGID: "{{ ansible_user_gid }}"
-    #     TZ: America/Toronto
-    #     PORT: 2456
-    #     NAME: "valheim.bovbel.com"
-    #     WORLD: "World"
-    #     PASSWORD: "{{ csgo_server_password }}"
-    #     PUBLIC: 1
-    #     AUTO_UPDATE: 1
-    #     AUTO_UPDATE_SCHEDULE: "0 5 * * *"
-    #     UPDATE_ON_STARTUP: 1
-    #     AUTO_BACKUP: 1
-    #     AUTO_BACKUP_SCHEDULE: "*/15 * * * *"
-    #     AUTO_BACKUP_REMOVE_OLD: 1
-    #     AUTO_BACKUP_DAYS_TO_LIVE: 5
-    #     AUTO_BACKUP_ON_UPDATE: 1
-    #     AUTO_BACKUP_ON_SHUTDOWN: 1
-    #   volumes:
-    #     - "{{ app_folder }}/valheim/saves:/home/steam/.config/unity3d/IronGate/Valheim"
-    #     - "{{ app_folder }}/valheim/server:/home/steam/valheim"
-    #     - "{{ app_folder }}/valheim/backups:/home/steam/backups"
-    #   restart: "no"
-    #   x-systemd-requires: ['storage.mount']
 
 caddy_extras:
   users:
@@ -224,40 +98,3 @@ caddy_extras:
       host: jellyfin
       port: 8096
       role: admin
-
-
-# csgo_server_password: !vault |
-#   $ANSIBLE_VAULT;1.1;AES256
-#   39623639626633623466376534303537613431653232613764343239386337386638626162313636
-#   3832613261326133393532306438306535643961373166300a613764616135333865393639393137
-#   61306666326435653231646634373162393238363162363863666563346233396431636131343435
-#   3166393736383761360a346232633439316564653433653230323536323535313665613134383564
-#   3832
-# csgo_app_id: !vault |
-#   $ANSIBLE_VAULT;1.1;AES256
-#   33613339643761323130633564656238636561313866353131326437346661356538303264326235
-#   3564376331373261366130386433666263623639636539630a633438306266656566336232393163
-#   61653666376234306334666366333862353432656564376630383038323734323938396265383161
-#   3366353032663833660a306661623136333933396261643336346162396436333961643535303733
-#   36393330353634333334316136623465336563323663323662336332383936613333353538663631
-#   3238646331343066623332613231303364353832373137376132
-
-# csgo_admins:
-#   - STEAM_0:0:33888781  # agentx3r
-#   - STEAM_0:0:8806779   # Supernatur4l
-
-# minecraft_ops:
-#   - agentx3r
-#   - LEVI00
-
-# minecraft_users:
-#   - _rusted_
-#   - agentx3r
-#   - FeelsKaleMan
-#   - landon0909
-#   - LEVI00
-#   - NovaNoot
-#   - rusnconcussion
-#   - sufferingtree11
-#   - SushiBeyblade85
-#   - ur_hot

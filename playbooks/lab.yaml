@@ -5,6 +5,7 @@
     - aws-ddns
     - cockpit
     - caddy
+    - homeassistant
     - sync
     - upnp
     - media-server

@@ -2,7 +2,7 @@
 docker_sync:
   services:
     syncthing:
-      image: linuxserver/syncthing
+      image: lscr.io/linuxserver/syncthing:latest
       container_name: syncthing
       networks:
         - apps

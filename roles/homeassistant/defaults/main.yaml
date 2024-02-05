@@ -1,0 +1,60 @@
+---
+docker_homeassistant:
+  services:
+    homeassistant:
+      container_name: homeassistant
+      image: ghcr.io/home-assistant/home-assistant:stable
+      volumes:
+        - "{{ app_folder }}/homeassistant:/config"
+        - /etc/localtime:/etc/localtime:ro
+        - /run/dbus:/run/dbus:ro
+      network_mode: host  # Required for mDNS to work correctly
+      # networks:
+      #   - apps
+      # ports:
+      #   - 8123:8123
+      #   - 5580:5580
+      restart: "no"
+    matter-server:
+      container_name: matter-server
+      network_mode: host  # Required for mDNS to work correctly
+      image: ghcr.io/home-assistant-libs/python-matter-server:stable
+      restart: "no"
+      security_opt:
+        - apparmor:unconfined  # Needed for Bluetooth via dbus
+      volumes:
+        - "{{ app_folder }}/matter-server:/data"
+        - /run/dbus:/run/dbus:ro
+    whisper:
+      container_name: whisper
+      image: rhasspy/wyoming-whisper
+      networks:
+        - apps
+      restart: "no"
+      volumes:
+        - "{{ app_folder }}/whisper:/data"
+      ports:
+      - 10300:10300
+      command: --model tiny-int8 --language en
+    piper:
+      container_name: piper
+      image: rhasspy/wyoming-piper
+      networks:
+        - apps
+      restart: "no"
+      volumes:
+        - "{{ app_folder }}/piper:/data"
+      ports:
+      - 10200:10200
+      command: --voice en_US-lessac-medium
+
+
+caddy_homeassistant:
+  subdomains:
+    homeassistant:
+      type: proxy
+      auth: null
+      subdomain: homeassistant.bovbel.com
+      host: media.bovbel.com
+      port: 8123
+      role: admin

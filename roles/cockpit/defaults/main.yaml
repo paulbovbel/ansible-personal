@@ -2,7 +2,7 @@
 docker_cockpit:
   services:
     smokeping:
-      image: ghcr.io/linuxserver/smokeping
+      image: lscr.io/linuxserver/smokeping:latest
       container_name: smokeping
       networks:
         - apps

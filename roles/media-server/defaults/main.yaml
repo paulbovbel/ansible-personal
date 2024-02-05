@@ -22,7 +22,7 @@ docker_media_server:
         - /dev/dri:/dev/dri
       restart: "no"
     tautulli:
-      image: linuxserver/tautulli
+      image: lscr.io/linuxserver/tautulli:latest
       container_name: tautulli
       networks:
         - apps
@@ -37,7 +37,7 @@ docker_media_server:
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
     sonarr:
-      image: linuxserver/sonarr:latest
+      image: lscr.io/linuxserver/sonarr:latest
       container_name: sonarr
       networks:
         - apps
@@ -54,7 +54,7 @@ docker_media_server:
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
     radarr:
-      image: linuxserver/radarr
+      image: lscr.io/linuxserver/radarr
       container_name: radarr
       networks:
         - apps
@@ -72,7 +72,7 @@ docker_media_server:
         TZ: America/Toronto
         TZ: America/Toronto
     readarr:
-      image: linuxserver/readarr:nightly
+      image: lscr.io/linuxserver/readarr:nightly
       container_name: readarr
       networks:
         - apps
@@ -91,7 +91,7 @@ docker_media_server:
         TZ: America/Toronto
     bazarr:
       container_name: bazarr
-      image: linuxserver/bazarr
+      image: lscr.io/linuxserver/bazarr
       networks:
         - apps
       environment:
@@ -104,7 +104,7 @@ docker_media_server:
         - "{{ movies_folder }}:/movies"
       restart: "no"
     mylar3:
-      image: linuxserver/mylar3
+      image: lscr.io/linuxserver/mylar3
       container_name: mylar3
       networks:
         - apps
@@ -120,7 +120,7 @@ docker_media_server:
         - 8090:8090
       restart: unless-stopped
     jackett:
-      image: linuxserver/jackett
+      image: lscr.io/linuxserver/jackett
       container_name: jackett
       networks:
         - apps
@@ -160,7 +160,7 @@ docker_media_server:
         VPN_ENABLED: "no"
     flaresolverr:
       container_name: flaresolverr
-      image: flaresolverr/flaresolverr:latest
+      image: ghcr.io/flaresolverr/flaresolverr:latest
       networks:
         - apps
       environment:
