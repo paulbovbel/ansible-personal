@@ -91,7 +91,7 @@ docker_extras:
         - "{{ app_folder }}/enshrouded:/home/steam/enshrouded"
       restart: "no"
       x-systemd-requires: ['storage.mount']
-      x-systemd-enabled: false  # eats up too much CPU
+      x-systemd-enabled: true  # eats up too much CPU
     enshrouded-backups:
       image: mbround18/backup-cron:latest
       container_name: enshrouded-backups
@@ -109,7 +109,7 @@ docker_extras:
         - "{{ backup_folder }}/enshrouded:/home/steam/backups"
       restart: "no"
       x-systemd-requires: ['storage.mount']
-      x-systemd-enabled: false
+      x-systemd-enabled: true
 
 upnp_forwards_extras:
   enshrouded1: {from: 15636, to: 15636, proto: tcp}
