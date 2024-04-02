@@ -3,7 +3,6 @@
   - name: install zfs
     apt:
       name:
-        - zfs-dkms
         - zfsutils-linux
         - zfs-auto-snapshot
         - zfs-zed
