@@ -9,9 +9,6 @@ After=docker.service {{ service.value['x-systemd-requires'] | default([]) | join
 
 [Service]
 ExecStart=/usr/bin/docker start {{ service.key }} -a
-{% for cmd in service.value['x-systemd-start-post'] | default([]) %}
-ExecStartPost={{ cmd }}
-{% endfor %}
 Type=simple
 SyslogIdentifier={{ service.key }}
 Restart=on-failure

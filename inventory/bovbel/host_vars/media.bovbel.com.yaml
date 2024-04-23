@@ -43,10 +43,6 @@ docker_extras:
         VPN_USER: "{{ pia_username }}"
         VPN_PASS: "{{ pia_password }}"
         VPN_CLIENT: wireguard
-      x-systemd-start-post:
-        # deluge thin client iptable rule to allow external access
-        # https://github.com/binhex/arch-delugevpn/issues/139
-        - "/sbin/iptables -t nat -A POSTROUTING -p tcp --dport 58846 -j SNAT --to-source {{ ansible_default_ipv4.address }}"
       x-systemd-requires: ['storage.mount']
     jellyfin:
       image: lscr.io/linuxserver/jellyfin:latest
