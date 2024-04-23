@@ -7,6 +7,9 @@ kernel_options:
   - l1tf=off
   # disable MDS mitigations (https://wiki.ubuntu.com/SecurityTeam/KnowledgeBase/MDS)
   - mds=off
+  # Workaround EDID corrupt header issue
+  - i915.fastboot=1
+  - drm.edid_firmware=edid/1280x1024.bin
 
 network_mount_options:
   - defaults

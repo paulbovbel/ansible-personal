@@ -182,14 +182,7 @@ caddy_media_server:
       path: /radarr
       host: radarr
       port: 7878
-
-    readarr:
-      type: proxy
-      auth: oauth
-      role: admin
-      path: /readarr
-      host: readarr
-      port: 8787
+      spoof_basic: true
 
     sonarr:
       type: proxy
@@ -198,6 +191,7 @@ caddy_media_server:
       path: /sonarr
       host: sonarr
       port: 8989
+      spoof_basic: true
 
     bazarr:
       type: proxy
@@ -206,6 +200,7 @@ caddy_media_server:
       path: /bazarr
       host: bazarr
       port: 6767
+      spoof_basic: true
 
     readarr:
       type: proxy
@@ -214,6 +209,7 @@ caddy_media_server:
       path: /readarr
       host: readarr
       port: 8787
+      spoof_basic: true
 
     mylar3:
       type: proxy

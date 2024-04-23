@@ -75,13 +75,14 @@ docker_extras:
     jackett:
       x-systemd-requires: ['storage.mount']
     enshrouded:
-      image: mbround18/enshrouded-docker:latest
+      image: sknnr/enshrouded-dedicated-server:proton-latest
       container_name: enshrouded
       networks:
         - apps
       environment:
-        SERVER_NAME: "{{ inventory_hostname }}"
-        PASSWORD: "{{ enshrouded_server_password }}"
+        SERVER_NAME: BraveNewWorldTwo
+        SERVER_PASSWORD: "{{ enshrouded_server_password }}"
+        SERVER_SLOTS: 16
       ports:
         - "15636:15636/udp"
         - "15636:15636/tcp"
@@ -90,26 +91,8 @@ docker_extras:
       volumes:
         - "{{ app_folder }}/enshrouded:/home/steam/enshrouded"
       restart: "no"
-      x-systemd-requires: ['storage.mount']
-      x-systemd-enabled: false  # eats up too much CPU
-    enshrouded-backups:
-      image: mbround18/backup-cron:latest
-      container_name: enshrouded-backups
-      networks:
-        - apps
-      environment:
-        SCHEDULE: "*/15 * * * *"
-        INPUT_FOLDER: /home/steam/enshrouded/savegame
-        OUTPUT_FOLDER: /home/steam/backups
-        OUTPUT_USER: "{{ ansible_user_uid }}"
-        OUTPUT_GROUP: "{{ ansible_user_gid }}"
-        RETAIN_N_DAYS: 5
-      volumes:
-        - "{{ app_folder }}/enshrouded:/home/steam/enshrouded"
-        - "{{ backup_folder }}/enshrouded:/home/steam/backups"
-      restart: "no"
-      x-systemd-requires: ['storage.mount']
       x-systemd-enabled: false
+      x-systemd-requires: ['storage.mount']
 
 upnp_forwards_extras:
   enshrouded1: {from: 15636, to: 15636, proto: tcp}
