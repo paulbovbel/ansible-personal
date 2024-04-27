@@ -52,6 +52,34 @@
   become: true
   notify: enable cleanup-downloads
 
+# TODO(pbovbel) Update VPN IP with tracker.Ideally need a way to run this after container interface wg0 comes up,
+# maybe extend the supervisord config in the container?
+- name: create myanonamouse script
+  template:
+    src: mam-ip-update.j2
+    dest: /usr/local/bin/mam-ip-update
+    mode: 0777
+  become: true
+  when: mam_id is defined
+  notify: enable myanonamouse
+
+- name: setup myanonamouse service
+  copy:
+    content: |
+      [Unit]
+      Description=Update myanonamouse
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/mam-ip-update
+      User={{ ansible_user }}
+      Restart=no
+
+    dest: /etc/systemd/system/myanonamouse.service
+  become: true
+  when: mam_id is defined
+  notify: enable myanonamouse
+
 - name: setup myanonamouse timer
   copy:
     content: |
@@ -65,24 +93,6 @@
       [Install]
       WantedBy=timers.target
     dest: /etc/systemd/system/myanonamouse.timer
-  become: true
-  when: mam_id is defined
-  notify: enable myanonamouse
-
-# TODO(pbovbel) Update VPN IP with tracker. Ideally need a way to run this after container interface wg0 comes up, maybe hack the supervisord config in the container?
-- name: setup myanonamouse service
-  copy:
-    content: |
-      [Unit]
-      Description=Update myanonamouse
-
-      [Service]
-      Type=exec
-      ExecStart=/bin/bash -c "docker exec deluge curl --interface wg0 -b 'mam_id={{ mam_id }}' https://t.myanonamouse.net/json/dynamicSeedbox.php"
-      User={{ ansible_user }}
-      Restart=no
-
-    dest: /etc/systemd/system/myanonamouse.service
   become: true
   when: mam_id is defined
   notify: enable myanonamouse

@@ -1,0 +1,38 @@
+#!/bin/bash
+docker exec -iu {{ ansible_user_uid }}:{{ ansible_user_gid }} deluge /bin/bash <<'EOF'
+
+set -o errexit   # abort on nonzero exitstatus
+set -o nounset   # abort on unbound variable
+set -o pipefail  # don't hide errors within pipes
+
+cookie_jar="/config/mam.cookies"
+cached_ip="/config/mam.ip"
+mam_api="https://t.myanonamouse.net/json/dynamicSeedbox.php"
+
+get_vpn_ip() {
+    curl --interface wg0 -s checkip.amazonaws.com
+}
+
+touch $cached_ip
+
+if [ "$(get_vpn_ip)" != "$(cat $cached_ip)" ]; then
+
+    if [ -f $cookie_jar ]; then
+        echo "Calling API with cookie jar"
+        curl -w "\n" --interface wg0 -b $cookie_jar -c $cookie_jar $mam_api
+
+    else
+        echo "Calling API with mam_id"
+        curl -w "\n" --interface wg0 -b 'mam_id={{ mam_id }}' -c $cookie_jar $mam_api
+
+    fi
+
+    echo "Updating cached IP"
+    get_vpn_ip >> $cached_ip
+
+else
+    echo "Nothing to do"
+
+fi
+
+EOF
