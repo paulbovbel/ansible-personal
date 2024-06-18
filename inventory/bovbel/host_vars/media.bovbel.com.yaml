@@ -17,7 +17,6 @@ zfs_pool: storage
 # TODO(pbovbel) expose RDP over tailnet, and game server over WAN
 aws_alias_domains:
   - tower.bovbel.com
-  - homeassistant.bovbel.com
 
 docker_extras:
   services:
@@ -59,39 +58,12 @@ docker_extras:
       x-systemd-requires: ['storage.mount']
     jackett:
       x-systemd-requires: ['storage.mount']
-    enshrouded:
-      image: sknnr/enshrouded-dedicated-server:proton-latest
-      container_name: enshrouded
-      networks:
-        - apps
-      environment:
-        SERVER_NAME: BraveNewWorldTwo
-        SERVER_PASSWORD: "{{ enshrouded_server_password }}"
-        SERVER_SLOTS: 16
-      ports:
-        - "15636:15636/udp"
-        - "15636:15636/tcp"
-        - "15637:15637/udp"
-        - "15637:15637/tcp"
-      volumes:
-        - "{{ app_folder }}/enshrouded:/home/steam/enshrouded"
-      restart: "no"
-      x-systemd-enabled: false
-      x-systemd-requires: ['storage.mount']
 
-upnp_forwards_extras:
-  enshrouded1: {from: 15636, to: 15636, proto: tcp}
-  enshrouded2: {from: 15636, to: 15636, proto: udp}
-  enshrouded3: {from: 15637, to: 15637, proto: tcp}
-  enshrouded4: {from: 15637, to: 15637, proto: udp}
-
-enshrouded_server_password: !vault |
-  $ANSIBLE_VAULT;1.1;AES256
-  35623830653934623634353863353134386531613638316633353233663861376265653835343265
-  3965663735653263346137393931366239363930333564650a383764383564633761666531396630
-  62336134363635623765353266323732346261356437363835663662373232303264346464633964
-  3637396338643166390a636633613930386338623335616635393636366666356338633530626364
-  3563
+# upnp_forwards_extras:
+#   enshrouded1: {from: 15636, to: 15636, proto: tcp}
+#   enshrouded2: {from: 15636, to: 15636, proto: udp}
+#   enshrouded3: {from: 15637, to: 15637, proto: tcp}
+#   enshrouded4: {from: 15637, to: 15637, proto: udp}
 
 caddy_extras:
   users:

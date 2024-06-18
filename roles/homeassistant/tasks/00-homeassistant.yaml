@@ -1,12 +1,4 @@
 ---
-- name: configure homeassistant caddy
-  set_fact:
-    caddy: "{{ caddy | combine(caddy_homeassistant, recursive=True, list_merge='append') }}"
-    cacheable: true
-  changed_when: true
-  notify: configure caddy
-  tags: caddy
-
 - name: configure homeassistant docker
   set_fact:
     docker: "{{ docker | combine(docker_homeassistant, recursive=True, list_merge='append') }}"
