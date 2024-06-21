@@ -25,17 +25,6 @@ docker_extras:
       volumes:
         - "{{ media_folder }}:/mnt/storage/share:ro"
       x-systemd-requires: ['storage.mount']
-    unifi:
-      image: lscr.io/linuxserver/unifi-controller:latest
-      container_name: unifi
-      network_mode: host
-      volumes:
-        - "{{ app_folder }}/unifi:/config"
-      restart: "no"
-      environment:
-        PUID: "{{ ansible_user_uid }}"
-        PGID: "{{ ansible_user_gid }}"
-        TZ: America/Toronto
     deluge:
       environment:
         VPN_ENABLED: "yes"
