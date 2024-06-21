@@ -30,7 +30,7 @@
       [Service]
       Type=oneshot
       {% for forward in upnp_forwards.values() %}
-      ExecStart=/usr/bin/upnpc -a {{ ansible_default_ipv4.address }} {{ forward.from }} {{ forward.to }} {{ forward.proto }} 7200
+      ExecStart=-/usr/bin/upnpc -a {{ ansible_default_ipv4.address }} {{ forward.from }} {{ forward.to }} {{ forward.proto }} 7200
       {% endfor %}
     dest: /etc/systemd/system/upnp-update.service
   become: true
