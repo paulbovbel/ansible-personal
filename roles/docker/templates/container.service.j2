@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 
 [Unit]
-Description=Start docker container {{ service.key }}
+Description=Docker container {{ service.key }}
 Wants=network-online.target
 Before=default.target
 BindsTo=docker.service {{ service.value['x-systemd-requires'] | default([]) | join(' ') }}
@@ -9,6 +9,7 @@ After=docker.service {{ service.value['x-systemd-requires'] | default([]) | join
 
 [Service]
 ExecStart=/usr/bin/docker start {{ service.key }} -a
+ExecStop=/usr/bin/docker stop {{ service.key }}
 Type=simple
 SyslogIdentifier={{ service.key }}
 Restart=on-failure

@@ -11,6 +11,12 @@
     dest: /etc/docker/docker-compose.yaml
   become: true
 
+- name: stop docker
+  service:
+    name: docker
+    state: stopped
+  become: true
+
 - name: configure containers
   shell: |
     cd /etc/docker &&
@@ -71,7 +77,7 @@
   #   enabled: true
   #   state: started
   become: true
-  when: "{{ service.value['x-systemd-enabled'] | default(true) }}"
+  when: service.value['x-systemd-enabled'] | default(true)
   no_log: "{{ docker_no_log }}"
   loop: "{{ docker.services | dict2items }}"
   loop_control:

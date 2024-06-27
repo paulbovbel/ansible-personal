@@ -6,23 +6,33 @@
   become: true
 
 - name: restart sonarr
-  shell: docker restart sonarr
+  service:
+    name: sonarr
+    state: restarted
   become: true
 
 - name: restart radarr
-  shell: docker restart radarr
+  service:
+    name: radarr
+    state: restarted
   become: true
 
 - name: restart jackett
-  shell: docker restart jackett
+  service:
+    name: jackett
+    state: restarted
   become: true
 
 - name: restart deluge
-  shell: docker restart deluge
+  service:
+    name: deluge
+    state: restarted
   become: true
 
 - name: restart tautulli
-  shell: docker restart tautulli
+  service:
+    name: tautulli
+    state: restarted
   become: true
 
 - name: enable cleanup-downloads
