@@ -1,5 +1,15 @@
 ---
-- hosts: server
+- hosts: media_server
+  roles:
+    - base
+    - aws-ddns
+    - cockpit
+    - caddy
+    - sync
+    - upnp
+    - media-server
+
+- hosts: home_server
   roles:
     - base
     - aws-ddns
@@ -8,11 +18,10 @@
     - homeassistant
     - sync
     - upnp
-    - media-server
     - miyoo-backup
 
 - hosts:
-    - server
+    - all
   tasks:
     - name: update all remaining packages
       apt:

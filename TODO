@@ -1,0 +1,12 @@
+# dev deploy
+
+Remove gnome keybinds, conflict with vscode:
+
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down "['']"
+gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up "['']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down "['']"
+gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "['']"
+
+Maybe disable workspaces entirely too?
+
+Vscode trim newlines and whitespace

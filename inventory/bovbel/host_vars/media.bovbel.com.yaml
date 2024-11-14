@@ -58,6 +58,8 @@ docker_extras:
       x-systemd-requires: ['storage.mount']
     jackett:
       x-systemd-requires: ['storage.mount']
+    syncthing:
+      x-systemd-requires: ['storage.mount']
 
 # upnp_forwards_extras:
 #   enshrouded1: {from: 15636, to: 15636, proto: tcp}

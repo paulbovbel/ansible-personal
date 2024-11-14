@@ -2,9 +2,13 @@
 all:
   children:
     server:
-      hosts:
-        # home.bovbel.com:
-        media.bovbel.com:
+      children:
+        media_server:
+          hosts:
+            media.bovbel.com:
+        home_server:
+          hosts:
+            franklin.bovbel.com:
     dell_xps:
       hosts:
         pbovbel-dell:

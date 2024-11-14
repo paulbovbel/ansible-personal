@@ -18,8 +18,6 @@ docker_sync:
         PUID: "{{ ansible_user_uid }}"
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
-      x-systemd-requires:
-        - storage.mount
 
 caddy_sync:
   endpoints:

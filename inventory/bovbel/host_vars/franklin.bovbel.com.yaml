@@ -1,0 +1,8 @@
+---
+# Useful paths
+data_folder: "/home/{{ ansible_user }}"
+app_folder: "{{ data_folder }}/app"
+backup_folder: "{{ data_folder }}/backup"
+share_folder:  "{{ data_folder }}/share"
+
+

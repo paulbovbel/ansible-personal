@@ -129,3 +129,16 @@ mam_id: !vault |
   66343838343435643833636265643866626537383366663334393262666665303435363837623563
   33633934306466616430386439306462373634376230363630323865303063336265623232383064
   626634366536346239323534306632623261
+
+caddy_extras:
+  users:
+    - email: paul@bovbel.com
+      roles: ['admin', 'share']
+    - email: rebecca@bovbel.com
+      roles: ['admin', 'share']
+    - email: andrew@bovbel.com
+      roles: ['share']
+    - email: igorlitvinov@gmail.com
+      roles: ['share']
+    - email: eugene.tkach@gmail.com
+      roles: ['share']

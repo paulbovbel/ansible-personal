@@ -21,5 +21,5 @@ To deploy on the current machine:
 
 To deploy homelab:
 
-`./venv/bin/ansible-playbook -i inventory/bovbel playbooks/lab.yaml`
-`./venv/bin/ansible-playbook -i inventory/vedell playbooks/lab.yaml`
+`./venv/bin/ansible-playbook -i inventory/bovbel playbooks/lab.yaml --limit media.bovbel.com`
+`./venv/bin/ansible-playbook -i inventory/bovbel playbooks/lab.yaml --limit franklin.bovbel.com`
