@@ -28,7 +28,7 @@ if [ "$(get_vpn_ip)" != "$(cat $cached_ip)" ]; then
     fi
 
     echo "Updating cached IP"
-    get_vpn_ip >> $cached_ip
+    get_vpn_ip > $cached_ip
 
 else
     echo "Nothing to do"
