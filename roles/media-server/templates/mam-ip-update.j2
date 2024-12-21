@@ -31,8 +31,7 @@ if [ "$(get_vpn_ip)" != "$(cat $cached_ip)" ]; then
     get_vpn_ip > $cached_ip
 
 else
-    echo "Nothing to do"
-
+    echo "No IP changes from previously authorized $(cat $cached_ip), nothing to do."
 fi
 
 EOF
