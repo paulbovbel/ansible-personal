@@ -13,7 +13,7 @@ jobs:
       matrix:
         target:
           - media.bovbel.com
-          - franklin.bovbel.com
+          # - franklin.bovbel.com
 
     steps:
     - name: Cancel Previous Runs
