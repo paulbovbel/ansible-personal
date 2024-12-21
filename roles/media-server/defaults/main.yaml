@@ -169,12 +169,34 @@ docker_media_server:
         TZ: America/Toronto
         CAPTCHA_SOLVER: 'none'
       restart: "no"
+    maintainerr:
+      container_name: maintainerr
+      image: ghcr.io/jorenn92/maintainerr:latest
+      networks:
+        - apps
+      user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
+      volumes:
+        - "{{ app_folder }}/maintainerr:/opt/data"
+      environment:
+        TZ: America/Toronto
+        BASE_PATH: /maintainerr # uncomment if you're serving maintainerr from a subdirectory
+      ports:
+        - 6246:6246
+      restart: "no"
 
 upnp_forwards_media_server:
   plex: {from: 32400, to: 32400, proto: tcp}
 
 caddy_media_server:
   endpoints:
+    maintainerr:
+      type: proxy
+      auth: oauth
+      role: admin
+      path: /maintainerr
+      host: maintainerr
+      port: 6246
+
     radarr:
       type: proxy
       auth: oauth
