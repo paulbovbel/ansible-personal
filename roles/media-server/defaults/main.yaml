@@ -188,7 +188,7 @@ docker_media_server:
       image: ghcr.io/a1ex4/ownfoil:latest
       networks:
         - apps      
-     environment:
+      environment:
         PUID: "{{ ansible_user_uid }}"
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
