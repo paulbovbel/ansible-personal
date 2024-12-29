@@ -10,3 +10,6 @@ gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up "['']"
 Maybe disable workspaces entirely too?
 
 Vscode trim newlines and whitespace
+
+Caddy fmt
+Caddy<->tailscale
