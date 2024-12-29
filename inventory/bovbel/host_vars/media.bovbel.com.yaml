@@ -11,6 +11,7 @@ tv_folder: "{{ media_folder }}/tv"
 books_folder: "{{ media_folder }}/books"
 audiobooks_folder: "{{ media_folder }}/audiobooks"
 comics_folder: "{{ media_folder }}/comics"
+switch_folder: "{{ media_folder }}/switch"
 
 zfs_pool: storage
 
