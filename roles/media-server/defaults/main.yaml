@@ -183,6 +183,22 @@ docker_media_server:
       ports:
         - 6246:6246
       restart: "no"
+    ownfoil:
+      container_name: ownfoil
+      image: ghcr.io/a1ex4/ownfoil:latest
+      networks:
+        - apps      
+     environment:
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
+        TZ: America/Toronto
+      volumes:
+        - "{{ app_folder }}/maintainerr:/app/config"
+        - "{{ switch_folder }}:/games"
+      ports:
+        - 8465:8465
+      restart: "no"        
+
 
 upnp_forwards_media_server:
   plex: {from: 32400, to: 32400, proto: tcp}
