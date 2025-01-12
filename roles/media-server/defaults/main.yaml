@@ -185,9 +185,9 @@ docker_media_server:
       restart: "no"
     ownfoil:
       container_name: ownfoil
-      image: ghcr.io/a1ex4/ownfoil:latest
+      image: a1ex4/ownfoil:latest
       networks:
-        - apps      
+        - apps
       environment:
         PUID: "{{ ansible_user_uid }}"
         PGID: "{{ ansible_user_gid }}"
@@ -197,7 +197,7 @@ docker_media_server:
         - "{{ switch_folder }}:/games"
       ports:
         - 8465:8465
-      restart: "no"        
+      restart: "no"
 
 
 upnp_forwards_media_server:
