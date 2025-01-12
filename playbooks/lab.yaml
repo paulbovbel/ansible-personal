@@ -8,6 +8,7 @@
     - sync
     - upnp
     - media-server
+    - minecraft
 
 - hosts: home_server
   roles:

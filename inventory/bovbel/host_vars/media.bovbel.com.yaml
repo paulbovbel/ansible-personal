@@ -61,6 +61,10 @@ docker_extras:
       x-systemd-requires: ['storage.mount']
     syncthing:
       x-systemd-requires: ['storage.mount']
+    ownfoil:
+      x-systemd-requires: ['storage.mount']
+    minecraft:
+      x-systemd-requires: ['storage.mount']
 
 # upnp_forwards_extras:
 #   enshrouded1: {from: 15636, to: 15636, proto: tcp}
@@ -90,3 +94,20 @@ caddy_extras:
       host: jellyfin
       port: 8096
       role: admin
+
+minecraft_ops:
+  - agentx3r
+  # - LEVI00
+
+minecraft_users:
+  - agentx3r
+  - artied2
+  # - _rusted_
+  # - FeelsKaleMan
+  # - landon0909
+  # - LEVI00
+  # - NovaNoot
+  # - rusnconcussion
+  # - sufferingtree11
+  # - SushiBeyblade85
+  # - ur_hot

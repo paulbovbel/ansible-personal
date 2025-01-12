@@ -1,0 +1,28 @@
+---
+minecraft_ops: []
+
+minecraft_users: []
+
+docker_minecraft:
+  services:
+    minecraft:
+      image: itzg/minecraft-server
+      container_name: minecraft
+      networks:
+        - apps
+      ports:
+        - "25565:25565"
+      volumes:
+        - "{{ app_folder }}/minecraft:/data"
+      environment:
+        UID: "{{ ansible_user_uid }}"
+        GID: "{{ ansible_user_gid }}"
+        EULA: "TRUE"
+        MAX_MEMORY: "16G"
+        ENABLE_AUTOPAUSE: "TRUE"
+        WHITELIST: "{{ minecraft_users | join(',') }}"
+        OPS: "{{ minecraft_ops | join(',') }}"
+        ENABLE_RCON: "TRUE"
+        RCON_PASSWORD: "{{ web_password }}"
+        TYPE: PAPER
+      restart: "no"

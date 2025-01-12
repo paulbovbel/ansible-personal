@@ -1,0 +1,8 @@
+---
+- name: configure minecraft docker
+  set_fact:
+    docker: "{{ docker | combine(docker_minecraft, recursive=True, list_merge='append') }}"
+    cacheable: true
+  changed_when: true
+  notify: configure docker
+  tags: docker
