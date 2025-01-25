@@ -20,9 +20,5 @@ docker_minecraft:
         EULA: "TRUE"
         MAX_MEMORY: "16G"
         ENABLE_AUTOPAUSE: "TRUE"
-        WHITELIST: "{{ minecraft_users | join(',') }}"
-        OPS: "{{ minecraft_ops | join(',') }}"
-        ENABLE_RCON: "TRUE"
-        RCON_PASSWORD: "{{ web_password }}"
-        TYPE: PAPER
+
       restart: "no"

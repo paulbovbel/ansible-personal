@@ -64,13 +64,12 @@ docker_extras:
     ownfoil:
       x-systemd-requires: ['storage.mount']
     minecraft:
+      environment:
+        TYPE: MODRINTH
+        VERSION: 1.20.6
+        MODRINTH_MODPACK: default.mrpack
+        SEED: "5369984945557223422"
       x-systemd-requires: ['storage.mount']
-
-# upnp_forwards_extras:
-#   enshrouded1: {from: 15636, to: 15636, proto: tcp}
-#   enshrouded2: {from: 15636, to: 15636, proto: udp}
-#   enshrouded3: {from: 15637, to: 15637, proto: tcp}
-#   enshrouded4: {from: 15637, to: 15637, proto: udp}
 
 caddy_extras:
   users:
@@ -96,12 +95,12 @@ caddy_extras:
       role: admin
 
 minecraft_ops:
-  - agentx3r
+  - agent_x3r
   # - LEVI00
 
 minecraft_users:
-  - agentx3r
-  - artied2
+  - agent_x3r
+  - arteed2
   # - _rusted_
   # - FeelsKaleMan
   # - landon0909

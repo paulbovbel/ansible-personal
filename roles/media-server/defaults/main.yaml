@@ -180,6 +180,7 @@ docker_media_server:
       environment:
         TZ: America/Toronto
         BASE_PATH: /maintainerr # uncomment if you're serving maintainerr from a subdirectory
+        DEBUG: "true"
       ports:
         - 6246:6246
       restart: "no"
