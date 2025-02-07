@@ -66,8 +66,8 @@ docker_extras:
     minecraft:
       environment:
         TYPE: MODRINTH
-        VERSION: 1.20.6
-        MODRINTH_MODPACK: default.mrpack
+        VERSION: 1.21.1
+        MODRINTH_MODPACK: default2.mrpack
         SEED: "5369984945557223422"
       x-systemd-requires: ['storage.mount']
 
@@ -100,7 +100,9 @@ minecraft_ops:
 
 minecraft_users:
   - agent_x3r
+  # - agentx3r
   - arteed2
+  - babablinchiki
   # - _rusted_
   # - FeelsKaleMan
   # - landon0909
