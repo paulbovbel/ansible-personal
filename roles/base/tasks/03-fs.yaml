@@ -3,10 +3,13 @@
   - name: install zfs
     apt:
       name:
-        - zfsutils-linux
-        - zfs-auto-snapshot
-        - zfs-zed
+        # - zfsutils-linux
+        # - zfs-auto-snapshot
+        # - zfs-zed
         - sendemail
+        - openzfs-zfsutils
+        - openzfs-zfs-zed
+        - openzfs-zfs-dkms
       state: latest
       update_cache: true
       cache_valid_time: 3600

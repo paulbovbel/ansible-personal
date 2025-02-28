@@ -97,6 +97,45 @@
   when: mam_id is defined
   notify: enable myanonamouse
 
+- name: create rip-to-audio script
+  template:
+    src: rip-to-audio.j2
+    dest: /usr/local/bin/rip-to-audio
+    mode: 0777
+  become: true
+
+- name: setup rip-to-audio service
+  copy:
+    content: |
+      [Unit]
+      Description=Rip audio
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/rip-to-audio '{{ tv_folder }}/Jeopardy!' '{{ audiobooks_folder }}/Jeopardy!'
+      User={{ ansible_user }}
+      Restart=no
+
+    dest: /etc/systemd/system/rip-to-audio.service
+  become: true
+  notify: enable rip-to-audio
+
+- name: setup rip-to-audio timer
+  copy:
+    content: |
+      [Unit]
+      Description=Rip audio
+
+      [Timer]
+      OnCalendar=daily
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    dest: /etc/systemd/system/rip-to-audio.timer
+  become: true
+  notify: enable rip-to-audio
+
 # - name: configure jackett basepath
 #   replace:
 #     path: "{{ app_folder }}/jackett/Jackett/ServerConfig.json"
