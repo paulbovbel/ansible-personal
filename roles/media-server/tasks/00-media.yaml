@@ -98,8 +98,8 @@
   notify: enable myanonamouse
 
 - name: create rip-to-audio script
-  template:
-    src: rip-to-audio.j2
+  copy:
+    src: rip-to-audio
     dest: /usr/local/bin/rip-to-audio
     mode: 0777
   become: true

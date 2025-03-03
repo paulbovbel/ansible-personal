@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+
+import argparse
+import asyncio
+from pathlib import Path
+import sys
+import re
+import os
+
+REGEX_PATTERN = re.compile(r"\s*HDTV.*", re.IGNORECASE)
+
+VIDEO_EXTENSIONS = {
+    ".mp4",
+    ".m4v",
+    ".mkv",
+    ".mov",
+    ".avi",
+    ".wmv",
+    ".flv",
+    ".webm",
+    ".ts",
+    ".mpeg",
+    ".mpg",
+}
+
+
+class FFmpegError(Exception):
+    pass
+
+
+async def run_ffmpeg(infile: Path, outfile: Path, transcode: bool) -> None:
+    """
+    Run an ffmpeg command asynchronously.
+    """
+    partial_file = outfile.parent / f"{outfile.stem}.partial{outfile.suffix}"
+    copy_cmd = ["ffmpeg", "-y", "-nostdin", "-i", str(infile), "-vn"]
+    if transcode:
+        copy_cmd += [
+            "-c:a",
+            "aac",
+            "-q:a",
+            "2",  # VBR
+        ]
+    else:
+        copy_cmd += [
+            "-c:a",
+            "copy",  # copy the existing audio
+        ]
+
+    copy_cmd += [str(partial_file)]
+    process = await asyncio.create_subprocess_exec(
+        *copy_cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+    )
+    _, stderr = await process.communicate()
+
+    if process.returncode != 0:
+        if partial_file.exists():
+            partial_file.unlink()
+        raise FFmpegError(stderr.decode("utf-8", errors="replace"))
+    else:
+        partial_file.rename(outfile)
+
+
+async def process_audio(infile: Path, outfile: Path, semaphore: asyncio.Semaphore):
+    async with semaphore:
+
+        if outfile.exists():
+            print(f"[SKIP] {outfile} already exists. Skipping {infile}")
+            return
+
+        # Ensure parent directories exist
+        outfile.parent.mkdir(parents=True, exist_ok=True)
+
+        try:
+            try:
+                await run_ffmpeg(infile, outfile, transcode=False)
+            except FFmpegError as err:
+                print(
+                    f"[WARN] Failed to copy audio, transcoding instead {outfile}:\n{err}",
+                    file=sys.stderr,
+                )
+                await run_ffmpeg(infile, outfile, transcode=True)
+        except FFmpegError as err:
+            print(f"[ERROR] Failed to process {outfile}:\n{err}", file=sys.stderr)
+        else:
+            print(f"[SUCCESS] Processed {outfile}", file=sys.stderr)
+
+
+async def main():
+    parser = argparse.ArgumentParser(
+        description="Keep only audio in an MP4 container, preserving directory structure."
+    )
+    parser.add_argument("src_dir", type=Path, help="Source directory")
+    parser.add_argument("dst_dir", type=Path, help="Destination directory")
+    parser.add_argument(
+        "--max-procs",
+        type=int,
+        default=4,
+        help="Maximum number of ffmpeg processes to run concurrently (default: 4)",
+    )
+
+    args = parser.parse_args()
+
+    src_dir = args.src_dir.resolve()
+    dst_dir = args.dst_dir.resolve()
+    max_procs = args.max_procs
+
+    dst_dir.mkdir(parents=True, exist_ok=True)
+
+    # Semaphore to limit concurrency
+    semaphore = asyncio.Semaphore(max_procs)
+    tasks = []
+
+    # Recursively walk the source directory
+    for root, dirs, files in os.walk(src_dir):
+        root_path = Path(root)
+        for file_name in files:
+            infile = root_path / file_name
+
+            # Filter for known video extensions
+            if infile.suffix.lower() in VIDEO_EXTENSIONS:
+
+                rel_path = infile.relative_to(src_dir)
+                cleaned_stem = REGEX_PATTERN.sub("", infile.stem).strip()
+                out_dir = dst_dir / rel_path.parent
+                outfile = out_dir / (cleaned_stem + ".m4a")
+                tasks.append(process_audio(infile, outfile, semaphore))
+
+    await asyncio.gather(*tasks)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
