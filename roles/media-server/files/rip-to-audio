@@ -49,9 +49,9 @@ async def run_ffmpeg(infile: Path, outfile: Path, transcode: bool, album: str = 
 
     # Add metadata (album, artist) if given
     if album:
-        cmd += ["-metadata", f"album={album}"]
+        copy_cmd += ["-metadata", f"album={album}"]
     if artist:
-        cmd += ["-metadata", f"artist={artist}"]
+        copy_cmd += ["-metadata", f"artist={artist}"]
 
     copy_cmd += [str(partial_file)]
     process = await asyncio.create_subprocess_exec(
