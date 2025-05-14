@@ -28,7 +28,7 @@ class FFmpegError(Exception):
     pass
 
 
-async def run_ffmpeg(infile: Path, outfile: Path, transcode: bool, album: str = None, artist: str = None) -> None:
+async def run_ffmpeg(infile: Path, outfile: Path, transcode: bool, track: str = None, album: str = None, artist: str = None) -> None:
     """
     Run an ffmpeg command asynchronously.
     """
@@ -48,10 +48,13 @@ async def run_ffmpeg(infile: Path, outfile: Path, transcode: bool, album: str = 
         ]
 
     # Add metadata (album, artist) if given
+    if track:
+        copy_cmd += ["-metadata", f"title={track}"]
     if album:
         copy_cmd += ["-metadata", f"album={album}"]
     if artist:
         copy_cmd += ["-metadata", f"artist={artist}"]
+        copy_cmd += ["-metadata", f"album_artist={artist}"]
 
     copy_cmd += [str(partial_file)]
     process = await asyncio.create_subprocess_exec(
@@ -77,12 +80,13 @@ async def process_audio(infile: Path, outfile: Path, semaphore: asyncio.Semaphor
         # Ensure parent directories exist
         outfile.parent.mkdir(parents=True, exist_ok=True)
 
+        track = outfile.stem
         album = outfile.parent.name
         artist = outfile.parent.parent.name
 
         try:
             try:
-                await run_ffmpeg(infile, outfile, transcode=False, album=album, artist=artist)
+                await run_ffmpeg(infile, outfile, transcode=False, track=track, album=album, artist=artist)
             except FFmpegError as err:
                 print(
                     f"[WARN] Failed to copy audio, transcoding instead {outfile}:\n{err}",
