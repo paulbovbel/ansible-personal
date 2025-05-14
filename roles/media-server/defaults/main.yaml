@@ -133,7 +133,8 @@ docker_media_server:
         TZ: America/Toronto
     deluge:
       container_name: deluge
-      image: binhex/arch-delugevpn
+      # pin before https://github.com/binhex/arch-delugevpn/pull/426/files
+      image: binhex/arch-delugevpn:2.1.1-8-03
       privileged: true
       sysctls:
         - net.ipv4.conf.all.src_valid_mark=1
