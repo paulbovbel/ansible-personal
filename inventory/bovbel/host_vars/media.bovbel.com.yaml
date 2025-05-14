@@ -61,7 +61,7 @@ docker_extras:
       x-systemd-requires: ['storage.mount']
     syncthing:
       x-systemd-requires: ['storage.mount']
-    ownfoil:
+    unpackerr:
       x-systemd-requires: ['storage.mount']
     minecraft:
       environment:

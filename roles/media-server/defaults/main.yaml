@@ -103,22 +103,6 @@ docker_media_server:
         - "{{ tv_folder }}:/tv"
         - "{{ movies_folder }}:/movies"
       restart: "no"
-    mylar3:
-      image: lscr.io/linuxserver/mylar3
-      container_name: mylar3
-      networks:
-        - apps
-      environment:
-        PUID: "{{ ansible_user_uid }}"
-        PGID: "{{ ansible_user_gid }}"
-        TZ: America/Toronto
-      volumes:
-        - "{{ app_folder }}/mylar3:/config"
-        - "{{ comics_folder }}:/comics"
-        - "{{ downloads_folder }}:/downloads"
-      ports:
-        - 8090:8090
-      restart: unless-stopped
     jackett:
       image: lscr.io/linuxserver/jackett
       container_name: jackett
@@ -185,21 +169,18 @@ docker_media_server:
       ports:
         - 6246:6246
       restart: "no"
-    ownfoil:
-      container_name: ownfoil
-      image: a1ex4/ownfoil:latest
+    unpackerr:
+      image: golift/unpackerr
+      container_name: unpackerr
       networks:
         - apps
-      environment:
-        PUID: "{{ ansible_user_uid }}"
-        PGID: "{{ ansible_user_gid }}"
-        TZ: America/Toronto
       volumes:
-        - "{{ app_folder }}/maintainerr:/app/config"
-        - "{{ switch_folder }}:/games"
-      ports:
-        - 8465:8465
+        - "{{ downloads_folder }}:/downloads"
+        - "{{ app_folder }}/unpackerr:/config"
       restart: "no"
+      user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
+      environment:
+        TZ: America/Toronto
 
 
 upnp_forwards_media_server:
