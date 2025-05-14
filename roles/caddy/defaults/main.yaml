@@ -1,8 +1,8 @@
 ---
-caddy_version: 2.7.6
+caddy_version: 2.9.1
 caddy_plugins:
-  - github.com/greenpau/caddy-security@v1.1.22
-  - github.com/caddy-dns/route53@v1.3.3
+  - github.com/greenpau/caddy-security@v1.1.29
+  - github.com/caddy-dns/route53@v1.5.1
 
 docker_caddy:
   services:

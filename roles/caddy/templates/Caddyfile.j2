@@ -1,6 +1,9 @@
 {
   email {{ ansible_email }}
 
+	order authenticate before respond
+	order authorize before basicauth
+
   security {
     oauth identity provider google {
       realm google
@@ -11,17 +14,18 @@
     }
 
     authentication portal defaultportal {
-      crypto default token lifetime 3600
+      crypto default token lifetime 7884000
       crypto key sign-verify {{ caddy.token_secret }}
       enable identity provider google
       cookie domain bovbel.com
+      cookie lifetime 7884000
 
 {% for user in caddy.users %}
       transform user {
         match realm google
         match email {{ user.email }}
   {% for role in user.roles %}
-        action add role auth/{{ role }}
+        action add role authp/{{ role }}
   {% endfor %}
       }
 {% endfor %}
@@ -32,7 +36,7 @@
     authorization policy {{ role }} {
       set auth url /auth/oauth2/google
       crypto key verify {{ caddy.token_secret }}
-      allow roles auth/{{ role }}
+      allow roles authp/{{ role }}
       validate bearer header
       inject headers with claims
       enable js redirect
