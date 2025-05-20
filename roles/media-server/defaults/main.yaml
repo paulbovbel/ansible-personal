@@ -181,6 +181,19 @@ docker_media_server:
       user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
       environment:
         TZ: America/Toronto
+    autobrr:
+      container_name: autobrr
+      image: ghcr.io/autobrr/autobrr:latest
+      networks:
+        - apps
+      volumes:
+        - "{{ app_folder }}/autobrr:/config"
+      ports:
+        - 7474:7474
+      restart: "no"
+      user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
+      environment:
+        TZ: America/Toronto
 
 
 upnp_forwards_media_server:
@@ -231,6 +244,14 @@ caddy_media_server:
       host: readarr
       port: 8787
       spoof_basic: true
+
+    autobrr:
+      type: proxy
+      auth: oauth
+      role: admin
+      path: /autobrr
+      host: autobrr
+      port: 7474
 
     mylar3:
       type: proxy
