@@ -112,7 +112,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/local/bin/rip-to-audio '{{ tv_folder }}/Jeopardy!' '{{ audiobooks_folder }}/Jeopardy!'
+      ExecStart=/usr/local/bin/rip-to-audio '{{ tv_folder }}/Jeopardy!' '{{ audiobooks_folder }}/Jeopardy!' {{ plex_token }}
       User={{ ansible_user }}
       Restart=no
 

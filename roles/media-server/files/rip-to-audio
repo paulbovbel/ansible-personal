@@ -2,10 +2,13 @@
 
 import argparse
 import asyncio
-from pathlib import Path
-import sys
-import re
+import collections
 import os
+import re
+import sys
+
+from pathlib import Path
+from plexapi.server import PlexServer
 
 REGEX_PATTERN = re.compile(r"\s*HDTV.*", re.IGNORECASE)
 
@@ -74,7 +77,7 @@ async def process_audio(infile: Path, outfile: Path, semaphore: asyncio.Semaphor
     async with semaphore:
 
         if outfile.exists():
-            print(f"[SKIP] {outfile} already exists. Skipping {infile}")
+            # print(f"[SKIP] {outfile} already exists. Skipping {infile}")
             return
 
         # Ensure parent directories exist
@@ -97,6 +100,33 @@ async def process_audio(infile: Path, outfile: Path, semaphore: asyncio.Semaphor
             print(f"[ERROR] Failed to process {outfile}:\n{err}", file=sys.stderr)
         else:
             print(f"[SUCCESS] Processed {outfile}", file=sys.stderr)
+            return artist, album
+
+
+async def merge_albums(plex: PlexServer, dst_dir: Path, albums_by_artist: dict):
+    audiobooks = plex.library.section('Audiobooks')
+    # Plex paths are currently aliased via bind mount in docker - remove if we straighten this out
+    # audiobooks.update(path=str(dst_dir))
+    audiobooks.update()
+
+    def is_scanning():
+        # Plex does not provide an API to check if an update is active
+        for activity in plex.activities:
+            if activity.title.startswith('Scanning'):
+                return True
+        return False
+
+    while is_scanning():
+        print("Waiting for scan to complete...")
+        await asyncio.sleep(5)
+
+    for artist, albums in albums_by_artist.items():
+        for album in albums:
+            duplicate_albums = audiobooks.get(artist).albums(title=album)
+            if len(duplicate_albums) > 1:
+                print(f"Found {len(duplicate_albums)} duplicate albums of '{artist} - {album}', merging!")
+                duplicate_keys = [album.ratingKey for album in duplicate_albums[1:]]
+                duplicate_albums[0].merge(duplicate_keys)
 
 
 async def main():
@@ -105,6 +135,7 @@ async def main():
     )
     parser.add_argument("src_dir", type=Path, help="Source directory")
     parser.add_argument("dst_dir", type=Path, help="Destination directory")
+    parser.add_argument("plex_token", type=str, help="Plex auth token")
     parser.add_argument(
         "--max-procs",
         type=int,
@@ -117,6 +148,8 @@ async def main():
     src_dir = args.src_dir.resolve()
     dst_dir = args.dst_dir.resolve()
     max_procs = args.max_procs
+
+    plex = PlexServer('http://localhost:32400', args.plex_token)
 
     dst_dir.mkdir(parents=True, exist_ok=True)
 
@@ -139,7 +172,14 @@ async def main():
                 outfile = out_dir / (cleaned_stem + ".m4a")
                 tasks.append(process_audio(infile, outfile, semaphore))
 
-    await asyncio.gather(*tasks)
+    results = await asyncio.gather(*tasks)
+    albums_by_artist = collections.defaultdict(set)
+
+    for artist, album in (r for r in results if r):
+        albums_by_artist[artist].add(album)
+
+    # Plex does not like drip-feeding tracks into an album, let's merge any duplicate albums created
+    await merge_albums(plex, dst_dir, albums_by_artist)
 
 
 if __name__ == "__main__":
