@@ -62,6 +62,7 @@
   become: true
   when: mam_id is defined
   notify: enable myanonamouse
+  tags: mam_id
 
 - name: setup myanonamouse service
   copy:
