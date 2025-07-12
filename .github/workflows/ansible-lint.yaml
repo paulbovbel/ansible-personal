@@ -30,11 +30,11 @@ jobs:
           path: ~/.ansible/collections
           key: ${{ hashFiles('requirements.yaml') }}
 
-      - name: write vault_pass to file
+      - name: Write vault_pass to file
         run: echo $VAULT_PASS >> vault_pass.txt
         shell: bash
         env:
-          VAULT_PASS : ${{ secrets.VAULT_PASS }}
+          VAULT_PASS: ${{ secrets.VAULT_PASS }}
 
       - name: Run ansible-lint
         shell: bash
