@@ -71,24 +71,24 @@ docker_media_server:
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
         TZ: America/Toronto
-    readarr:
-      image: lscr.io/linuxserver/readarr:nightly
-      container_name: readarr
-      networks:
-        - apps
-      depends_on:
-        - jackett
-      volumes:
-        - /etc/localtime:/etc/localtime:ro
-        - "{{ app_folder }}/readarr:/config"
-        - "{{ downloads_folder }}:/downloads"
-        - "{{ books_folder }}:/books"
-        - "{{ audiobooks_folder }}:/audiobooks"
-      restart: "no"
-      environment:
-        PUID: "{{ ansible_user_uid }}"
-        PGID: "{{ ansible_user_gid }}"
-        TZ: America/Toronto
+    # readarr:
+    #   image: lscr.io/linuxserver/readarr:nightly
+    #   container_name: readarr
+    #   networks:
+    #     - apps
+    #   depends_on:
+    #     - jackett
+    #   volumes:
+    #     - /etc/localtime:/etc/localtime:ro
+    #     - "{{ app_folder }}/readarr:/config"
+    #     - "{{ downloads_folder }}:/downloads"
+    #     - "{{ books_folder }}:/books"
+    #     - "{{ audiobooks_folder }}:/audiobooks"
+    #   restart: "no"
+    #   environment:
+    #     PUID: "{{ ansible_user_uid }}"
+    #     PGID: "{{ ansible_user_gid }}"
+    #     TZ: America/Toronto
     bazarr:
       container_name: bazarr
       image: lscr.io/linuxserver/bazarr
@@ -247,14 +247,14 @@ caddy_media_server:
       port: 6767
       spoof_basic: true
 
-    readarr:
-      type: proxy
-      auth: oauth
-      role: admin
-      path: /readarr
-      host: readarr
-      port: 8787
-      spoof_basic: true
+    # readarr:
+    #   type: proxy
+    #   auth: oauth
+    #   role: admin
+    #   path: /readarr
+    #   host: readarr
+    #   port: 8787
+    #   spoof_basic: true
 
     autobrr:
       type: proxy
