@@ -55,15 +55,18 @@ jobs:
 
       - name: Install ansible galaxy
         shell: bash
-        env:
-          VAULT_PASS: ${{ secrets.VAULT_PASS }}
         run: ansible-galaxy install -r requirements.yaml
+
+      - name: write vault_pass to file
+        run: echo $VAULT_PASS >> vault_pass.txt
+        shell: bash
+        env:
+          VAULT_PASS : ${{ secrets.VAULT_PASS }}
 
       - name: Run ansible
         shell: bash
         env:
           TARGET: ${{ matrix.target }}
-          VAULT_PASS: ${{ secrets.VAULT_PASS }}
         run: |
           ssh-keyscan -H $TARGET >> ~/.ssh/known_hosts &&
-          ansible-playbook -i inventory/bovbel --limit $TARGET playbooks/lab.yaml --vault-password-file <(cat <<<"$VAULT_PASS")
+          ansible-playbook -i inventory/bovbel --limit $TARGET playbooks/lab.yaml
