@@ -47,11 +47,10 @@
 
 {{ ansible_hostname }}.{{ tailscale.MagicDNSSuffix }}, {{ inventory_hostname }} {
   log {
-      level ERROR
+      level INFO
       format console {
         time_format wall
       }
-      output file /data/log/error.log
   }
 
   tls {

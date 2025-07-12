@@ -7,6 +7,13 @@
     cache_valid_time: 3600
   become: true
 
+- name: enable and start fail2ban
+  service:
+    name: fail2ban
+    enabled: true
+    state: started
+  become: true
+
 - name: configure fail2ban logging to journal
   lineinfile:
     dest: "/etc/fail2ban/fail2ban.conf"
@@ -21,7 +28,7 @@
     content: |
       # fail2ban filter configuration for caddy basicauth
       [Definition]
-      failregex = ^.*error.*remote_addr": "<HOST>.*"Authorization": \["Basic.*"status": (400|401).*$
+      failregex = ^.*"remote_ip": "<HOST>".*"Authorization": \["REDACTED"\].*"status": 401.*$
       ignoreregex =
   become: true
   notify: restart fail2ban
@@ -29,13 +36,14 @@
 - name: configure caddy fail2ban jail
   blockinfile:
     marker: "# {mark} include caddy fail2ban config"
-    path: '/etc/fail2ban/jail.local'
+    path: '/etc/fail2ban/jail.d/caddy-basic-auth.conf'
     block: |
       [caddy-basic-auth]
       enabled  = true
       chain    = DOCKER-USER
       port     = http,https
-      logpath  = {{ app_folder }}/caddy/data/log/error.log
+      backend  = systemd
+      journalmatch = _SYSTEMD_UNIT=caddy.service
     state: present
     create: true
   become: true
