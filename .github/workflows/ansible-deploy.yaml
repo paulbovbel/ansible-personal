@@ -1,3 +1,4 @@
+---
 name: ansible deploy
 
 on:
@@ -5,7 +6,6 @@ on:
     branches:
       - master
   workflow_dispatch: {}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,54 +16,54 @@ jobs:
           # - franklin.bovbel.com
 
     steps:
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.12.1
-      with:
-        access_token: ${{ github.token }}
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Join tailnet
-      uses: tailscale/github-action@v3
-      with:
-        oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-        oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-        tags: tag:server
+      - name: Join tailnet
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:server
 
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_KEY }}
-        name: id_rsa
-        known_hosts: unnecessary
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_rsa
+          known_hosts: unnecessary
 
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-        cache: 'pip'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
 
-    - name: Install pip dependencies
-      run: pip install -r requirements.txt
+      - name: Install pip dependencies
+        run: pip install -r requirements.txt
 
-    - name: Cache ansible
-      uses: actions/cache@v4
-      with:
-        path: ~/.ansible/collections
-        key: ${{ hashFiles('requirements.yaml') }}
+      - name: Cache ansible
+        uses: actions/cache@v4
+        with:
+          path: ~/.ansible/collections
+          key: ${{ hashFiles('requirements.yaml') }}
 
-    - name: Install ansible galaxy
-      shell: bash
-      env:
-        VAULT_PASS : ${{ secrets.VAULT_PASS }}
-      run:  ansible-galaxy install -r requirements.yaml
+      - name: Install ansible galaxy
+        shell: bash
+        env:
+          VAULT_PASS: ${{ secrets.VAULT_PASS }}
+        run: ansible-galaxy install -r requirements.yaml
 
-    - name: Run ansible
-      shell: bash
-      env:
-        TARGET : ${{ matrix.target }}
-        VAULT_PASS : ${{ secrets.VAULT_PASS }}
-      run: |
-        ssh-keyscan -H $TARGET >> ~/.ssh/known_hosts &&
-        ansible-playbook -i inventory/bovbel --limit $TARGET playbooks/lab.yaml --vault-password-file <(cat <<<"$VAULT_PASS")
+      - name: Run ansible
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          VAULT_PASS: ${{ secrets.VAULT_PASS }}
+        run: |
+          ssh-keyscan -H $TARGET >> ~/.ssh/known_hosts &&
+          ansible-playbook -i inventory/bovbel --limit $TARGET playbooks/lab.yaml --vault-password-file <(cat <<<"$VAULT_PASS")

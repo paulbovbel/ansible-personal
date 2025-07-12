@@ -1,8 +1,6 @@
 ---
 minecraft_ops: []
-
 minecraft_users: []
-
 docker_minecraft:
   services:
     minecraft:

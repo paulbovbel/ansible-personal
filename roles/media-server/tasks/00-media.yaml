@@ -58,7 +58,7 @@
   template:
     src: mam-ip-update.j2
     dest: /usr/local/bin/mam-ip-update
-    mode: 0777
+    mode: "0777"
   become: true
   when: mam_id is defined
   notify: enable myanonamouse
@@ -102,7 +102,7 @@
   copy:
     src: rip-to-audio
     dest: /usr/local/bin/rip-to-audio
-    mode: 0777
+    mode: "0777"
   become: true
 
 - name: setup rip-to-audio service

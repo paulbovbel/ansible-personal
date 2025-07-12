@@ -142,12 +142,12 @@ plex_token: !vault |
 caddy_extras:
   users:
     - email: paul@bovbel.com
-      roles: ['admin', 'share']
+      roles: ["admin", "share"]
     - email: rebecca@bovbel.com
-      roles: ['admin', 'share']
+      roles: ["admin", "share"]
     - email: andrew@bovbel.com
-      roles: ['share']
+      roles: ["share"]
     - email: igorlitvinov@gmail.com
-      roles: ['share']
+      roles: ["share"]
     - email: eugene.tkach@gmail.com
-      roles: ['share']
+      roles: ["share"]

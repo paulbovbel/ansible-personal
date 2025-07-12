@@ -1,43 +1,45 @@
 ---
-- block:
-  - name: install zfs
-    apt:
-      name:
+- when: zfs_pool is defined
+
+  block:
+    - name: install zfs
+      apt:
+        name:
         # - zfsutils-linux
         # - zfs-auto-snapshot
         # - zfs-zed
-        - sendemail
-        - openzfs-zfsutils
-        - openzfs-zfs-zed
-        - openzfs-zfs-dkms
-      state: latest
-      update_cache: true
-      cache_valid_time: 3600
-    become: true
+          - sendemail
+          - openzfs-zfsutils
+          - openzfs-zfs-zed
+          - openzfs-zfs-dkms
+        state: latest
+        update_cache: true
+        cache_valid_time: 3600
+      become: true
 
-  - name: import pool if necessary
-    shell: |
-      zpool status {{ zfs_pool }} || zpool import {{ zfs_pool }}
-    become: true
+    - name: import pool if necessary
+      shell: |
+        zpool status {{ zfs_pool }} || zpool import {{ zfs_pool }}
+      become: true
 
-  - name: configure zed
-    lineinfile:
-      dest: /etc/zfs/zed.d/zed.rc
-      regexp: "^#?\\s*{{ item.key }}.*"
-      line: "{{ item.key }}='{{ item.value }}'"
-    become: true
-    notify: restart zed
-    loop:
-    - key: ZED_EMAIL_PROG
-      value: sendemail
-    - key: ZED_EMAIL_ADDR
-      value: paul@bovbel.com
-    - key: ZED_EMAIL_OPTS
-      value: -f @ADDRESS@ -t @ADDRESS@ -u "@SUBJECT@"
+    - name: configure zed
+      lineinfile:
+        dest: /etc/zfs/zed.d/zed.rc
+        regexp: "^#?\\s*{{ item.key }}.*"
+        line: "{{ item.key }}='{{ item.value }}'"
+      become: true
+      notify: restart zed
+      loop:
+        - key: ZED_EMAIL_PROG
+          value: sendemail
+        - key: ZED_EMAIL_ADDR
+          value: paul@bovbel.com
+        - key: ZED_EMAIL_OPTS
+          value: -f @ADDRESS@ -t @ADDRESS@ -u "@SUBJECT@"
 
-  when: zfs_pool is defined
+- when: nfs_mounts is defined
 
-- block:
+  block:
     - name: install nfs client
       apt:
         pkg: nfs-common
@@ -64,9 +66,9 @@
       become: true
       with_items:
         - "{{ nfs_mounts }}"
-  when: nfs_mounts is defined
+- when: iscsi_host is defined
 
-- block:
+  block:
     - name: install open-iscsi
       apt:
         pkg: open-iscsi
@@ -105,8 +107,6 @@
         opts: "{{ network_mount_options | join(',') }}"
         state: mounted
       become: true
-  when: iscsi_host is defined
-
 - name: install smartmontools
   apt:
     name:
@@ -129,7 +129,7 @@
   template:
     src: smartd_warning.sh.j2
     dest: /usr/share/smartmontools/smartd_warning.sh
-    mode: 755
+    mode: "0755"
   notify: restart smartd
   become: true
 
@@ -137,5 +137,5 @@
   service:
     name: smartd
     state: started
-    enabled: yes
+    enabled: true
   become: true

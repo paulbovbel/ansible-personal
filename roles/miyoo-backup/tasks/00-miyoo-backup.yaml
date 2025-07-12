@@ -3,7 +3,7 @@
   template:
     src: miyoo-backup.j2
     dest: /usr/local/bin/miyoo-backup
-    mode: 0777
+    mode: "0777"
   become: true
 
 - name: setup miyoo-backup timer

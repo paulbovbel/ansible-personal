@@ -1,7 +1,7 @@
+---
 aws_ddns: false
 aws_tailscale: false
 aws_alias_domains: []
-
 docker_aws_ddns:
   services:
     ddns-route53:

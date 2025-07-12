@@ -1,3 +1,4 @@
+---
 kernel_options:
   # disable all mitigations (only works in 5.2+ kernel)
   - mitigations=off
@@ -21,18 +22,17 @@ network_mount_options:
 sshd_config:
   Protocol: 2
   Port: 22
-  PermitRootLogin: 'no'
-  PasswordAuthentication: 'no'
-  PermitEmptyPasswords: 'no'
-  StrictModes: 'yes'
-  IgnoreRhosts: 'yes'
-  UsePAM: 'yes'
-  X11Forwarding: 'no'
+  PermitRootLogin: "no"
+  PasswordAuthentication: "no"
+  PermitEmptyPasswords: "no"
+  StrictModes: "yes"
+  IgnoreRhosts: "yes"
+  UsePAM: "yes"
+  X11Forwarding: "no"
 
 # TODO(pbovbel) Disable port forwards. SSH should work over tailscale or LAN?
 upnp_forwards_base:
-  ssh: {from: 22, to: 22, proto: tcp}
-
+  ssh: { from: 22, to: 22, proto: tcp }
 grafana_password: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   38653432383430643265333737356334646332386438383133353439636630666334393130366430
@@ -48,30 +48,30 @@ grafana_password: !vault |
 grafana:
   integrations:
     prometheus_remote_write:
-    - basic_auth:
-        password: "{{ grafana_password }}"
-        username: 711583
-      url: https://prometheus-us-central1.grafana.net/api/prom/push
+      - basic_auth:
+          password: "{{ grafana_password }}"
+          username: 711583
+        url: https://prometheus-us-central1.grafana.net/api/prom/push
     agent:
       enabled: true
       relabel_configs:
-      - action: replace
-        source_labels:
-        - agent_hostname
-        target_label: instance
-      - action: replace
-        target_label: job
-        replacement: "integrations/agent-check"
+        - action: replace
+          source_labels:
+            - agent_hostname
+          target_label: instance
+        - action: replace
+          target_label: job
+          replacement: "integrations/agent-check"
       metric_relabel_configs:
-      - action: keep
-        regex: (prometheus_target_.*|prometheus_sd_discovered_targets|agent_build.*|agent_wal_samples_appended_total|process_start_time_seconds)
-        source_labels:
-        - __name__
+        - action: keep
+          regex: (prometheus_target_.*|prometheus_sd_discovered_targets|agent_build.*|agent_wal_samples_appended_total|process_start_time_seconds)
+          source_labels:
+            - __name__
     node_exporter:
       enabled: true
       # disable unused collectors
       disable_collectors:
-        - ipvs #high cardinality on kubelet
+        - ipvs # high cardinality on kubelet
         - btrfs
         - infiniband
         - xfs
@@ -79,15 +79,18 @@ grafana:
       netclass_ignored_devices: "^(veth.*|cali.*|[a-f0-9]{15})$"
       netdev_device_exclude: "^(veth.*|cali.*|[a-f0-9]{15})$"
       # disable tmpfs
-      filesystem_fs_types_exclude: "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
+      filesystem_fs_types_exclude: >
+        "^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|tmpfs
+        |fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs
+        |securityfs|selinuxfs|squashfs|sysfs|tracefs)$"
       # drop extensive scrape statistics
       metric_relabel_configs:
-      - action: drop
-        regex: node_scrape_collector_.+
-        source_labels: [__name__]
+        - action: drop
+          regex: node_scrape_collector_.+
+          source_labels: [__name__]
       relabel_configs:
-      - replacement: media.bovbel.com
-        target_label: instance
+        - replacement: media.bovbel.com
+          target_label: instance
     cadvisor:
       enabled: true
       docker_only: true
@@ -98,15 +101,15 @@ grafana:
           target_label: job
   logs:
     configs:
-    - clients:
-      - basic_auth:
-          password: "{{ grafana_password }}"
-          username: 354761
-        url: https://logs-prod-017.grafana.net/loki/api/v1/push
-      name: integrations
-      positions:
-        filename: /tmp/positions.yaml
-      scrape_configs:
+      - clients:
+          - basic_auth:
+              password: "{{ grafana_password }}"
+              username: 354761
+            url: https://logs-prod-017.grafana.net/loki/api/v1/push
+        name: integrations
+        positions:
+          filename: /tmp/positions.yaml
+        scrape_configs:
           - job_name: integrations/docker
             docker_sd_configs:
               - host: unix:///var/run/docker.sock
@@ -124,7 +127,7 @@ grafana:
                 target_label: instance
               - source_labels:
                   - __meta_docker_container_name
-                regex: '/(.*)'
+                regex: "/(.*)"
                 target_label: container
               - source_labels:
                   - __meta_docker_container_log_stream
@@ -136,33 +139,33 @@ grafana:
                 instance: media.bovbel.com
                 job: integrations/node_exporter
             relabel_configs:
-            - source_labels: ['__journal__systemd_unit']
-              target_label: 'unit'
-            - source_labels: ['__journal__boot_id']
-              target_label: 'boot_id'
-            - source_labels: ['__journal__transport']
-              target_label: 'transport'
-            - source_labels: ['__journal_priority_keyword']
-              target_label: 'level'
+              - source_labels: ["__journal__systemd_unit"]
+                target_label: "unit"
+              - source_labels: ["__journal__boot_id"]
+                target_label: "boot_id"
+              - source_labels: ["__journal__transport"]
+                target_label: "transport"
+              - source_labels: ["__journal_priority_keyword"]
+                target_label: "level"
           - job_name: integrations/node_exporter_direct_scrape
             static_configs:
-            - targets:
-              - localhost
-              labels:
-                instance: media.bovbel.com
-                __path__: /var/log/{syslog,messages,*.log}
-                job: integrations/node_exporter
-        # Add here any snippet that belongs to the `logs.configs.scrape_configs` section.
-        # For a correct indentation, paste snippets copied from Grafana Cloud at the beginning of the line.
+              - targets:
+                  - localhost
+                labels:
+                  instance: media.bovbel.com
+                  __path__: /var/log/{syslog,messages,*.log}
+                  job: integrations/node_exporter
+  # Add here any snippet that belongs to the `logs.configs.scrape_configs` section.
+  # For a correct indentation, paste snippets copied from Grafana Cloud at the beginning of the line.
   metrics:
     configs:
-    - name: integrations
-      remote_write:
-      - basic_auth:
-          password: "{{ grafana_password }}"
-          username: 711583
-        url: https://prometheus-us-central1.grafana.net/api/prom/push
-      scrape_configs:
+      - name: integrations
+        remote_write:
+          - basic_auth:
+              password: "{{ grafana_password }}"
+              username: 711583
+            url: https://prometheus-us-central1.grafana.net/api/prom/push
+        scrape_configs:
         # Add here any snippet that belongs to the `metrics.configs.scrape_configs` section.
         # For a correct indentation, paste snippets copied from Grafana Cloud at the beginning of the line.
     global:

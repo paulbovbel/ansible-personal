@@ -17,14 +17,14 @@
 - name: configure fail2ban logging to journal
   lineinfile:
     dest: "/etc/fail2ban/fail2ban.conf"
-    regexp: '^#?\s*logtarget.*'
+    regexp: "^#?\\s*logtarget.*"
     value: "logtarget = SYSOUT"
   become: true
   notify: restart fail2ban
 
 - name: configure caddy fail2ban filter
   copy:
-    dest: '/etc/fail2ban/filter.d/caddy-basic-auth.conf'
+    dest: "/etc/fail2ban/filter.d/caddy-basic-auth.conf"
     content: |
       # fail2ban filter configuration for caddy basicauth
       [Definition]
@@ -36,7 +36,7 @@
 - name: configure caddy fail2ban jail
   blockinfile:
     marker: "# {mark} include caddy fail2ban config"
-    path: '/etc/fail2ban/jail.d/caddy-basic-auth.conf'
+    path: "/etc/fail2ban/jail.d/caddy-basic-auth.conf"
     block: |
       [caddy-basic-auth]
       enabled  = true
@@ -89,8 +89,8 @@
 - name: allow caddy access to tailscale agent
   lineinfile:
     dest: /etc/default/tailscaled
-    regexp: '^TS_PERMIT_CERT_UID=.*$'
-    line: 'TS_PERMIT_CERT_UID=caddy'
+    regexp: "^TS_PERMIT_CERT_UID=.*$"
+    line: "TS_PERMIT_CERT_UID=caddy"
   become: true
   notify:
     - restart tailscale

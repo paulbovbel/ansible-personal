@@ -1,5 +1,5 @@
 ---
 dependencies:
-    - docker
-    - caddy
-    - upnp
+  - docker
+  - caddy
+  - upnp

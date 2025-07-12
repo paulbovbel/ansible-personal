@@ -32,7 +32,7 @@
 - name: harden sshd
   lineinfile:
     dest: "/etc/ssh/sshd_config"
-    regexp: '^#?\s*{{ item.key }}.*'
+    regexp: "^#?\\s*{{ item.key }}.*"
     value: "{{ item.key }} {{ item.value }}"
     validate: "sshd -t -f %s"
   loop: "{{ sshd_config | dict2items }}"

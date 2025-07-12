@@ -1,3 +1,4 @@
+---
 apt_remove:
   - packages: []
 
@@ -29,11 +30,11 @@ apt_install:
       - gnome-tweaks
       - flatpak
 
-  - packages: ['kitty']
+  - packages: ["kitty"]
     repo: "ppa:yurivkhan/kitty"
     filename: kitty
 
-  - packages: ['code']
+  - packages: ["code"]
     repo: "deb [arch=amd64] https://packages.microsoft.com/repos/code stable main"
     keyurl: https://packages.microsoft.com/keys/microsoft.asc
     filename: code

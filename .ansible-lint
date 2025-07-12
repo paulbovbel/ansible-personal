@@ -1,7 +1,11 @@
+---
 skip_list:
+  - name[casing] # i enjoy lower case
+  - name[play] # don't care about naming plays
+  - name[missing] # some tasks don't need names
+  - var-naming[no-role-prefix] # can't be bothered
   - no-changed-when
   - risky-file-permissions
   - package-latest
   - role-name
-  - command-instead-of-shell
-  - fqcn-builtins
+  - fqcn

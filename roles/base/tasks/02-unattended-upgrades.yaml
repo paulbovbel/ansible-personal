@@ -1,3 +1,4 @@
+---
 - name: install unattended-upgrades
   apt:
     pkg: unattended-upgrades

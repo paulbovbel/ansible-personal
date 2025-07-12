@@ -54,7 +54,7 @@
 
 - name: download zfs plugin
   unarchive:
-    src: "https://github.com/45Drives/cockpit-zfs-manager/tarball/{{ plugin_zfs_version}}"
+    src: "https://github.com/45Drives/cockpit-zfs-manager/tarball/{{ plugin_zfs_version }}"
     dest: /tmp
     remote_src: true
 

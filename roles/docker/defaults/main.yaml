@@ -1,10 +1,10 @@
+---
 docker: {}
 docker_extras: {}
-
 docker_no_log: true
 
 docker_defaults:
-  version: '3.7'
+  version: "3.7"
   networks:
     apps:
       name: apps
@@ -16,7 +16,7 @@ docker_defaults:
       networks:
         - apps
       ports:
-        - '25:25'
+        - "25:25"
       environment:
         GMAIL_USER: "{{ ansible_email }}"
         GMAIL_PASSWORD: "{{ gmail_access_key }}"

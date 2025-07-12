@@ -19,7 +19,7 @@
       - docker-ce
       - docker-ce-cli
       - containerd.io
-    # - cockpit-docker  # removed in 20.04
+      # - cockpit-docker  # removed in 20.04
       - python3-docker
     state: latest
     update_cache: true

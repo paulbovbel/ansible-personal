@@ -1,4 +1,4 @@
 ---
 dependencies:
-    - upnp
-    - tailscale
+  - upnp
+  - tailscale

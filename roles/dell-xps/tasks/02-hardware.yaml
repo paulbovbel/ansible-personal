@@ -2,7 +2,7 @@
 - name: populate kernel parameters
   lineinfile:
     dest: /etc/default/grub
-    regexp: '^GRUB_CMDLINE_LINUX_DEFAULT=.*$'
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT=.*$"
     line: 'GRUB_CMDLINE_LINUX_DEFAULT="{{ kernel_options | join(" ") }}"'
   become: true
   notify: update grub

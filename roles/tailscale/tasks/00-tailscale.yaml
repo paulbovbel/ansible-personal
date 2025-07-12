@@ -31,15 +31,17 @@
   become: true
 
 - name: authorize tailscale
-  block:
-  - name: authorize machine
-    shell: "tailscale up --authkey '{{ tailscale_oauth_secret }}?ephemeral=false' --advertise-tags tag:{{ tailscale_tag }} {{ '--advertise-exit-node' if tailscale_exit_node }}"
-    become: true
-
-  - name: re-gather tailscale facts
-    setup:
   when: tailscale is not defined or tailscale.BackendState != "Running" or tailscale.CurrentTailnet.Name != tailscale_tailnet
 
+  block:
+    - name: authorize machine
+      shell: >
+        "tailscale up --authkey '{{ tailscale_oauth_secret }}?ephemeral=false'
+        --advertise-tags tag:{{ tailscale_tag }} {{ '--advertise-exit-node' if tailscale_exit_node }}"
+      become: true
+
+    - name: re-gather tailscale facts
+      setup:
 - name: configure tailscale upnp
   set_fact:
     upnp_forwards: "{{ upnp_forwards | combine(upnp_forwards_tailscale, recursive=True, list_merge='append') }}"

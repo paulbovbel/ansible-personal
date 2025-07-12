@@ -19,7 +19,7 @@
 - name: fix bluetooth powersave
   lineinfile:
     dest: "/etc/tlp.conf"
-    regexp: '^#?\s*RESTORE_DEVICE_STATE_ON_STARTUP.*'
+    regexp: "^#?\\s*RESTORE_DEVICE_STATE_ON_STARTUP.*"
     value: "RESTORE_DEVICE_STATE_ON_STARTUP=1"
   become: true
   notify: restart tlp
@@ -27,7 +27,7 @@
 - name: fix headphone white noise on battery
   lineinfile:
     dest: "/etc/tlp.conf"
-    regexp: '^#?\s*SOUND_POWER_SAVE_ON_BAT.*'
+    regexp: "^#?\\s*SOUND_POWER_SAVE_ON_BAT.*"
     value: "SOUND_POWER_SAVE_ON_BAT=0"
   become: true
   notify: restart tlp

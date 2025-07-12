@@ -1,3 +1,4 @@
+---
 tailscale_authkey: !vault |
   $ANSIBLE_VAULT;1.1;AES256
   31306537323536636465616632663237666535626133353561373465626135346565316166303238
@@ -12,4 +13,4 @@ tailscale_tailnet: bovbel.com
 tailscale_exit_node: false
 
 upnp_forwards_tailscale:
-  tailscale: {from: 41641, to: 41641, proto: udp}
+  tailscale: { from: 41641, to: 41641, proto: udp }

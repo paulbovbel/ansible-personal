@@ -67,7 +67,7 @@
     daemon_reload: true
   become: true
 
-- name: "start container services"  # noqa 303
+- name: "start container services" # noqa command-instead-of-module
   shell: |
     systemctl enable {{ docker_systemd_dir }}/{{ service.key }}.service && \
     systemctl start {{ service.key }}.service --no-block

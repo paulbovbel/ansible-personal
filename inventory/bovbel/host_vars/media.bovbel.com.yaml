@@ -24,7 +24,7 @@ docker_extras:
     plex:
       volumes:
         - "{{ media_folder }}:/mnt/storage/share:ro"
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     deluge:
       environment:
         VPN_ENABLED: "yes"
@@ -32,7 +32,7 @@ docker_extras:
         VPN_USER: "{{ pia_username }}"
         VPN_PASS: "{{ pia_password }}"
         VPN_CLIENT: wireguard
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     jellyfin:
       image: lscr.io/linuxserver/jellyfin:latest
       container_name: jellyfin
@@ -50,45 +50,44 @@ docker_extras:
       devices:
         - /dev/dri:/dev/dri
       restart: "no"
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     tautulli:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     sonarr:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     radarr:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     jackett:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     syncthing:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     unpackerr:
-      x-systemd-requires: ['storage.mount']
+      x-systemd-requires: ["storage.mount"]
     minecraft:
       environment:
         TYPE: MODRINTH
         VERSION: 1.21.1
         MODRINTH_MODPACK: default2.mrpack
         SEED: "5369984945557223422"
-      x-systemd-requires: ['storage.mount']
-
+      x-systemd-requires: ["storage.mount"]
 caddy_extras:
   users:
     - email: paul@bovbel.com
-      roles: ['admin', 'share']
+      roles: ["admin", "share"]
     - email: rebecca@bovbel.com
-      roles: ['admin', 'share']
+      roles: ["admin", "share"]
     - email: andrew@bovbel.com
-      roles: ['share']
+      roles: ["share"]
     - email: igorlitvinov@gmail.com
-      roles: ['share']
+      roles: ["share"]
     - email: eugene.tkach@gmail.com
-      roles: ['share']
+      roles: ["share"]
 
 
   endpoints:
     jellyfin:
       type: proxy
-      auth: null
+      auth:
       path: /jellyfin
       host: jellyfin
       port: 8096

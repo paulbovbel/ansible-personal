@@ -70,7 +70,6 @@ nfs_mounts:
   - mount: "{{ music_folder }}"
     url: "{{ nfs_host }}:/volume1/Music"
 
-
 docker_extras:
   services:
     ddclient:
@@ -121,6 +120,6 @@ docker_extras:
 caddy_extras:
   users:
     - email: paul@bovbel.com
-      roles: ['admin', 'share']
+      roles: ["admin", "share"]
     - email: sean.vedell@gmail.com
-      roles: ['admin', 'share']
+      roles: ["admin", "share"]

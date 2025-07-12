@@ -16,7 +16,7 @@
     cache_valid_time: 3600
   become: true
 
-- name: "configure {{ inventory_hostname }} to point to tailnet"
+- name: "configure to point to tailnet {{ inventory_hostname }}"
   amazon.aws.route53:
     state: present
     zone: bovbel.com

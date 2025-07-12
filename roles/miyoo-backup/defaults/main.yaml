@@ -1,3 +1,4 @@
+---
 miyoo_ip: 192.168.1.180
 backup_dirs:
   - Saves/CurrentProfile/play_activity

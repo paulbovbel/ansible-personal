@@ -1,3 +1,4 @@
+---
 cleanup_downloads_age: 120
 
 docker_media_server:
@@ -30,7 +31,7 @@ docker_media_server:
         - plex
       volumes:
         - "{{ app_folder }}/tautulli:/config"
-        - "{{ app_folder }}/plex/Library/Application\ Support/Plex\ Media\ Server/Logs:/logs:ro"
+        - "{{ app_folder }}/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro"
       restart: "no"
       environment:
         PUID: "{{ ansible_user_uid }}"
@@ -69,7 +70,6 @@ docker_media_server:
       environment:
         PUID: "{{ ansible_user_uid }}"
         PGID: "{{ ansible_user_gid }}"
-        TZ: America/Toronto
         TZ: America/Toronto
     # readarr:
     #   image: lscr.io/linuxserver/readarr:nightly
@@ -152,7 +152,7 @@ docker_media_server:
         PUID: "{{ ansible_user_uid }}"
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
-        CAPTCHA_SOLVER: 'none'
+        CAPTCHA_SOLVER: "none"
       restart: "no"
     maintainerr:
       container_name: maintainerr
@@ -208,8 +208,7 @@ docker_media_server:
       restart: "no"
 
 upnp_forwards_media_server:
-  plex: {from: 32400, to: 32400, proto: tcp}
-
+  plex: { from: 32400, to: 32400, proto: tcp }
 caddy_media_server:
   endpoints:
     maintainerr:

@@ -40,7 +40,6 @@ upnp_forwards_caddy: {}
   # https: {from: 443, to: 443, proto: tcp}
 
 caddy: {}
-
 caddy_defaults:
   users: []
   roles:
