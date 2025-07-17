@@ -137,7 +137,7 @@ docker_media_server:
         PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
         STRICT_PORT_FORWARD: "yes"
-        LAN_NETWORK: "{{ lan_network }}"
+        LAN_NETWORK: "{{ lan_network }},{{ tailscale_network }}"
         NAME_SERVERS: "8.8.8.8,8.8.4.4"
         DELUGE_DAEMON_LOG_LEVEL: info
         DELUGE_WEB_LOG_LEVEL: info

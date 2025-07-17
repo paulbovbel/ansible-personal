@@ -14,3 +14,5 @@ tailscale_exit_node: false
 
 upnp_forwards_tailscale:
   tailscale: { from: 41641, to: 41641, proto: udp }
+
+tailscale_network: 100.64.0.0/10
