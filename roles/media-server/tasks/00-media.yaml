@@ -72,7 +72,8 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/local/bin/mam-ip-update
+      ExecStart=/usr/local/bin/mam-ip-update deluge wg0 {{ mam_id.deluge }}
+      ExecStart=/usr/local/bin/mam-ip-update jackett eth0 {{ mam_id.jackett }}
       User={{ ansible_user }}
       Restart=no
 
@@ -80,6 +81,7 @@
   become: true
   when: mam_id is defined
   notify: enable myanonamouse
+  tags: mam_id
 
 - name: setup myanonamouse timer
   copy:

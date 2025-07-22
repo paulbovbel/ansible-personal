@@ -1,37 +1,44 @@
 #!/bin/bash
-docker exec -iu {{ ansible_user_uid }}:{{ ansible_user_gid }} deluge /bin/bash <<'EOF'
+echo "Updating mam IP from container $1"
 
-set -o errexit   # abort on nonzero exitstatus
-set -o nounset   # abort on unbound variable
-set -o pipefail  # don't hide errors within pipes
+docker exec -iu {{ ansible_user_uid }}:{{ ansible_user_gid }} \
+  -e CONTAINER_INTERFACE="$2" \
+  -e MAM_ID="$3" \
+  $1 /bin/bash <<'EOF'
 
-cookie_jar="/config/mam.cookies"
-cached_ip="/config/mam.ip"
+set -o errexit
+set -o nounset
+set -o pipefail
+
 mam_api="https://t.myanonamouse.net/json/dynamicSeedbox.php"
+config_dir="/config"
 
-get_vpn_ip() {
-    curl --interface wg0 -s checkip.amazonaws.com
+cached_ip="$config_dir/mam.ip.$CONTAINER_INTERFACE"
+cookie_jar="$config_dir/mam.cookies.$CONTAINER_INTERFACE"
+
+get_ip() {
+    curl --interface "$CONTAINER_INTERFACE" -s checkip.amazonaws.com
 }
 
-touch $cached_ip
+touch "$cached_ip"
 
-if [ "$(get_vpn_ip)" != "$(cat $cached_ip)" ]; then
+new_ip=$(get_ip)
+old_ip=$(cat "$cached_ip")
 
-    if [ -f $cookie_jar ]; then
-        echo "Calling API with cookie jar"
-        curl -w "\n" --interface wg0 -b $cookie_jar -c $cookie_jar $mam_api
+if [[ "$new_ip" != "$old_ip" ]]; then
+    echo "IP change detected on $CONTAINER_INTERFACE: $old_ip -> $new_ip"
 
+    if [ -f "$cookie_jar" ]; then
+        echo "Calling API for $CONTAINER_INTERFACE with cookie jar"
+        curl -w "\n" --interface "$CONTAINER_INTERFACE" -b "$cookie_jar" -c "$cookie_jar" "$mam_api"
     else
-        echo "Calling API with mam_id"
-        curl -w "\n" --interface wg0 -b 'mam_id={{ mam_id }}' -c $cookie_jar $mam_api
-
+        echo "Calling API for $CONTAINER_INTERFACE with mam_id"
+        curl -w "\n" --interface "$CONTAINER_INTERFACE" -b "mam_id=$MAM_ID" -c "$cookie_jar" "$mam_api"
     fi
 
-    echo "Updating cached IP"
-    get_vpn_ip > $cached_ip
-
+    echo "$new_ip" > "$cached_ip"
 else
-    echo "No IP changes from previously authorized $(cat $cached_ip), nothing to do."
+    echo "No IP change for $CONTAINER_INTERFACE: $old_ip"
 fi
 
 EOF
