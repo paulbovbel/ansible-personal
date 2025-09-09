@@ -22,5 +22,4 @@ docker_minecraft:
         OPS: "{{ minecraft_ops | join(',') }}"
         ENABLE_RCON: "TRUE"
         RCON_PASSWORD: "{{ web_password }}"
-
       restart: "no"

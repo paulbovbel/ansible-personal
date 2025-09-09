@@ -70,6 +70,34 @@ docker_extras:
         MODRINTH_MODPACK: default2.mrpack
         SEED: "5369984945557223422"
       x-systemd-requires: ["storage.mount"]
+    abiotic:
+      image: ghcr.io/pleut/abiotic-factor-linux-docker:latest
+      container_name: abiotic
+      networks:
+        - apps
+      ports:
+        - "7777:7777/udp"
+        - "27015:27015/udp"
+      volumes:
+        - "{{ app_folder }}/abiotic/gamefiles:/server"
+        - "{{ app_folder }}/abiotic/data:/server/AbioticFactor/Saved"
+      environment:
+        MaxServerPlayers: 6
+        Port: 7777
+        QueryPort: 27015
+        ServerPassword: agentx3r
+        SteamServerName: bovbel
+        UsePerfThreads: "true"
+        NoAsyncLoadingThread: "true"
+        WorldSaveName: "Cascade"
+        AutoUpdate: "true"
+      restart: "no"
+      x-systemd-requires: ["storage.mount"]
+
+upnp_forwards_extras:
+  abiotic: {from: 7777, to: 7777, proto: udp}
+  abioticquery: {from: 27015, to: 27015, proto: udp}
+
 caddy_extras:
   users:
     - email: paul@bovbel.com
