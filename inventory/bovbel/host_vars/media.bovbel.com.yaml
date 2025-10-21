@@ -65,10 +65,10 @@ docker_extras:
       x-systemd-requires: ["storage.mount"]
     minecraft:
       environment:
-        TYPE: MODRINTH
         VERSION: 1.21.1
-        MODRINTH_MODPACK: default2.mrpack
-        SEED: "5369984945557223422"
+        MODPACK_PLATFORM: MODRINTH
+        MODRINTH_MODPACK: default3.mrpack
+        SEED: "-7903651094132931013"
       x-systemd-requires: ["storage.mount"]
     abiotic:
       image: ghcr.io/pleut/abiotic-factor-linux-docker:latest
