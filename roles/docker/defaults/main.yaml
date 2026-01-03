@@ -4,7 +4,7 @@ docker_extras: {}
 docker_no_log: true
 
 docker_defaults:
-  version: "3.7"
+  # version: "3.7"
   networks:
     apps:
       name: apps

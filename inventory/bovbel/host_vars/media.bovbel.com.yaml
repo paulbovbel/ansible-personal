@@ -70,35 +70,119 @@ docker_extras:
         MODRINTH_MODPACK: default3.mrpack
         SEED: "-7903651094132931013"
       x-systemd-requires: ["storage.mount"]
-    abiotic:
-      image: ghcr.io/pleut/abiotic-factor-linux-docker:latest
-      container_name: abiotic
-      networks:
-        - apps
-      ports:
-        - "7777:7777/udp"
-        - "27015:27015/udp"
-      volumes:
-        - "{{ app_folder }}/abiotic/gamefiles:/server"
-        - "{{ app_folder }}/abiotic/data:/server/AbioticFactor/Saved"
+    # abiotic:
+    #   image: ghcr.io/pleut/abiotic-factor-linux-docker:latest
+    #   container_name: abiotic
+    #   user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
+    #   networks:
+    #     - apps
+    #   ports:
+    #     - "7777:7777/udp"
+    #     - "27015:27015/udp"
+    #   volumes:
+    #     - "{{ app_folder }}/abiotic/gamefiles:/server"
+    #     - "{{ app_folder }}/abiotic/data:/server/AbioticFactor/Saved"
+    #   environment:
+    #     MaxServerPlayers: 6
+    #     Port: 7777
+    #     QueryPort: 27015
+    #     ServerPassword: !vault |
+    #       $ANSIBLE_VAULT;1.1;AES256
+    #       35396466363033643630373364626363623233393635653430663562386362613762303039613433
+    #       3564333064323863646234666632373237333333636134340a643163336337333336653437653263
+    #       39306339303130633730653934313637326539376137616138363631383331626665326363353962
+    #       6332386233626432340a643634336234333732373963613831366534653266363963316535376639
+    #       6434
+    #     SteamServerName: bovbel
+    #     UsePerfThreads: "true"
+    #     NoAsyncLoadingThread: "true"
+    #     WorldSaveName: "Cascade"
+    #     AutoUpdate: "true"
+    #   restart: "no"
+    #   x-systemd-requires: ["storage.mount"]
+    # komga:
+    #   image: gotson/komga
+    #   container_name: komga
+    #   volumes:
+    #     - "{{ app_folder }}/komga:/config"
+    #     - "{{ books_folder }}:/data"
+    #     - "{{ downloads_folder }}/bookdrop:/bookdrop"
+    #   ports:
+    #     - 25600:25600
+    #   user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
+    #   environment:
+    #     TZ: America/Toronto
+    #   restart: "no"
+    #   x-systemd-requires: ["storage.mount"]
+
+    booklore:
+      image: ghcr.io/booklore-app/booklore:latest
+      container_name: booklore
+      # user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"  # cannot move '/tmp/nginx.conf.tmp' to '/etc/nginx/nginx.conf': Permission denied
       environment:
-        MaxServerPlayers: 6
-        Port: 7777
-        QueryPort: 27015
-        ServerPassword: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          35396466363033643630373364626363623233393635653430663562386362613762303039613433
-          3564333064323863646234666632373237333333636134340a643163336337333336653437653263
-          39306339303130633730653934313637326539376137616138363631383331626665326363353962
-          6332386233626432340a643634336234333732373963613831366534653266363963316535376639
-          6434
-        SteamServerName: bovbel
-        UsePerfThreads: "true"
-        NoAsyncLoadingThread: "true"
-        WorldSaveName: "Cascade"
-        AutoUpdate: "true"
+        USER_ID: "{{ ansible_user_uid }}"
+        GROUP_ID: "{{ ansible_user_gid }}"
+        TZ: America/Toronto
+        DATABASE_URL: jdbc:mariadb://booklore-db:3306/booklore
+        DATABASE_USERNAME: "{{ ansible_user }}"
+        DATABASE_PASSWORD: "{{ web_password }}"
+        BOOKLORE_PORT: 6060
+        SWAGGER_ENABLED: false
+        FORCE_DISABLE_OIDC: false
+      depends_on:
+        booklore-db:
+          condition: service_healthy
+      ports:
+        - "6060:6060"
+      volumes:
+        - "{{ app_folder }}/booklore:/app/data"
+        - "{{ books_folder }}:/books"
+        - "{{ downloads_folder }}/bookdrop:/bookdrop"
+      healthcheck:
+        test: wget -q -O - http://localhost:6060/api/v1/healthcheck
+        interval: 60s
+        retries: 5
+        start_period: 60s
+        timeout: 10s
       restart: "no"
       x-systemd-requires: ["storage.mount"]
+    booklore-db:
+      image: lscr.io/linuxserver/mariadb:11.4.8
+      container_name: booklore-db
+      user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
+      environment:
+        # PUID: "{{ ansible_user_uid }}"
+        # PGID: "{{ ansible_user_gid }}"
+        TZ: America/Toronto
+        MYSQL_ROOT_PASSWORD: "{{ web_password }}"
+        MYSQL_DATABASE: booklore
+        MYSQL_USER: "{{ ansible_user }}"
+        MYSQL_PASSWORD: "{{ web_password }}"
+      volumes:
+        - "{{ app_folder }}/booklore-db:/config"
+      restart: "no"
+      x-systemd-requires: ["storage.mount"]
+      healthcheck:
+        test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost" ]
+        interval: 5s
+        timeout: 5s
+        retries: 10
+    calibre-web-automated-book-downloader:
+      image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
+      container_name: calibre-web-automated-book-downloader
+      # user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
+      environment:
+        TZ: America/Toronto
+        PUID: "{{ ansible_user_uid }}"
+        PGID: "{{ ansible_user_gid }}"
+      ports:
+        - 8084:8084
+      restart: unless-stopped
+      volumes:
+        - "{{ downloads_folder }}/bookdrop:/cwa-book-ingest"
+        - "{{ app_folder }}/calibre-web-automated-book-downloader:/config"
+        # - /path/to/downloads:/downloads
+
 
 upnp_forwards_extras:
   abiotic: {from: 7777, to: 7777, proto: udp}
