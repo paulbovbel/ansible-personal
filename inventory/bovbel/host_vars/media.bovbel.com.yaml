@@ -116,7 +116,7 @@ docker_extras:
     #   x-systemd-requires: ["storage.mount"]
 
     booklore:
-      image: ghcr.io/booklore-app/booklore:latest
+      image: ghcr.io/booklore-app/booklore:v1.16.2
       container_name: booklore
       # user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"  # cannot move '/tmp/nginx.conf.tmp' to '/etc/nginx/nginx.conf': Permission denied
       environment:
