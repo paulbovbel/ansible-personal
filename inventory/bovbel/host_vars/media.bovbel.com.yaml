@@ -116,8 +116,11 @@ docker_extras:
     #   x-systemd-requires: ["storage.mount"]
 
     booklore:
-      image: ghcr.io/booklore-app/booklore:v1.16.2
+      # image: ghcr.io/booklore-app/booklore:v1.16.4
+      image: ghcr.io/paulbovbel/booklore:develop-8d8e8a88
       container_name: booklore
+      networks:
+        - apps
       # user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"  # cannot move '/tmp/nginx.conf.tmp' to '/etc/nginx/nginx.conf': Permission denied
       environment:
         USER_ID: "{{ ansible_user_uid }}"
@@ -129,6 +132,7 @@ docker_extras:
         BOOKLORE_PORT: 6060
         SWAGGER_ENABLED: false
         FORCE_DISABLE_OIDC: false
+        BASE_PATH: /booklore
       depends_on:
         booklore-db:
           condition: service_healthy
@@ -149,10 +153,10 @@ docker_extras:
     booklore-db:
       image: lscr.io/linuxserver/mariadb:11.4.8
       container_name: booklore-db
+      networks:
+        - apps
       user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
       environment:
-        # PUID: "{{ ansible_user_uid }}"
-        # PGID: "{{ ansible_user_gid }}"
         TZ: America/Toronto
         MYSQL_ROOT_PASSWORD: "{{ web_password }}"
         MYSQL_DATABASE: booklore
@@ -170,6 +174,8 @@ docker_extras:
     calibre-web-automated-book-downloader:
       image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
       container_name: calibre-web-automated-book-downloader
+      networks:
+        - apps
       # user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
       environment:
         TZ: America/Toronto
@@ -181,8 +187,6 @@ docker_extras:
       volumes:
         - "{{ downloads_folder }}/bookdrop:/cwa-book-ingest"
         - "{{ app_folder }}/calibre-web-automated-book-downloader:/config"
-        # - /path/to/downloads:/downloads
-
 
 upnp_forwards_extras:
   abiotic: {from: 7777, to: 7777, proto: udp}
@@ -205,10 +209,17 @@ caddy_extras:
   endpoints:
     jellyfin:
       type: proxy
-      auth:
+      auth: null
       path: /jellyfin
       host: jellyfin
       port: 8096
+      role: admin
+    booklore:
+      type: proxy
+      auth: oauth
+      path: /booklore
+      host: booklore
+      port: 6060
       role: admin
 
 minecraft_ops:

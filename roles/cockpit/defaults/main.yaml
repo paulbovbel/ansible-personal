@@ -16,7 +16,7 @@ docker_cockpit:
       restart: unless-stopped
 
 caddy_cockpit:
-  redirect: /dashboard/
+  redirect: /cockpit/
 
   endpoints:
     smokeping:
