@@ -167,7 +167,7 @@ docker_extras:
       restart: "no"
       x-systemd-requires: ["storage.mount"]
       healthcheck:
-        test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost" ]
+        test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
         interval: 5s
         timeout: 5s
         retries: 10
