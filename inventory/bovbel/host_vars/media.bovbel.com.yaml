@@ -116,8 +116,9 @@ docker_extras:
     #   x-systemd-requires: ["storage.mount"]
 
     booklore:
-      # image: ghcr.io/booklore-app/booklore:v1.16.4
-      image: ghcr.io/paulbovbel/booklore:develop-8d8e8a88
+      image: ghcr.io/booklore-app/booklore:v1.16.2 # working
+      # image: ghcr.io/booklore-app/booklore:v1.16.4 # breaks covers
+      # image: ghcr.io/paulbovbel/booklore:develop-8d8e8a88 # required for BASE_PATH/caddy forwarding
       container_name: booklore
       networks:
         - apps
@@ -132,7 +133,7 @@ docker_extras:
         BOOKLORE_PORT: 6060
         SWAGGER_ENABLED: false
         FORCE_DISABLE_OIDC: false
-        BASE_PATH: /booklore
+#        BASE_PATH: /booklore
       depends_on:
         booklore-db:
           condition: service_healthy
