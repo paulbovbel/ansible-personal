@@ -42,10 +42,18 @@
     dest: /etc/systemd/system/grafana-agent.service.d/override.conf
   become: true
 
-- name: start grafana agent
+# - name: start grafana agent
+#   systemd:
+#     name: grafana-agent.service
+#     enabled: true
+#     daemon_reload: true
+#     state: restarted
+#   become: true
+
+- name: disable grafana agent
   systemd:
     name: grafana-agent.service
-    enabled: true
+    enabled: false
     daemon_reload: true
-    state: restarted
+    state: stopped
   become: true
