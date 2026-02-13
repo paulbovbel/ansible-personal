@@ -21,7 +21,8 @@ docker_defaults:
         GMAIL_USER: "{{ ansible_email }}"
         GMAIL_PASSWORD: "{{ gmail_access_key }}"
     watchtower:
-      image: containrrr/watchtower
+      # TODO(pbovbel) time to switch to podman
+      image: nickfedor/watchtower:latest
       container_name: watchtower
       networks:
         - apps
