@@ -171,9 +171,9 @@ docker_extras:
         interval: 5s
         timeout: 5s
         retries: 10
-    calibre-web-automated-book-downloader:
-      image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
-      container_name: calibre-web-automated-book-downloader
+    shelfmark:
+      image: ghcr.io/calibrain/shelfmark:latest
+      container_name: shelfmark
       networks:
         - apps
       # user: "{{ ansible_user_uid }}:{{ ansible_user_gid }}"
@@ -181,12 +181,10 @@ docker_extras:
         TZ: America/Toronto
         PUID: "{{ ansible_user_uid }}"
         PGID: "{{ ansible_user_gid }}"
-      ports:
-        - 8084:8084
       restart: unless-stopped
       volumes:
         - "{{ downloads_folder }}/bookdrop:/cwa-book-ingest"
-        - "{{ app_folder }}/calibre-web-automated-book-downloader:/config"
+        - "{{ app_folder }}/shelfmark:/config"
 
 upnp_forwards_extras:
   abiotic: {from: 7777, to: 7777, proto: udp}
@@ -220,6 +218,13 @@ caddy_extras:
       path: /booklore
       host: booklore
       port: 6060
+      role: admin
+    shelfmark:
+      type: proxy
+      auth: oauth
+      path: /shelfmark
+      host: shelfmark
+      port: 8084
       role: admin
 
 minecraft_ops:
