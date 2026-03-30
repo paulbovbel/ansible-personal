@@ -45,22 +45,15 @@
   become: true
   notify: restart cockpit
 
-- name: install docker plugin
-  unarchive:
-    src: "https://github.com/mrevjd/cockpit-docker/releases/download/{{ plugin_docker_version }}/cockpit-docker.tar.gz"
-    dest: /usr/share/cockpit
-    remote_src: true
-  become: true
-
 - name: download zfs plugin
   unarchive:
-    src: "https://github.com/45Drives/cockpit-zfs-manager/tarball/{{ plugin_zfs_version }}"
+    src: "https://github.com/45Drives/cockpit-zfs/archive/refs/tags/v{{ plugin_zfs_version }}.tar.gz"
     dest: /tmp
     remote_src: true
 
 - name: install zfs plugin
   copy:
-    src: "/tmp/45Drives-cockpit-zfs-manager-{{ plugin_zfs_version[:7] }}/zfs"
+    src: "/tmp/cockpit-zfs-{{ plugin_zfs_version }}/zfs"
     dest: /usr/share/cockpit
     remote_src: true
   become: true

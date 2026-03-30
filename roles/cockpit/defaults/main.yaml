@@ -38,4 +38,4 @@ caddy_cockpit:
       role: admin
 
 plugin_docker_version: v2.0.3
-plugin_zfs_version: e4b4496d63260466045260a924d5d456aaf10bda
+plugin_zfs_version: 1.2.20-2
