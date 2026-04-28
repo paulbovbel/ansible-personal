@@ -117,8 +117,7 @@ docker_media_server:
         TZ: America/Toronto
     deluge:
       container_name: deluge
-      # pin before https://github.com/binhex/arch-delugevpn/pull/426/files
-      image: binhex/arch-delugevpn:2.1.1-8-03
+      image: binhex/arch-delugevpn
       privileged: true
       sysctls:
         - net.ipv4.conf.all.src_valid_mark=1
@@ -143,6 +142,8 @@ docker_media_server:
         DELUGE_WEB_LOG_LEVEL: info
         DELUGE_ENABLE_WEBUI_PASSWORD: "no"
         VPN_ENABLED: "no"
+      # pause torrents on shutdown to prevent trackers from complaining about abrupt disconnects
+      x-systemd-execstoppre: /usr/bin/docker exec deluge deluge-console "connect 127.0.0.1 {{ ansible_user }} {{ web_password }}; pause *"
     flaresolverr:
       container_name: flaresolverr
       image: ghcr.io/flaresolverr/flaresolverr:latest
