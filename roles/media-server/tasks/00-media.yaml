@@ -55,8 +55,8 @@
 # TODO(pbovbel) Update VPN IP with tracker.Ideally need a way to run this after container interface wg0 comes up,
 # maybe extend the supervisord config in the container?
 - name: create myanonamouse script
-  template:
-    src: mam-ip-update.j2
+  copy:
+    src: mam-ip-update
     dest: /usr/local/bin/mam-ip-update
     mode: "0777"
   become: true
