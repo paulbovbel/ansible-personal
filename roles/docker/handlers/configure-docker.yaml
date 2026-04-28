@@ -11,7 +11,7 @@
     dest: /etc/docker/docker-compose.yaml
   become: true
 
-- name: stop container services
+- name: stop container services  # noqa command-instead-of-module
   shell: |
     systemctl stop {{ docker_systemd_dir }}/*.service || true
   become: true
