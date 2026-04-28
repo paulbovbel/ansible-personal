@@ -11,6 +11,11 @@
     dest: /etc/docker/docker-compose.yaml
   become: true
 
+- name: stop container services
+  shell: |
+    systemctl stop {{ docker_systemd_dir }}/*.service || true
+  become: true
+
 - name: stop docker
   service:
     name: docker
