@@ -47,7 +47,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/bin/find {{ downloads_folder }} -maxdepth 1 -mtime +{{ cleanup_downloads_age }} -exec rm -rf {} \;
+      ExecStart=/usr/bin/find {{ downloads_folder }}/torrents -maxdepth 1 -mtime +{{ cleanup_downloads_age }} -exec rm -rf {} \;
     dest: /etc/systemd/system/cleanup-downloads.service
   become: true
   notify: enable cleanup-downloads
