@@ -103,7 +103,7 @@ docker_extras:
 
     grimmory:
       # image: grimmory/grimmory:v3.0.0
-      image: ghcr.io/paulbovbel/grimmory:preview-32774c0
+      image: ghcr.io/paulbovbel/grimmory:preview-7815e6d
       container_name: grimmory
       networks:
         - apps
@@ -127,8 +127,7 @@ docker_extras:
         - "{{ books_folder }}:/books"
         - "{{ downloads_folder }}/bookdrop:/bookdrop"
       healthcheck:
-        test: wget -q -O - http://localhost:6060/grimmory/api/v1/healthcheck
-        # test: wget -q -O - http://localhost:6060/api/v1/healthcheck
+        test: wget -q -O - "http://localhost:6060$${BASE_PATH:-}/api/v1/healthcheck"
         interval: 60s
         retries: 5
         start_period: 60s

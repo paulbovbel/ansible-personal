@@ -52,7 +52,7 @@
   become: true
   notify: enable cleanup-downloads
 
-# TODO(pbovbel) Update VPN IP with tracker.Ideally need a way to run this after container interface wg0 comes up,
+# TODO(pbovbel) Update VPN IP with tracker. Ideally need a way to run this after container interface wg0 comes up,
 # maybe extend the supervisord config in the container?
 - name: create myanonamouse script
   copy:
