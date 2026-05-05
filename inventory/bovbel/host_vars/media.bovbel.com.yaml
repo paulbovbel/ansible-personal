@@ -116,12 +116,17 @@ docker_extras:
         DATABASE_USERNAME: "{{ ansible_user }}"
         DATABASE_PASSWORD: "{{ web_password }}"
         FORCE_DISABLE_OIDC: false
+        REMOTE_AUTH_ENABLED: true
+        REMOTE_AUTH_CREATE_NEW_USERS: true
+        REMOTE_AUTH_HEADER_USER: X-Token-User-Email
+        REMOTE_AUTH_HEADER_NAME: X-Token-User-Name
+        REMOTE_AUTH_HEADER_EMAIL: X-Token-User-Email
+        REMOTE_AUTH_HEADER_GROUPS: X-Token-User-Roles
+        REMOTE_AUTH_ADMIN_GROUP: admin
         BASE_PATH: /grimmory
       depends_on:
         grimmory-db:
           condition: service_healthy
-      ports:
-        - "6060:6060"
       volumes:
         - "{{ app_folder }}/grimmory:/app/data"
         - "{{ books_folder }}:/books"
@@ -181,6 +186,12 @@ caddy_extras:
     - email: rebecca@bovbel.com
       roles: ["admin", "share"]
     - email: andrew@bovbel.com
+      roles: ["admin", "share"]
+    - email: irina@bovbel.com
+      roles: ["share"]
+    - email: dmitri@bovbel.com
+      roles: ["share"]
+    - email: arthur@bovbel.com
       roles: ["share"]
     - email: igorlitvinov@gmail.com
       roles: ["share"]
@@ -195,7 +206,12 @@ caddy_extras:
       path: /jellyfin
       host: jellyfin
       port: 8096
-      role: admin
+    grimmory-kobo:
+      type: proxy
+      auth: null
+      path: /grimmory/api/kobo
+      host: grimmory
+      port: 6060
     grimmory:
       type: proxy
       auth: oauth
