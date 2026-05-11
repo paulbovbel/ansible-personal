@@ -12,7 +12,7 @@ docker_defaults:
     # TODO(pbovbel) fix SMTP server
     smtp:
       container_name: smtp
-      image: ixdotai/smtp
+      image: registry.gitlab.com/egos-tech/smtp:latest
       networks:
         - apps
       ports:
