@@ -1,3 +1,7 @@
+Goodbye ansible, hello nixos
+
+---
+
 # README
 
 This repository contains the configurations for my development laptop and homelabs. The CI runner will automatically deploy to my homelab on commit - no risk no reward!
